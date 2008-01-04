@@ -12,3 +12,10 @@
         running if a file with no corresponding commercials .plist was played.
 
         
+1.0RC4: Fixed bug starting FileWatcher
+
+1.0RC5: Replace ComSkipper.app application with ComSkipper.app application
+        bundle (wrong save-as type was selected in ScriptEditor, resulting
+        in a PPC/Classic application!)
+
+        Migrated to Google Code
