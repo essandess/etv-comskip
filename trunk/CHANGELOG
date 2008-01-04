@@ -1,0 +1,14 @@
+1.0RC1:  Initial Release
+
+1.0RC2:  Moved from applescript FileWatcher to C++ FileWatcher
+
+
+1.0RC3: Fixed bug in MarkCommercials.sh where file name had a single quote
+        in it (it's interesting how many TV shows do this!)
+
+        Implemented "all" flag for FileWatcher to scan all files.
+
+        Fixed bugs in ComSkipper.app script which would cause it to stop
+        running if a file with no corresponding commercials .plist was played.
+
+        
