@@ -1,0 +1,1294 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+		D7BA7D76DAB5DD13389D6332 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			generatedFileNames = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			name = "Qt Qmake";
+			neededFileNames = (
+			);
+			shellPath = /bin/sh;
+			shellScript = "make -C /Applications/ETVComskip/src -f Makefile.xcodeproj/qt_makeqmake.mak";
+		};
+		38E9C44334A5D628D43FE0E4 = {
+			isa = PBXFileReference;
+			name = "comskip.c";
+			path = "comskip.c";
+			refType = 4;
+		};
+		6C4FB7DDC6F9FE6C9E50E2E2 = {
+			fileRef = 38E9C44334A5D628D43FE0E4;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		617DEA42BD4197917F0EF07C = {
+			isa = PBXFileReference;
+			name = "dump_state.c";
+			path = "dump_state.c";
+			refType = 4;
+		};
+		A20E9BBDE08C6A8F57A92842 = {
+			fileRef = 617DEA42BD4197917F0EF07C;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		5EA25E6E4174720AD932D128 = {
+			isa = PBXFileReference;
+			name = "getbits.c";
+			path = "getbits.c";
+			refType = 4;
+		};
+		09EBEF12EA683A64686DE754 = {
+			fileRef = 5EA25E6E4174720AD932D128;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		5EBB9B1C7B81FF90C4ED51C0 = {
+			isa = PBXFileReference;
+			name = "gettimeofday.c";
+			path = "gettimeofday.c";
+			refType = 4;
+		};
+		613C887B958698AC3AC3D755 = {
+			fileRef = 5EBB9B1C7B81FF90C4ED51C0;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		F7D595D64E10C21986ED2934 = {
+			isa = PBXFileReference;
+			name = "mem.c";
+			path = "mem.c";
+			refType = 4;
+		};
+		72FE5ED5F592073EB1DE4684 = {
+			fileRef = F7D595D64E10C21986ED2934;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		A28C5800DBEB452B17A5D7A9 = {
+			isa = PBXFileReference;
+			name = "mpeg2dec.c";
+			path = "mpeg2dec.c";
+			refType = 4;
+		};
+		112A2F6FA595231C75D8C20B = {
+			fileRef = A28C5800DBEB452B17A5D7A9;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		4F87C007627BB1E8C0F2849C = {
+			isa = PBXFileReference;
+			name = "mpegaudiodec.c";
+			path = "mpegaudiodec.c";
+			refType = 4;
+		};
+		48EEF76E5A4D2824083AFF2C = {
+			fileRef = 4F87C007627BB1E8C0F2849C;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		2D6A4A738CEB8495048F4B03 = {
+			isa = PBXFileReference;
+			name = "utils.c";
+			path = "utils.c";
+			refType = 4;
+		};
+		94649A5FC0CB5A164A8AA293 = {
+			fileRef = 2D6A4A738CEB8495048F4B03;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		DCA55B19CAB4C97394E32EEB = {
+			isa = PBXFileReference;
+			name = "video_out_dx.c";
+			path = "video_out_dx.c";
+			refType = 4;
+		};
+		A4E48F03A440017A6D7B30B5 = {
+			fileRef = DCA55B19CAB4C97394E32EEB;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		8A22E393655C30FF38581827 = {
+			isa = PBXFileReference;
+			name = "arg_date.c";
+			path = "argtable2-7/src/arg_date.c";
+			refType = 4;
+		};
+		7D049B7EEB168550F0BD0F78 = {
+			fileRef = 8A22E393655C30FF38581827;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		F313D6A597E8BE4E5E27C2DF = {
+			isa = PBXFileReference;
+			name = "arg_dbl.c";
+			path = "argtable2-7/src/arg_dbl.c";
+			refType = 4;
+		};
+		9278A324208C266FE47B177B = {
+			fileRef = F313D6A597E8BE4E5E27C2DF;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		B851D2F90DE2B02036973796 = {
+			isa = PBXFileReference;
+			name = "arg_end.c";
+			path = "argtable2-7/src/arg_end.c";
+			refType = 4;
+		};
+		B11570C9FDE2EC44E7C3820B = {
+			fileRef = B851D2F90DE2B02036973796;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		497B849131253DF4BD3AAEBA = {
+			isa = PBXFileReference;
+			name = "arg_file.c";
+			path = "argtable2-7/src/arg_file.c";
+			refType = 4;
+		};
+		2F7B0C6F463D3ADAFBEA7298 = {
+			fileRef = 497B849131253DF4BD3AAEBA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		935EA7B00E68A65A718AF33D = {
+			isa = PBXFileReference;
+			name = "arg_int.c";
+			path = "argtable2-7/src/arg_int.c";
+			refType = 4;
+		};
+		0AE1237E0AEEE77F38E708D5 = {
+			fileRef = 935EA7B00E68A65A718AF33D;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		6BF9CEE909CD25790724F5DA = {
+			isa = PBXFileReference;
+			name = "arg_lit.c";
+			path = "argtable2-7/src/arg_lit.c";
+			refType = 4;
+		};
+		B29849E7C0F4CEB342C40369 = {
+			fileRef = 6BF9CEE909CD25790724F5DA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		3C00CA6C22A8C2E6B51E7D5F = {
+			isa = PBXFileReference;
+			name = "arg_rem.c";
+			path = "argtable2-7/src/arg_rem.c";
+			refType = 4;
+		};
+		6F90FEB9E869E0E112EFEBF6 = {
+			fileRef = 3C00CA6C22A8C2E6B51E7D5F;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		9CEF13646EE2CEB8D9D5991B = {
+			isa = PBXFileReference;
+			name = "arg_rex.c";
+			path = "argtable2-7/src/arg_rex.c";
+			refType = 4;
+		};
+		298CDD1038BA32150FA92CE1 = {
+			fileRef = 9CEF13646EE2CEB8D9D5991B;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		8CEFC767AEEA237A08BFFB56 = {
+			isa = PBXFileReference;
+			name = "arg_str.c";
+			path = "argtable2-7/src/arg_str.c";
+			refType = 4;
+		};
+		FEA6CA8E639D24956C2EE91B = {
+			fileRef = 8CEFC767AEEA237A08BFFB56;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		6F65547803F518A8B4D7044C = {
+			isa = PBXFileReference;
+			name = "argtable2.c";
+			path = "argtable2-7/src/argtable2.c";
+			refType = 4;
+		};
+		C2108A629B77D78AFB0BEA6C = {
+			fileRef = 6F65547803F518A8B4D7044C;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		65B6A06529E157D05FA78A8A = {
+			isa = PBXFileReference;
+			name = "bit_allocate.c";
+			path = "AC3Dec/bit_allocate.c";
+			refType = 4;
+		};
+		DDA2BDF25D139FEFB889F77C = {
+			fileRef = 65B6A06529E157D05FA78A8A;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		58DC9B4D9112EF5BEE6E52A6 = {
+			isa = PBXFileReference;
+			name = "bitstream.c";
+			path = "AC3Dec/bitstream.c";
+			refType = 4;
+		};
+		BF94826389DAD1F4233DBD09 = {
+			fileRef = 58DC9B4D9112EF5BEE6E52A6;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		448D3935BF29D3BDE8175AC4 = {
+			isa = PBXFileReference;
+			name = "coeff.c";
+			path = "AC3Dec/coeff.c";
+			refType = 4;
+		};
+		31C445A6D28C1C5D23605052 = {
+			fileRef = 448D3935BF29D3BDE8175AC4;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		365352B96E5F05BF068926F1 = {
+			isa = PBXFileReference;
+			name = "crc.c";
+			path = "AC3Dec/crc.c";
+			refType = 4;
+		};
+		A617F678765267A43E6AD983 = {
+			fileRef = 365352B96E5F05BF068926F1;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		2A46BE3EDA4EDB914815DA63 = {
+			isa = PBXFileReference;
+			name = "decode.c";
+			path = "AC3Dec/decode.c";
+			refType = 4;
+		};
+		EC810E7A452E1F6216EA80BB = {
+			fileRef = 2A46BE3EDA4EDB914815DA63;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		414DD9147AADEB87FC999358 = {
+			isa = PBXFileReference;
+			name = "downmix.c";
+			path = "AC3Dec/downmix.c";
+			refType = 4;
+		};
+		43D3C351E751DF7E7BC4913F = {
+			fileRef = 414DD9147AADEB87FC999358;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		D88C33A5154A3CD512252B90 = {
+			isa = PBXFileReference;
+			name = "exponent.c";
+			path = "AC3Dec/exponent.c";
+			refType = 4;
+		};
+		40F39F9A7E49090072A61677 = {
+			fileRef = D88C33A5154A3CD512252B90;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		13E842A4EC7A60B55E97BEE8 = {
+			isa = PBXFileReference;
+			name = "imdct.c";
+			path = "AC3Dec/imdct.c";
+			refType = 4;
+		};
+		EE32DD5A55CE906EEA0F60AD = {
+			fileRef = 13E842A4EC7A60B55E97BEE8;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		464B4655553B0EBA68ADE549 = {
+			isa = PBXFileReference;
+			name = "parse.c";
+			path = "AC3Dec/parse.c";
+			refType = 4;
+		};
+		8E181B0499138B4D5ABF1366 = {
+			fileRef = 464B4655553B0EBA68ADE549;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		98ABA67D01C69C6DAC92CCBD = {
+			isa = PBXFileReference;
+			name = "rematrix.c";
+			path = "AC3Dec/rematrix.c";
+			refType = 4;
+		};
+		E3EC6B542C0C9C3AF73A8871 = {
+			fileRef = 98ABA67D01C69C6DAC92CCBD;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		E92920154424B062C8A756A3 = {
+			isa = PBXFileReference;
+			name = "sanity_check.c";
+			path = "AC3Dec/sanity_check.c";
+			refType = 4;
+		};
+		7D2EA3BBE3A5956555248446 = {
+			fileRef = E92920154424B062C8A756A3;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		D39BB3C404DD3FACCBA0AD3B = {
+			isa = PBXFileReference;
+			name = "alloc.c";
+			path = "libmpeg2/alloc.c";
+			refType = 4;
+		};
+		211FD515D00180E8DE96711D = {
+			fileRef = D39BB3C404DD3FACCBA0AD3B;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		3596F951EED2FAD84B848D2F = {
+			isa = PBXFileReference;
+			name = "cpu_accel.c";
+			path = "libmpeg2/cpu_accel.c";
+			refType = 4;
+		};
+		05385404D59873DE951D3EC9 = {
+			fileRef = 3596F951EED2FAD84B848D2F;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		065D788755CC728B486C8131 = {
+			isa = PBXFileReference;
+			name = "cpu_state.c";
+			path = "libmpeg2/cpu_state.c";
+			refType = 4;
+		};
+		A8D97294DCB4F02624828265 = {
+			fileRef = 065D788755CC728B486C8131;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		E9CFC3FD5D3F1CDB3CB65DBF = {
+			isa = PBXFileReference;
+			name = "decode2.c";
+			path = "libmpeg2/decode2.c";
+			refType = 4;
+		};
+		C663DB64BD582601CB706AA7 = {
+			fileRef = E9CFC3FD5D3F1CDB3CB65DBF;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		36FCAE8A77468B220E9F421B = {
+			isa = PBXFileReference;
+			name = "header.c";
+			path = "libmpeg2/header.c";
+			refType = 4;
+		};
+		592FAB6E91456C8AFDA55CCD = {
+			fileRef = 36FCAE8A77468B220E9F421B;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		7AC9B3F9A32BAC68DBD93B77 = {
+			isa = PBXFileReference;
+			name = "idct.c";
+			path = "libmpeg2/idct.c";
+			refType = 4;
+		};
+		B652AF7F21D2E1687800E57F = {
+			fileRef = 7AC9B3F9A32BAC68DBD93B77;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		B0A0FC2DEF2060DEDDD84C92 = {
+			isa = PBXFileReference;
+			name = "idct_alpha.c";
+			path = "libmpeg2/idct_alpha.c";
+			refType = 4;
+		};
+		0A41678CD362C673A5063022 = {
+			fileRef = B0A0FC2DEF2060DEDDD84C92;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		17F7D48E85AC5C94E175B543 = {
+			isa = PBXFileReference;
+			name = "idct_altivec.c";
+			path = "libmpeg2/idct_altivec.c";
+			refType = 4;
+		};
+		7B76009EB9A1D807D4E22D5D = {
+			fileRef = 17F7D48E85AC5C94E175B543;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		AB1081162E97EE04C0A78999 = {
+			isa = PBXFileReference;
+			name = "idct_mmx.c";
+			path = "libmpeg2/idct_mmx.c";
+			refType = 4;
+		};
+		0E41EA82F7290A30CA884B02 = {
+			fileRef = AB1081162E97EE04C0A78999;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		4744CBC1799A05D8508DE1DF = {
+			isa = PBXFileReference;
+			name = "motion_comp.c";
+			path = "libmpeg2/motion_comp.c";
+			refType = 4;
+		};
+		044D00634D2D67D0EC549857 = {
+			fileRef = 4744CBC1799A05D8508DE1DF;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		124E36CDBE22BE11E6024345 = {
+			isa = PBXFileReference;
+			name = "motion_comp_alpha.c";
+			path = "libmpeg2/motion_comp_alpha.c";
+			refType = 4;
+		};
+		F5BE37E7943E2B3A076763D2 = {
+			fileRef = 124E36CDBE22BE11E6024345;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		7B8CE5F40F08580CABE67723 = {
+			isa = PBXFileReference;
+			name = "motion_comp_altivec.c";
+			path = "libmpeg2/motion_comp_altivec.c";
+			refType = 4;
+		};
+		35A192E25D5FDF82E213574C = {
+			fileRef = 7B8CE5F40F08580CABE67723;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		62EC06EEAF7EF466665AA5C3 = {
+			isa = PBXFileReference;
+			name = "motion_comp_mmx.c";
+			path = "libmpeg2/motion_comp_mmx.c";
+			refType = 4;
+		};
+		1C330DCBF54D557D74818187 = {
+			fileRef = 62EC06EEAF7EF466665AA5C3;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		8FCF7C6C23FCF278B3223369 = {
+			isa = PBXFileReference;
+			name = "motion_comp_vis.c";
+			path = "libmpeg2/motion_comp_vis.c";
+			refType = 4;
+		};
+		9516ECFAFD91AF706E214A32 = {
+			fileRef = 8FCF7C6C23FCF278B3223369;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		CD9B30FFCD1BC12C9CCF699E = {
+			isa = PBXFileReference;
+			name = "slice.c";
+			path = "libmpeg2/slice.c";
+			refType = 4;
+		};
+		42069C39A7B6BB4F07A0EAE5 = {
+			fileRef = CD9B30FFCD1BC12C9CCF699E;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		B79B58C283222B9C21D17116 = {
+			isa = PBXFileReference;
+			name = "avcodec.h";
+			path = "avcodec.h";
+			refType = 4;
+		};
+		12B58496038A83B3D8BE04DC = {
+			isa = PBXFileReference;
+			name = "bswap.h";
+			path = "bswap.h";
+			refType = 4;
+		};
+		E0F05553F162418B276FD890 = {
+			isa = PBXFileReference;
+			name = "commercial_skip.h";
+			path = "commercial_skip.h";
+			refType = 4;
+		};
+		32F5BEC80FB31433871B0902 = {
+			isa = PBXFileReference;
+			name = "common.h";
+			path = "common.h";
+			refType = 4;
+		};
+		59BB7168E83BC70B735C90AF = {
+			isa = PBXFileReference;
+			name = "comskip.h";
+			path = "comskip.h";
+			refType = 4;
+		};
+		98BA56D25D28991FE5FB1F3F = {
+			isa = PBXFileReference;
+			name = "config.h";
+			path = "config.h";
+			refType = 4;
+		};
+		DF35F3F5746C7F2C15265091 = {
+			isa = PBXFileReference;
+			name = "dsputil.h";
+			path = "dsputil.h";
+			refType = 4;
+		};
+		CD9BDFEACEE340FBF91C1173 = {
+			isa = PBXFileReference;
+			name = "gettimeofday.h";
+			path = "gettimeofday.h";
+			refType = 4;
+		};
+		E97A9BF69D7C5AC13AC0EB0E = {
+			isa = PBXFileReference;
+			name = "inttypes.h";
+			path = "inttypes.h";
+			refType = 4;
+		};
+		30B68460F710309BCA96CD7A = {
+			isa = PBXFileReference;
+			name = "mpegaudio.h";
+			path = "mpegaudio.h";
+			refType = 4;
+		};
+		37C9902EEA9E4B12A86D44BB = {
+			isa = PBXFileReference;
+			name = "mpegaudiodectab.h";
+			path = "mpegaudiodectab.h";
+			refType = 4;
+		};
+		1B0E8A55CBE93524E71C7041 = {
+			isa = PBXFileReference;
+			name = "mpegaudiotab.h";
+			path = "mpegaudiotab.h";
+			refType = 4;
+		};
+		A4A5F61602970A00AC6745D2 = {
+			isa = PBXFileReference;
+			name = "mpegvideo.h";
+			path = "mpegvideo.h";
+			refType = 4;
+		};
+		2777FA57261A65EC77E8F447 = {
+			isa = PBXFileReference;
+			name = "rational.h";
+			path = "rational.h";
+			refType = 4;
+		};
+		3B017ABD43C477127C833DBC = {
+			isa = PBXFileReference;
+			name = "resource.h";
+			path = "resource.h";
+			refType = 4;
+		};
+		1F709BB7D401F5BB88C7B9AA = {
+			isa = PBXFileReference;
+			name = "argtable2.h";
+			path = "argtable2-7/src/argtable2.h";
+			refType = 4;
+		};
+		1838FDAD16D888858484E321 = {
+			isa = PBXFileReference;
+			name = "ac3.h";
+			path = "AC3Dec/ac3.h";
+			refType = 4;
+		};
+		135217ED4FFCE23075BF6824 = {
+			isa = PBXFileReference;
+			name = "bitstream.h";
+			path = "AC3Dec/bitstream.h";
+			refType = 4;
+		};
+		F99DEA8AD68648346FE875EF = {
+			isa = PBXFileReference;
+			name = "global.h";
+			path = "AC3Dec/global.h";
+			refType = 4;
+		};
+		5E7DF210263EC5004608DD77 = {
+			isa = PBXFileReference;
+			name = "mpalib.h";
+			path = "AC3Dec/mpalib.h";
+			refType = 4;
+		};
+		2A942E5276575C4C51D08B41 = {
+			isa = PBXFileReference;
+			name = "alpha_asm.h";
+			path = "libmpeg2/alpha_asm.h";
+			refType = 4;
+		};
+		60A85825E22046149023D146 = {
+			isa = PBXFileReference;
+			name = "attributes.h";
+			path = "libmpeg2/attributes.h";
+			refType = 4;
+		};
+		D03FBEC915FABA59398E5EAB = {
+			isa = PBXFileReference;
+			name = "config.h";
+			path = "libmpeg2/config.h";
+			refType = 4;
+		};
+		7E83453FBFB9F4F5E5702A72 = {
+			isa = PBXFileReference;
+			name = "inttypes.h";
+			path = "libmpeg2/inttypes.h";
+			refType = 4;
+		};
+		6A593F184B7321DAF5A6866C = {
+			isa = PBXFileReference;
+			name = "mmx.h";
+			path = "libmpeg2/mmx.h";
+			refType = 4;
+		};
+		C21F447F2EE0285E4EF90522 = {
+			isa = PBXFileReference;
+			name = "mpeg2.h";
+			path = "libmpeg2/mpeg2.h";
+			refType = 4;
+		};
+		97EC626DBA977BC9603AFBFA = {
+			isa = PBXFileReference;
+			name = "mpeg2_internal.h";
+			path = "libmpeg2/mpeg2_internal.h";
+			refType = 4;
+		};
+		04C42E2A5AD64FC4350BC398 = {
+			isa = PBXFileReference;
+			name = "vlc.h";
+			path = "libmpeg2/vlc.h";
+			refType = 4;
+		};
+		337F024B29E993BD581163E8 = {
+			isa = PBXFileReference;
+			name = "comskip.pro";
+			path = "comskip.pro";
+			refType = 4;
+		};
+		883D7615C4D2DE3FA1218F12 = {
+			isa = PBXGroup;
+			children = (
+				B79B58C283222B9C21D17116,
+				12B58496038A83B3D8BE04DC,
+				E0F05553F162418B276FD890,
+				32F5BEC80FB31433871B0902,
+				59BB7168E83BC70B735C90AF,
+				98BA56D25D28991FE5FB1F3F,
+				DF35F3F5746C7F2C15265091,
+				CD9BDFEACEE340FBF91C1173,
+				E97A9BF69D7C5AC13AC0EB0E,
+				30B68460F710309BCA96CD7A,
+				37C9902EEA9E4B12A86D44BB,
+				1B0E8A55CBE93524E71C7041,
+				A4A5F61602970A00AC6745D2,
+				2777FA57261A65EC77E8F447,
+				3B017ABD43C477127C833DBC,
+				854BCAFFF54208D3E2C85E69,
+				903F215217A3F17CE5B5738B,
+				7ECA74AF4540EE8575A6F354
+			);
+			name = "Headers";
+			refType = 4;
+		};
+		903F215217A3F17CE5B5738B = {
+			isa = PBXGroup;
+			children = (
+				1838FDAD16D888858484E321,
+				135217ED4FFCE23075BF6824,
+				F99DEA8AD68648346FE875EF,
+				5E7DF210263EC5004608DD77
+			);
+			name = "AC3Dec";
+			refType = 4;
+		};
+		854BCAFFF54208D3E2C85E69 = {
+			isa = PBXGroup;
+			children = (
+				A120D6527BDB58166A39762E
+			);
+			name = "argtable2-7";
+			refType = 4;
+		};
+		A120D6527BDB58166A39762E = {
+			isa = PBXGroup;
+			children = (
+				1F709BB7D401F5BB88C7B9AA
+			);
+			name = "src";
+			refType = 4;
+		};
+		7ECA74AF4540EE8575A6F354 = {
+			isa = PBXGroup;
+			children = (
+				2A942E5276575C4C51D08B41,
+				60A85825E22046149023D146,
+				D03FBEC915FABA59398E5EAB,
+				7E83453FBFB9F4F5E5702A72,
+				6A593F184B7321DAF5A6866C,
+				C21F447F2EE0285E4EF90522,
+				97EC626DBA977BC9603AFBFA,
+				04C42E2A5AD64FC4350BC398
+			);
+			name = "libmpeg2";
+			refType = 4;
+		};
+		5E0DCC992E8103E140EE9AEF = {
+			isa = PBXGroup;
+			children = (
+				65B6A06529E157D05FA78A8A,
+				58DC9B4D9112EF5BEE6E52A6,
+				448D3935BF29D3BDE8175AC4,
+				365352B96E5F05BF068926F1,
+				2A46BE3EDA4EDB914815DA63,
+				414DD9147AADEB87FC999358,
+				D88C33A5154A3CD512252B90,
+				13E842A4EC7A60B55E97BEE8,
+				464B4655553B0EBA68ADE549,
+				98ABA67D01C69C6DAC92CCBD,
+				E92920154424B062C8A756A3
+			);
+			name = "AC3Dec";
+			refType = 4;
+		};
+		C884706BE6DA6821013A2681 = {
+			isa = PBXGroup;
+			children = (
+				0E46E28B5EB3DEDFA70F26E8
+			);
+			name = "argtable2-7";
+			refType = 4;
+		};
+		0E46E28B5EB3DEDFA70F26E8 = {
+			isa = PBXGroup;
+			children = (
+				8A22E393655C30FF38581827,
+				F313D6A597E8BE4E5E27C2DF,
+				B851D2F90DE2B02036973796,
+				497B849131253DF4BD3AAEBA,
+				935EA7B00E68A65A718AF33D,
+				6BF9CEE909CD25790724F5DA,
+				3C00CA6C22A8C2E6B51E7D5F,
+				9CEF13646EE2CEB8D9D5991B,
+				8CEFC767AEEA237A08BFFB56,
+				6F65547803F518A8B4D7044C
+			);
+			name = "src";
+			refType = 4;
+		};
+		CA9A4E6334D49E569CB7532C = {
+			isa = PBXGroup;
+			children = (
+				D39BB3C404DD3FACCBA0AD3B,
+				3596F951EED2FAD84B848D2F,
+				065D788755CC728B486C8131,
+				E9CFC3FD5D3F1CDB3CB65DBF,
+				36FCAE8A77468B220E9F421B,
+				7AC9B3F9A32BAC68DBD93B77,
+				B0A0FC2DEF2060DEDDD84C92,
+				17F7D48E85AC5C94E175B543,
+				AB1081162E97EE04C0A78999,
+				4744CBC1799A05D8508DE1DF,
+				124E36CDBE22BE11E6024345,
+				7B8CE5F40F08580CABE67723,
+				62EC06EEAF7EF466665AA5C3,
+				8FCF7C6C23FCF278B3223369,
+				CD9B30FFCD1BC12C9CCF699E
+			);
+			name = "libmpeg2";
+			refType = 4;
+		};
+		FB61758D0F0FDA4BA867C3D5 = {
+			isa = PBXGroup;
+			children = (
+				38E9C44334A5D628D43FE0E4,
+				617DEA42BD4197917F0EF07C,
+				5EA25E6E4174720AD932D128,
+				5EBB9B1C7B81FF90C4ED51C0,
+				F7D595D64E10C21986ED2934,
+				A28C5800DBEB452B17A5D7A9,
+				4F87C007627BB1E8C0F2849C,
+				2D6A4A738CEB8495048F4B03,
+				DCA55B19CAB4C97394E32EEB,
+				C884706BE6DA6821013A2681,
+				5E0DCC992E8103E140EE9AEF,
+				CA9A4E6334D49E569CB7532C
+			);
+			name = "Sources";
+			refType = 4;
+		};
+		7CABE3C80E79AD2B307756D2 = {
+			isa = PBXGroup;
+			children = (
+				337F024B29E993BD581163E8
+			);
+			name = "Sources [qmake]";
+			refType = 4;
+		};
+		A0A52A2ADF7A1E2A99738674 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			generatedFileNames = (
+				6C4FB7DDC6F9FE6C9E50E2E2,
+				A20E9BBDE08C6A8F57A92842,
+				09EBEF12EA683A64686DE754,
+				613C887B958698AC3AC3D755,
+				72FE5ED5F592073EB1DE4684,
+				112A2F6FA595231C75D8C20B,
+				48EEF76E5A4D2824083AFF2C,
+				94649A5FC0CB5A164A8AA293,
+				A4E48F03A440017A6D7B30B5,
+				7D049B7EEB168550F0BD0F78,
+				9278A324208C266FE47B177B,
+				B11570C9FDE2EC44E7C3820B,
+				2F7B0C6F463D3ADAFBEA7298,
+				0AE1237E0AEEE77F38E708D5,
+				B29849E7C0F4CEB342C40369,
+				6F90FEB9E869E0E112EFEBF6,
+				298CDD1038BA32150FA92CE1,
+				FEA6CA8E639D24956C2EE91B,
+				C2108A629B77D78AFB0BEA6C,
+				DDA2BDF25D139FEFB889F77C,
+				BF94826389DAD1F4233DBD09,
+				31C445A6D28C1C5D23605052,
+				A617F678765267A43E6AD983,
+				EC810E7A452E1F6216EA80BB,
+				43D3C351E751DF7E7BC4913F,
+				40F39F9A7E49090072A61677,
+				EE32DD5A55CE906EEA0F60AD,
+				8E181B0499138B4D5ABF1366,
+				E3EC6B542C0C9C3AF73A8871,
+				7D2EA3BBE3A5956555248446,
+				211FD515D00180E8DE96711D,
+				05385404D59873DE951D3EC9,
+				A8D97294DCB4F02624828265,
+				C663DB64BD582601CB706AA7,
+				592FAB6E91456C8AFDA55CCD,
+				B652AF7F21D2E1687800E57F,
+				0A41678CD362C673A5063022,
+				7B76009EB9A1D807D4E22D5D,
+				0E41EA82F7290A30CA884B02,
+				044D00634D2D67D0EC549857,
+				F5BE37E7943E2B3A076763D2,
+				35A192E25D5FDF82E213574C,
+				1C330DCBF54D557D74818187,
+				9516ECFAFD91AF706E214A32,
+				42069C39A7B6BB4F07A0EAE5
+			);
+			isa = PBXShellScriptBuildPhase;
+			name = "Qt Preprocessors";
+			neededFileNames = (
+				6C4FB7DDC6F9FE6C9E50E2E2,
+				A20E9BBDE08C6A8F57A92842,
+				09EBEF12EA683A64686DE754,
+				613C887B958698AC3AC3D755,
+				72FE5ED5F592073EB1DE4684,
+				112A2F6FA595231C75D8C20B,
+				48EEF76E5A4D2824083AFF2C,
+				94649A5FC0CB5A164A8AA293,
+				A4E48F03A440017A6D7B30B5,
+				7D049B7EEB168550F0BD0F78,
+				9278A324208C266FE47B177B,
+				B11570C9FDE2EC44E7C3820B,
+				2F7B0C6F463D3ADAFBEA7298,
+				0AE1237E0AEEE77F38E708D5,
+				B29849E7C0F4CEB342C40369,
+				6F90FEB9E869E0E112EFEBF6,
+				298CDD1038BA32150FA92CE1,
+				FEA6CA8E639D24956C2EE91B,
+				C2108A629B77D78AFB0BEA6C,
+				DDA2BDF25D139FEFB889F77C,
+				BF94826389DAD1F4233DBD09,
+				31C445A6D28C1C5D23605052,
+				A617F678765267A43E6AD983,
+				EC810E7A452E1F6216EA80BB,
+				43D3C351E751DF7E7BC4913F,
+				40F39F9A7E49090072A61677,
+				EE32DD5A55CE906EEA0F60AD,
+				8E181B0499138B4D5ABF1366,
+				E3EC6B542C0C9C3AF73A8871,
+				7D2EA3BBE3A5956555248446,
+				211FD515D00180E8DE96711D,
+				05385404D59873DE951D3EC9,
+				A8D97294DCB4F02624828265,
+				C663DB64BD582601CB706AA7,
+				592FAB6E91456C8AFDA55CCD,
+				B652AF7F21D2E1687800E57F,
+				0A41678CD362C673A5063022,
+				7B76009EB9A1D807D4E22D5D,
+				0E41EA82F7290A30CA884B02,
+				044D00634D2D67D0EC549857,
+				F5BE37E7943E2B3A076763D2,
+				35A192E25D5FDF82E213574C,
+				1C330DCBF54D557D74818187,
+				9516ECFAFD91AF706E214A32,
+				42069C39A7B6BB4F07A0EAE5
+			);
+			shellPath = /bin/sh;
+			shellScript = "make -C /Applications/ETVComskip/src -f Makefile.xcodeproj/qt_preprocess.mak";
+		};
+		C29B8785722055ED95EF7B57 = {
+			buildActionMask = 2147483647;
+			files = (
+				6C4FB7DDC6F9FE6C9E50E2E2,
+				A20E9BBDE08C6A8F57A92842,
+				09EBEF12EA683A64686DE754,
+				613C887B958698AC3AC3D755,
+				72FE5ED5F592073EB1DE4684,
+				112A2F6FA595231C75D8C20B,
+				48EEF76E5A4D2824083AFF2C,
+				94649A5FC0CB5A164A8AA293,
+				A4E48F03A440017A6D7B30B5,
+				7D049B7EEB168550F0BD0F78,
+				9278A324208C266FE47B177B,
+				B11570C9FDE2EC44E7C3820B,
+				2F7B0C6F463D3ADAFBEA7298,
+				0AE1237E0AEEE77F38E708D5,
+				B29849E7C0F4CEB342C40369,
+				6F90FEB9E869E0E112EFEBF6,
+				298CDD1038BA32150FA92CE1,
+				FEA6CA8E639D24956C2EE91B,
+				C2108A629B77D78AFB0BEA6C,
+				DDA2BDF25D139FEFB889F77C,
+				BF94826389DAD1F4233DBD09,
+				31C445A6D28C1C5D23605052,
+				A617F678765267A43E6AD983,
+				EC810E7A452E1F6216EA80BB,
+				43D3C351E751DF7E7BC4913F,
+				40F39F9A7E49090072A61677,
+				EE32DD5A55CE906EEA0F60AD,
+				8E181B0499138B4D5ABF1366,
+				E3EC6B542C0C9C3AF73A8871,
+				7D2EA3BBE3A5956555248446,
+				211FD515D00180E8DE96711D,
+				05385404D59873DE951D3EC9,
+				A8D97294DCB4F02624828265,
+				C663DB64BD582601CB706AA7,
+				592FAB6E91456C8AFDA55CCD,
+				B652AF7F21D2E1687800E57F,
+				0A41678CD362C673A5063022,
+				7B76009EB9A1D807D4E22D5D,
+				0E41EA82F7290A30CA884B02,
+				044D00634D2D67D0EC549857,
+				F5BE37E7943E2B3A076763D2,
+				35A192E25D5FDF82E213574C,
+				1C330DCBF54D557D74818187,
+				9516ECFAFD91AF706E214A32,
+				42069C39A7B6BB4F07A0EAE5
+			);
+			isa = PBXSourcesBuildPhase;
+			name = "Build Sources";
+		};
+		2A1043669E6E5A7426EA502A = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			name = "Frameworks & Libraries";
+		};
+		F6069D5A5DA8AA28EDB8B3C6 = {
+			name = "Project Copy";
+			buildActionMask = 2147483647;
+			dstPath = /Applications/ETVComskip/src;
+			dstSubfolderSpec = 0;
+			files = (
+			07E0DFA73EB56DCB9E28CDD9,
+			);
+			isa = PBXCopyFilesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07E0DFA73EB56DCB9E28CDD9 = {
+			fileRef =  BF0F85386E4AC166AAB00756;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		05596AB53D8D521C69802C27 = {
+			children = (
+				FB61758D0F0FDA4BA867C3D5,
+				883D7615C4D2DE3FA1218F12,
+				7CABE3C80E79AD2B307756D2
+			);
+			isa = PBXGroup;
+			name = comskip;
+			path = "";
+			refType = 4;
+		};
+		BF0F85386E4AC166AAB00756 = {
+			isa = PBXFileReference;
+			explicitFileType = wrapper.application;
+			path = "comskip.app";
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		068F80C7519D0528FB08E821 = {
+			children = (
+				BF0F85386E4AC166AAB00756
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+		};
+		35BCF194ED6FCCB6ECA8764F = {
+			buildPhases = (
+				D7BA7D76DAB5DD13389D6332,
+				A0A52A2ADF7A1E2A99738674,
+				F6069D5A5DA8AA28EDB8B3C6,
+				C29B8785722055ED95EF7B57,
+				2A1043669E6E5A7426EA502A
+			);
+			buildSettings = {
+				CC = "";
+				CPLUSPLUS = "";
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "libmpeg2 AC3Dec argtable2-7/src /usr/local/include /System/Library/Frameworks/CarbonCore.framework/Headers /usr/local/Qt4.1/mkspecs/macx-xcode";
+				LIBRARY_SEARCH_PATHS = "";
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "-pipe -g -fasm-blocks -Wno-unused -Wall -W -DHAVE_CONFIG_H";
+				LEXFLAGS = "";
+				YACCFLAGS = "-d";
+				OTHER_CPLUSPLUSFLAGS = "-pipe -g -Wall -W -DHAVE_CONFIG_H";
+				OTHER_REZFLAGS = "";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "";
+				PREBINDING = NO;
+				INFOPLIST_FILE = "Info.plist";
+				BUILD_ROOT = "/Applications/ETVComskip/src";
+				OTHER_LDFLAGS = " -headerpad_max_install_names  ";
+				DYLIB_CURRENT_VERSION = "1.0.0";
+				DYLIB_COMPATIBILITY_VERSION = "1.0";
+				PRODUCT_NAME = comskip;
+			};
+			conditionalBuildSettings = {
+			};
+			dependencies = (
+			);
+			productReference = BF0F85386E4AC166AAB00756;
+			shouldUseHeadermap = 1;
+			isa = PBXNativeTarget;
+			productType = "com.apple.product-type.tool";
+			name = "comskip";
+			productName = comskip;
+			startupPath = "<<ProjectDirectory>>";
+		};
+		8DB1DD96F65B1BF1FFC506E0 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = "NO";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = "YES";
+				GCC_OPTIMIZATION_LEVEL = "0";
+			};
+			name = Debug;
+		};
+		2C641C3335766025DD51B7BD = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = "NO";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = "YES";
+				GCC_OPTIMIZATION_LEVEL = "0";
+			};
+			isa = PBXBuildStyle;
+			name = Debug;
+		};
+		95E1EB2E5DDD587BE5B3E548 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = "YES";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = "NO";
+			};
+			name = Release;
+		};
+		26DE8D2AEA4B3714B41E931F = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = "YES";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = "NO";
+			};
+			isa = PBXBuildStyle;
+			name = Release;
+		};
+		2A951308CDB28F104D0A4BD2 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8DB1DD96F65B1BF1FFC506E0,
+				95E1EB2E5DDD587BE5B3E548
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationIsName = Debug;
+		};
+		91B15E841AA80083484172DE = {
+			buildStyles = (
+				2C641C3335766025DD51B7BD,
+				26DE8D2AEA4B3714B41E931F
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 05596AB53D8D521C69802C27;
+			buildConfigurationList = 2A951308CDB28F104D0A4BD2;
+			projectDirPath = "";
+			targets = (
+				35BCF194ED6FCCB6ECA8764F
+			);
+		};
+	};
+	rootObject = 91B15E841AA80083484172DE;
+}
