@@ -7,10 +7,8 @@
 #pragma warning (disable:4028)
 #endif
 
-#ifndef __POWERPC__
 /* autodetect accelerations */
 #define ACCEL_DETECT
-#endif
 
 /* alpha architecture */
 /* #undef ARCH_ALPHA */
