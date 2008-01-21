@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#import <Cocoa/Cocoa.h>
 
 // sets how long to sleep between polling directory (in seconds)
 #define SLEEP_LEN 15
@@ -19,6 +20,19 @@
 
 //#define DEBUG
 
+#define mySystem(background,cmd,cmddup...) do{\
+pid_t pid=fork();\
+    if(pid==0){\
+        execl(cmd,cmddup,NULL);\
+        exit(-1);\
+    }\
+    if(pid<0){\
+    }else{\
+        if(!background)\
+            waitpid(pid,NULL,0);\
+    }\
+    waitpid(-1,NULL,WNOHANG);/*cleanup those that weren't waited. they eat brains.*/\
+}while(0)
 
 bool HasDirChanged(const char *path)
 {
@@ -98,14 +112,11 @@ class PendingFile
 
     void FileComplete(bool background=true)
     {
-      printf("File %s is complete!\n",_fname.c_str());
-      _is_complete=true;
-
-      std::string f=std::string("/Applications/ETVComskip/MarkCommercials.sh ") + ShellEscape(_fname);
-      if (background)
-        f+=" &";
-      printf("Calling %s\n",f.c_str());
-      system(f.c_str());
+        const char cmd[]="/Applications/ETVComskip/MarkCommercials.sh";
+        printf("File %s is complete!\n",_fname.c_str());
+        _is_complete=true;
+        printf("Calling %s %s%s\n",cmd,_fname.c_str(),background?" &":"");
+        mySystem(background,cmd,cmd,_fname.c_str());
     }
 
     bool IsComplete() const { return _is_complete; }
@@ -216,8 +227,11 @@ void ProcessDir(const char *path, char *watched_dir_extension=0, char *watched_f
       if (files.find(fname) == files.end())
       {
         fname=std::string(path) + fname;
-        if (ProcessNewEntry(fname, watched_dir_extension, watched_file_extension))
-          system("/usr/bin/osascript /Applications/ETVComskip/EyeTVReaper.scpt &"); // got new file, so run reaper
+          if (ProcessNewEntry(fname, watched_dir_extension, watched_file_extension)){
+              const char cmd[]="/usr/bin/osascript";
+              const char script[]="/Applications/ETVComskip/EyeTVReaper.scpt";
+              mySystem(true,cmd,cmd,script); // got new file, so run reaper
+          }
       }
     }
   }
@@ -248,6 +262,25 @@ void ProcessEntireDir(const char *path, char *watched_dir_extension=0, char *wat
   closedir(dirp);
 }
 
+#if 1
+std::string FindEyeTVArchive()
+{
+    std::string ret="";
+    NSAutoreleasePool *pool=[NSAutoreleasePool new];
+    NSData *dat=[NSData dataWithContentsOfFile:[NSHomeDirectory() stringByAppendingPathComponent:@"Library/Preferences/com.elgato.eyetv.plist"]];//autoreleased
+    if(dat==nil)
+        return ret;
+    NSDictionary *plist=[NSPropertyListSerialization propertyListFromData:dat
+                                                         mutabilityOption:NSPropertyListImmutable
+                                                                   format:NULL
+                                                         errorDescription:NULL];//autoreleased
+    NSString *path=[plist objectForKey:@"archive path"];
+    NSURL *url=[NSURL URLWithString:path];//autoreleased
+    ret=[[NSFileManager defaultManager]fileSystemRepresentationWithPath:[url path]];
+    [pool release];
+    return ret;
+}
+#else
 std::string FindEyeTVArchive()
 {
   FILE *f=popen("/usr/bin/osascript /Applications/ETVComskip/FindEyeTVArchive.scpt","r");
@@ -264,7 +297,7 @@ std::string FindEyeTVArchive()
   fclose(f);
   return buf;
 }
-
+#endif
 
 int main(int argc, char **argv)
 {
@@ -274,6 +307,8 @@ int main(int argc, char **argv)
   std::string etvdir=FindEyeTVArchive();
   if (etvdir.size()==0)
     return 0;
+    
+    //fprintf(stderr,"EyeTV is based out of %s\n",etvdir.c_str());
 
   bool do_all=false;
   for (int i=0; i< argc; ++i)
