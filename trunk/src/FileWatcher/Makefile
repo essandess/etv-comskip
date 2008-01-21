@@ -21,7 +21,7 @@ LEXFLAGS =
 YACCFLAGS= -d
 INCPATH  = -I$(QTDIR)/mkspecs/default -I. -I.
 LINK     = c++
-LFLAGS   = -headerpad_max_install_names -prebind -arch i386 -arch ppc
+LFLAGS   = -headerpad_max_install_names -prebind -framework Foundation -arch i386 -arch ppc
 LIBS     = $(SUBLIBS)  
 AR       = ar cq
 RANLIB   = ranlib -s
@@ -49,7 +49,7 @@ OBJECTS_DIR = ./
 ####### Files
 
 HEADERS = 
-SOURCES = FileWatcher.cpp
+SOURCES = FileWatcher.mm
 OBJECTS = FileWatcher.o
 FORMS = 
 UICDECLS = 
@@ -64,7 +64,10 @@ TARGET   = ../../FileWatcher.app/Contents/MacOS/FileWatcher
 first: all
 ####### Implicit rules
 
-.SUFFIXES: .c .o .cpp .cc .cxx .C
+.SUFFIXES: .c .o .mm .cpp .cc .cxx .C
+
+.mm.o:
+	$(CXX) -ObjC++ -c $(CXXFLAGS) $(INCPATH) -o $@ $<
 
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ $<
@@ -131,7 +134,7 @@ FORCE:
 
 ####### Compile
 
-FileWatcher.o: FileWatcher.cpp 
+FileWatcher.o: FileWatcher.mm 
 
 ####### Install
 
