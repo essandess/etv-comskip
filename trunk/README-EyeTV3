@@ -1,0 +1,54 @@
+ETVComskip, EyeTV3 version
+
+Commercial detection and skipping for EyeTV3, using a Mac OS X port of 
+comskip (http://www.kaashoek.com/comskip/).
+
+These programs allow users of EyeTV to enjoy commercial-free recorded television
+
+--------------------------------------------------------------------------------
+
+INSTALLATION:
+
+  1) Copy RecordingDone.scpt to /Library/Application\ Support/EyeTV/Scripts
+
+  2) Copy comskip, comskip.ini and MarkCommercials.py to /Library/Application\ Support/ETVComskip
+
+  3) If you haven't already done so, install py-appscript from:
+      appscript.sourceforge.net
+
+  4) Restart EyeTV.
+
+
+RUNNING:
+
+   Once installed, after a new recording is made, EyeTV will call
+   RecordingDone.scpt, which simply calls MarkCommercials.py.  This runs
+   comskip, and parses its output, and tells EyeTV where the commercial
+   markers should be.
+
+   When you play back a recording in EyeTV with markers in it, when
+   playback is between a start and end marker (i.e. within a commercial
+   break), pressing the forward key on the remote will jump to the end of
+   the break.
+
+   Note that there is currently no ComSkipper.app for the EyeTV3 version
+   script to automatically skip breaks.
+
+
+BATCH MODE:
+
+   If you have a library of recordings you'd like to mark you can run
+   MarkCommercials.py in batch mode.
+
+   From the terminal run:
+
+     bash$ MarkCommercials.py all
+
+
+--------------------------------------------------------------------------------
+
+There are many options for tuning comskip, but they are beyond the scope
+of this document.  For details, see http://www.kaashoek.com/comskip/, and
+links therein.
+
+
