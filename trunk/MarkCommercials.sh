@@ -8,7 +8,7 @@
 #echo "got arguments $*"
 
 
-CSDIR="/Applications/ETVComskip" 
+CSDIR="`dirname $0`" 
 PLISTBUDDY=`locate PlistBuddy | head -1`
 
 MPEG_FILE=$1
@@ -25,7 +25,7 @@ cd "${DIR}"
 
 if [ ! -e ${PLIST_FILE} -o $# -gt 1 ]
 then
-  ${CSDIR}/comskip --ini=${CSDIR}/comskip.ini "${MPEG_FILE}" &>"${LOG_FILE}"
+  "${CSDIR}/comskip" --ini="${CSDIR}/comskip.ini" "${MPEG_FILE}" &>"${LOG_FILE}"
 fi
 
 # delete the markers array if it exists
