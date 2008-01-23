@@ -21,7 +21,7 @@ LEXFLAGS =
 YACCFLAGS= -d
 INCPATH  = -I$(QTDIR)/mkspecs/default -I. -I.
 LINK     = c++
-LFLAGS   = -headerpad_max_install_names -prebind -framework Foundation -arch i386 -arch ppc
+LFLAGS   = -headerpad_max_install_names -prebind -framework Foundation -framework AppKit -arch i386 -arch ppc
 LIBS     = $(SUBLIBS)  
 AR       = ar cq
 RANLIB   = ranlib -s
@@ -69,6 +69,9 @@ first: all
 .mm.o:
 	$(CXX) -ObjC++ -c $(CXXFLAGS) $(INCPATH) -o $@ $<
 
+.m.o:
+	$(CXX) -ObjC -c $(CXXFLAGS) $(INCPATH) -o $@ $<
+
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $@ $<
 
@@ -86,7 +89,7 @@ first: all
 
 ####### Build rules
 
-all: Makefile ../../FileWatcher.app/Contents/MacOS/../PkgInfo ../../FileWatcher.app/Contents/MacOS/../Info.plist $(TARGET)
+all: Makefile ../../FileWatcher.app/Contents/MacOS/../PkgInfo ../../FileWatcher.app/Contents/MacOS/../Info.plist ../../FileWatcher.app/Contents/Resources/MainMenu.nib $(TARGET)
 
 $(TARGET):  $(UICDECLS) $(OBJECTS) $(OBJMOC)  
 	test -d ../../FileWatcher.app/Contents/MacOS/ || mkdir -p ../../FileWatcher.app/Contents/MacOS/
@@ -110,7 +113,12 @@ qmake:
 ../../FileWatcher.app/Contents/MacOS/../Info.plist: 
 	@test -d ../../FileWatcher.app/Contents/MacOS/ || mkdir -p ../../FileWatcher.app/Contents/MacOS/
 	@$(DEL_FILE) ../../FileWatcher.app/Contents/MacOS/../Info.plist
-	@sed -e "s,@ICON@,application.icns,g" -e "s,@EXECUTABLE@,FileWatcher,g" "$QTDIR/mkspecs/default/Info.plist.app" >"../../FileWatcher.app/Contents/MacOS/../Info.plist"
+	cp Info.plist "../../FileWatcher.app/Contents/MacOS/../Info.plist"
+../../FileWatcher.app/Contents/Resources/MainMenu.nib:
+	@test -d ../../FileWatcher.app/Contents/Resources || mkdir -p ../../FileWatcher.app/Contents/Resources
+	rm -rf ../../FileWatcher.app/Contents/Resources/MainMenu.nib
+	cp -r MainMenu.nib "../../FileWatcher.app/Contents/Resources/MainMenu.nib"
+	
 dist: 
 	@mkdir -p .tmp/FileWatcher && $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) .tmp/FileWatcher/ && ( cd `dirname .tmp/FileWatcher` && $(TAR) FileWatcher.tar FileWatcher && $(GZIP) FileWatcher.tar ) && $(MOVE) `dirname .tmp/FileWatcher`/FileWatcher.tar.gz . && $(DEL_FILE) -r .tmp/FileWatcher
 

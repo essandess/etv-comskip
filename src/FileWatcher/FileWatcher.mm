@@ -7,7 +7,10 @@
 #include <string>
 #include <vector>
 #include <set>
+
 #import <Cocoa/Cocoa.h>
+
+//#define COMMANDLINE
 
 // sets how long to sleep between polling directory (in seconds)
 #define SLEEP_LEN 15
@@ -20,19 +23,7 @@
 
 //#define DEBUG
 
-#define mySystem(background,cmd,cmddup...) do{\
-pid_t pid=fork();\
-    if(pid==0){\
-        execl(cmd,cmddup,NULL);\
-        exit(-1);\
-    }\
-    if(pid<0){\
-    }else{\
-        if(!background)\
-            waitpid(pid,NULL,0);\
-    }\
-    waitpid(-1,NULL,WNOHANG);/*cleanup those that weren't waited. they eat brains.*/\
-}while(0)
+
 
 bool HasDirChanged(const char *path)
 {
@@ -43,8 +34,8 @@ bool HasDirChanged(const char *path)
 
   if (stat(path,&statbuf)!=0)
   {
-    printf("Error stat'ing EyeTV directory!\n");
-    return false;
+      NSLog(@"Error stat'ing EyeTV directory!\n");
+      return false;
   }
 
   if (firsttime)
@@ -56,22 +47,13 @@ bool HasDirChanged(const char *path)
 
   if (last_time != statbuf.st_ctimespec.tv_sec)
   {
-    printf("EyeTV directory changed!\n");
-    last_time=statbuf.st_ctimespec.tv_sec;
-    return true;
+      NSLog(@"EyeTV directory changed!\n");
+      last_time=statbuf.st_ctimespec.tv_sec;
+      return true;
   }
 
   return false;
 }
-
-std::string ShellEscape(const std::string &str)
-{
-  std::string ret="";
-  for (size_t i=0;i<str.size(); ++i)
-    ret = ret + "\\" + str[i];
-  return ret;
-}
-
 
 class PendingFile
 {
@@ -85,12 +67,12 @@ class PendingFile
       struct stat statbuf;
       if (stat(_fname.c_str(),&statbuf)!=0)
       {
-        printf("Error stat'ing .eyetv directory!\n");
+         NSLog(@"Error stat'ing .eyetv directory!\n");
         _error=true; // mark for removal from list
         return false;
       }
 #ifdef DEBUG
-      printf("Checking size of file %s, size %ld, iteration %d of %d\n",_fname.c_str(), statbuf.st_size,_same_size_count,_max_count);
+       NSLog(@"Checking size of file %s, size %ld, iteration %d of %d\n",_fname.c_str(), statbuf.st_size,_same_size_count,_max_count);
 #endif
 
       if (statbuf.st_size != _last_size)
@@ -112,11 +94,34 @@ class PendingFile
 
     void FileComplete(bool background=true)
     {
-        const char cmd[]="/Applications/ETVComskip/MarkCommercials.sh";
-        printf("File %s is complete!\n",_fname.c_str());
+        //const char cmd[]="/Applications/ETVComskip/MarkCommercials.sh";
+        std::string cmd=[[NSFileManager defaultManager]fileSystemRepresentationWithPath:[[[NSBundle mainBundle]resourcePath]stringByAppendingPathComponent:@"MarkCommercials.sh"]];
+
+#ifdef DEBUG
+        NSLog(@"File %s is complete!\n",_fname.c_str());
+#endif
         _is_complete=true;
-        printf("Calling %s %s%s\n",cmd,_fname.c_str(),background?" &":"");
-        mySystem(background,cmd,cmd,_fname.c_str());
+#ifdef DEBUG
+        NSLog(@"Calling %s %s%s\n",cmd.c_str(),_fname.c_str(),background?" &":"");
+#endif
+        //this handles realcmd being used as the first arg too, but requires at least one cmdline param
+        do{
+            pid_t pid=fork();
+            if(pid==0){
+                //NSLog(@"Running %s\n",cmd.c_str());
+                execl(cmd.c_str(),cmd.c_str(),_fname.c_str(),NULL);
+                exit(-1);
+            }
+            if(pid<0){
+                //FIXME error
+                NSLog(@"Error starting process\n");
+            }else{
+                //NSLog(@"Started %s %s\n",cmd.c_str(),_fname.c_str());
+                if(!background)
+                    waitpid(pid,NULL,0);
+            }
+            waitpid(-1,NULL,WNOHANG);/*cleanup those that weren't waited. they eat brains.*/\
+        }while(0);
     }
 
     bool IsComplete() const { return _is_complete; }
@@ -162,12 +167,12 @@ bool ProcessNewEntry(const std::string &fname, const std::string &watched_dir_ex
   struct stat statbuf;
   if (stat(fname.c_str(),&statbuf)!=0)
   {
-    printf("Error stat'ing file %s\n",fname.c_str());
+     NSLog(@"Error stat'ing file %s\n",fname.c_str());
     return false;
   }
   if (!(statbuf.st_mode & S_IFDIR)) 
   {
-    printf("New directory entry %s is not a directory\n",fname.c_str());
+     NSLog(@"New directory entry %s is not a directory\n",fname.c_str());
     return false;
   }
 
@@ -175,12 +180,12 @@ bool ProcessNewEntry(const std::string &fname, const std::string &watched_dir_ex
   std::string::size_type pos=fname.find(watched_dir_extension);
   if (pos==std::string::npos || pos != fname.size()-watched_dir_extension.size())
   {
-    printf("New directory entry %s is not an %s directory\n",fname.c_str(),watched_dir_extension.c_str());
+     NSLog(@"New directory entry %s is not an %s directory\n",fname.c_str(),watched_dir_extension.c_str());
     return false;
   }
 
 
-  printf("Got new directory entry: %s\n",fname.c_str());
+  NSLog(@"Got new directory entry: %s\n",fname.c_str());
 
   //add new entry to PendingFiles
   bool gotfile=false;
@@ -208,6 +213,74 @@ bool ProcessNewEntry(const std::string &fname, const std::string &watched_dir_ex
   return gotfile;
 }
 
+@interface ScriptRunner : NSObject
+{
+    NSAppleScript *script;
+}
+-(id)initWithPath:(NSString*)path;
+-(void)dealloc;
+-(void)runScript;
+@end
+
+@implementation ScriptRunner
+-(id)initWithPath:(NSString*)path{
+    if((self=[super init])==nil)
+        return nil;
+    NSDictionary *err=nil;
+    script=nil;
+    NSAppleScript *tscript=[[NSAppleScript alloc]initWithContentsOfURL:[NSURL fileURLWithPath:path] error:&err];
+    if(tscript==nil || [tscript source]==nil){
+        if(tscript){
+            [tscript release];
+            NSLog(@"Script %@ load error: %@\n",path,[err objectForKey:NSAppleScriptErrorMessage]);//err is a dictionary, autoreleased
+        }else{
+            NSLog(@"Script %@ doesn't have source code\n",path);
+        }
+        [self release];
+        return nil;
+    }
+    NSMutableString *ssource=[[tscript source]mutableCopy];
+    [tscript autorelease];
+    NSString *oldhome=@"/Applications/ETVComskip";
+    //NSLog(@"Replacing %@ with %@\n",oldhome,[[NSBundle mainBundle]builtInPlugInsPath]);
+    if([[NSBundle mainBundle]builtInPlugInsPath]==nil)
+        return nil;//FIXME
+    [ssource replaceOccurrencesOfString:oldhome withString:[[NSBundle mainBundle]builtInPlugInsPath] options:NSLiteralSearch range:NSMakeRange(0,[ssource length])];
+    script=[[NSAppleScript alloc]initWithSource:ssource];
+    if(script==nil){
+        NSLog(@"Script wouldn't load\n");
+        [self release];
+        return nil;
+    }
+    return self;
+}
+-(void)dealloc{
+    [script release];
+    [super dealloc];
+}
+-(void)runScript{
+    NSAutoreleasePool *pool=[NSAutoreleasePool new];
+    NSDictionary *err=nil;
+    
+    [script executeAndReturnError:&err];
+    if(err)
+        NSLog(@"Script execute error: %@\n",[err objectForKey:NSAppleScriptErrorMessage]);
+    
+    [self release];//release this object, so the caller need not worry about it. threaded or unthreaded, this vaporizes when done
+    [pool release];
+}
+@end
+
+void runScript(NSString *scriptpath,BOOL background){
+    ScriptRunner *s=[[ScriptRunner alloc]initWithPath:scriptpath];
+    if(s==nil){
+        NSLog(@"Script %@ wouldn't load properly\n",scriptpath);
+        return;
+    }
+    //re documentation for NSAppleScript, this may be required.
+    [s performSelectorOnMainThread:@selector(runScript) withObject:nil waitUntilDone:!background];
+}
+
 void ProcessDir(const char *path, char *watched_dir_extension=0, char *watched_file_extension=0) 
 {
   static bool firsttime=true;
@@ -228,9 +301,7 @@ void ProcessDir(const char *path, char *watched_dir_extension=0, char *watched_f
       {
         fname=std::string(path) + fname;
           if (ProcessNewEntry(fname, watched_dir_extension, watched_file_extension)){
-              const char cmd[]="/usr/bin/osascript";
-              const char script[]="/Applications/ETVComskip/EyeTVReaper.scpt";
-              mySystem(true,cmd,cmd,script); // got new file, so run reaper
+              runScript([[[NSBundle mainBundle]resourcePath]stringByAppendingPathComponent:@"EyeTVReaper.scpt"],true);
           }
       }
     }
@@ -262,7 +333,6 @@ void ProcessEntireDir(const char *path, char *watched_dir_extension=0, char *wat
   closedir(dirp);
 }
 
-#if 1
 std::string FindEyeTVArchive()
 {
     std::string ret="";
@@ -276,31 +346,21 @@ std::string FindEyeTVArchive()
                                                          errorDescription:NULL];//autoreleased
     NSString *path=[plist objectForKey:@"archive path"];
     NSURL *url=[NSURL URLWithString:path];//autoreleased
-    ret=[[NSFileManager defaultManager]fileSystemRepresentationWithPath:[url path]];
+    ret=[[NSFileManager defaultManager]fileSystemRepresentationWithPath:[[url path]stringByAppendingString:@"/"]];
     [pool release];
     return ret;
 }
-#else
-std::string FindEyeTVArchive()
+int main(int argc, const char *argv[])
 {
-  FILE *f=popen("/usr/bin/osascript /Applications/ETVComskip/FindEyeTVArchive.scpt","r");
-  if (!f) {
-    printf("Failed to find EyeTV Archive directory\n");
-    return "";
-  }
-  char buf[1024];
-  fgets(buf,1024,f);
-  
-  if (buf[strlen(buf)-1]=='\n')
-    buf[strlen(buf)-1]=0;
-  printf("Got EyeTV directory %s\n",buf);
-  fclose(f);
-  return buf;
+#ifndef COMMANDLINE
+    return NSApplicationMain(argc, argv);
 }
-#endif
 
-int main(int argc, char **argv)
+
+int FW_main(int argc, char **argv)
 {
+#endif
+    NSAutoreleasePool *mainpool=[NSAutoreleasePool new];
   char *watched_dir_extension=".eyetv";
   char *watched_file_extension=".mpg";
 
@@ -308,12 +368,14 @@ int main(int argc, char **argv)
   if (etvdir.size()==0)
     return 0;
     
-    //fprintf(stderr,"EyeTV is based out of %s\n",etvdir.c_str());
-
+#ifdef DEBUG  
+  NSLog(@"EyeTV is based out of %s\n",etvdir.c_str());
+#endif
+    
   bool do_all=false;
   for (int i=0; i< argc; ++i)
   {
-    if (strncmp(argv[i],"all",3)==0) {
+    if (strcmp(argv[i],"all")==0) {
       do_all=true;
       break;
     }
@@ -321,9 +383,9 @@ int main(int argc, char **argv)
 
   if (do_all)
   {
-    printf("Got args: \n");
+     NSLog(@"Got args: \n");
 
-    printf("Processing all files in directory.  Press enter after you quit EyeTV:");
+     NSLog(@"Processing all files in directory.  Press enter after you quit EyeTV:");
     getchar();
     ProcessEntireDir(etvdir.c_str(),watched_dir_extension,watched_file_extension);
     CheckForCompletedFiles(true);
@@ -339,5 +401,43 @@ int main(int argc, char **argv)
     sleep(SLEEP_LEN);
     CheckForCompletedFiles();
   }
+    [mainpool release];
   return 0;
 }
+
+@interface FileWatcherApp : NSObject
+{
+    NSThread *mythread;
+}
+-(id)init;
+-(void)dealloc;
+-(void)begin;
+-(void)fwmainThread:(id)unused;
+@end
+@implementation FileWatcherApp
+-(id)init{
+    if((self=[super init])==nil)
+        return nil;
+    return self;
+}
+-(void)dealloc{
+    // no way to terminate the tread unless 10.5 FIXME?
+    [super dealloc];
+}
+-(void)awakeFromNib
+{
+    [self begin];
+}
+-(void)begin{
+    [NSThread detachNewThreadSelector:@selector(fwmainThread:) toTarget:self withObject:nil];
+}
+-(void)fwmainThread:(id)unused{
+    unused=nil;//warning
+    char *cmd="FileWatcher";
+    mythread=[NSThread currentThread];
+#ifndef COMMANDLINE
+    FW_main(1, &cmd);
+#endif
+}
+@end
+    

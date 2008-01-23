@@ -1,0 +1,18 @@
+{
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                scanAll = id;
+            };
+            CLASS = FileWatcherApp;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        }
+    );
+    IBVersion = 1;
+}
