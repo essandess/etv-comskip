@@ -9,14 +9,18 @@ These programs allow users of EyeTV to enjoy commercial-free recorded television
 
 INSTALLATION:
 
-  1) Copy RecordingDone.scpt to /Library/Application\ Support/EyeTV/Scripts
+  1) Copy RecordingDone.scpt to /Library/Application\ Support/EyeTV/Scripts/TriggeredScripts
 
   2) Copy comskip, comskip.ini and MarkCommercials.py to /Library/Application\ Support/ETVComskip
 
   3) If you haven't already done so, install py-appscript from:
-      appscript.sourceforge.net
+      appscript.sourceforge.net.  Get the tar.gz form from sourceforge
+      and follow the instructions in the readme.  I don't know what to do with an .egg file!
 
   4) Restart EyeTV.
+
+
+  (Yes, I hope to have an installer package soon.)
 
 
 RUNNING:
