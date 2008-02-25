@@ -17,7 +17,6 @@
 # recording is processed.
 #
 
-
 import sys, os, string
 
 # provided with appscript package
@@ -26,7 +25,6 @@ from appscript import *
 
 # for debugging. when False, will not actually run comskip, but will do everything else
 RUN_COMSKIP=True
-
 
 # Possibly run comskip and return the name of a plist file with commercial markers in it
 def GetPlistFile(etvr_file, run_comskip=True):
@@ -86,7 +84,7 @@ def GetMarkersArray(PlistFile):
 def ProcessRecording(rec_id, run_comskip):
     # use appscript instead of applescript to talk to eyetv and get
     # the recording with the given ID
-    rec=app("EyeTV").recordings[its.unique_ID == rec_id].get()[0]
+    rec=app("EyeTV").recordings.ID(int(rec_id))
 
     # and get its path
     etvr_path=rec.location.get().path
@@ -106,7 +104,11 @@ if sys.argv[1]=="all" or sys.argv[1]=="forceall":
     recs=app("EyeTV").recordings.get()
     for rec in recs:
         if len(rec.markers.get())==0 or sys.argv[1]=="forceall":
-            ProcessRecording(rec.unique_ID.get(),RUN_COMSKIP)
+            try:
+                print "Processing %s: %s %s" % (rec.title.get(),rec.episode.get(),rec.actual_start.get())
+                ProcessRecording(rec.unique_ID.get(),RUN_COMSKIP)
+            except:
+                pass
 else:
     # triggered mode, process just the listed recording
     ProcessRecording(sys.argv[1], RUN_COMSKIP)
