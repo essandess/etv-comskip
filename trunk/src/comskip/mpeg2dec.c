@@ -2221,6 +2221,7 @@ int main (int argc, char ** argv)
 
 		frame_ptr = NULL;
 		if (demux_pid && framenum_infer == 0) {
+            result = 3;
 			Debug(0,"Video PID not found, available video PID's ");
 			for (i = 0; i < last_pid; i++) {
 				if (pid_type[i] == 1 || pid_type[i] == 2 ) {
