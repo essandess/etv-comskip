@@ -5,7 +5,7 @@ distdir::
 
 comskip:: distdir
 	pushd src/comskip; make; popd
-	cp comskip ETVComskip/
+	mv comskip ETVComskip/
 	cp comskip.ini ETVComskip/
 
 ComSkipper:: distdir
