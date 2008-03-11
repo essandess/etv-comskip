@@ -91,6 +91,15 @@ RUN_COMSKIP = True
 
 # Get the executable directory
 ETVComskipDir = os.path.abspath(os.path.dirname(__file__))
+head,tail=os.path.split(ETVComskipDir)
+print "Got head, tail %s '%s'\n" % (head, tail)
+if tail=="":
+    head,tail=os.path.split(head)
+if tail=="Resources":
+    ETVComskipDir=os.path.abspath(os.path.join(ETVComskipDir, " ../../../../.."))
+    print "Tail was Resources, reset dir to %s " % ETVComskipDir
+print ETVComskipDir
+
 
 # Growl support
 commercialStart = 'Start'
@@ -144,7 +153,7 @@ def GetLog(name=None):
         return
 
     # Is the log directory created?
-    fullPath = os.path.expanduser('~/Library/Logs/EVTComskip')
+    fullPath = os.path.expanduser('~/Library/Logs/ETVComskip')
     if not os.path.isdir(fullPath):
         # No, create it.
         os.mkdir(fullPath)
