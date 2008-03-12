@@ -19,13 +19,14 @@ MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/build
 	-rm -rf ETVComskip/MarkCommercials.app
 	pushd src/scripts/MarkCommercials; python setup.py py2app; mv dist/MarkCommercials.app ../../../ETVComskip; popd
+	cp src/scripts/MarkCommercials/MarkCommercials.cfg ETVComskip/
 
 Install:: distdir
 	pushd src/scripts; osacompile -o ../../ETVComskip/Install\ ETVComskip.app Install.applescript; popd
 	pushd src/scripts; osacompile -o ../../ETVComskip/UnInstall\ ETVComskip.app UnInstall.applescript; popd
 
 RecordingDone:: distdir
-	pushd src/scripts; osacompile -o ../../ETVComskip/RecordingDone.scpt RecordingDone.applescript; popd
+	pushd src/scripts; osacompile -do ../../ETVComskip/RecordingDone.scpt RecordingDone.applescript; popd
 
 docs::
 	cp README-EyeTV3 LICENSE CHANGELOG ETVComskip
