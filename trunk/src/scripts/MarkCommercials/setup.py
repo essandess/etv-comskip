@@ -8,6 +8,7 @@ Usage:
 from setuptools import setup
 
 setup(
+    data_files=['MarkCommercials.cfg'],
     app=['MarkCommercials.py'],
     options=dict(py2app=dict(
         plist=dict(
