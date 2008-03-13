@@ -58,6 +58,8 @@ accessConfigFileErrorExitCode = 6
 keyboardInterruptExitCode = 7
 #  Unable to communicate with the application
 communicationsErrorExitCode = 8
+#  Unable to find comskip
+locateComskipErrorExitCode = 9
 
 # provided with appscript package
 try:
@@ -85,6 +87,9 @@ comskipLogPathName = None
 log = None
 growl = None
 eyeTV = None
+pathToComskip = None
+nameOfComskip = 'comskip'
+comskipLocations = ['.', r'/Library/Application Support/ETVcomskip']
 
 # for debugging. when False, will not actually run comskip, but will do everything else
 RUN_COMSKIP = True
@@ -99,6 +104,7 @@ commercialStop = 'Stop'
 commercialStopDescription = 'Stop detecting commercials'
 programName = 'Mark Commercials'
 allNotificationsList = [commercialStart, commercialStop]
+
 def InitGrowl():
     """docstring for InitGrowl"""
     global growl
@@ -132,6 +138,30 @@ def sendGrowlNotification(title, description):
                         application_name=programName)
         except Exception, e:
             WriteToLog('Error: growl notify\n  %s\n' % e)
+
+# Find comskip
+def findComskip(name=nameOfComskip):
+    global pathToComskip
+    
+    # Add our location 
+    comskipLocations.append(os.path.dirname(sys.argv[0]))
+    WriteToLog('Searching %s for %s\n' % (comskipLocations, name))
+    for location in comskipLocations:
+        currentPath = os.path.abspath(os.path.join(location, name))
+        WriteToLog('Checking for %s\n' % currentPath)
+        if os.path.isfile(currentPath):
+            WriteToLog('  found\n')
+            pathToComskip = location
+            break
+        else:
+            WriteToLog('  not found\n')
+
+    else:
+        msg = 'Error: unable to locate commercial skip application:%s\n' % name
+        WriteToLog(msg)
+        sys.stderr.write(msg)
+        sys.exit(locateComskipErrorExitCode)
+    
     
 # Create the log file
 def GetLog(name=None):
@@ -144,7 +174,7 @@ def GetLog(name=None):
         return
 
     # Is the log directory created?
-    fullPath = os.path.expanduser('~/Library/Logs/EVTComskip')
+    fullPath = os.path.expanduser('~/Library/Logs/ETVComskip')
     if not os.path.isdir(fullPath):
         # No, create it.
         os.mkdir(fullPath)
@@ -210,7 +240,9 @@ def GetPlistFile(etvr_file, run_comskip=True):
     MpgFile = FileRoot + ".mpg"
     PlistFile = FileRoot + ".plist"
 
-    cmd = '"%s/comskip" --ini="%s/comskip.ini" %s' % (ETVComskipDir, ETVComskipDir, MpgFile)
+    cmd = '"%s" --ini="%s" %s' % (os.path.join(pathToComskip, nameOfComskip), 
+                                  os.path.join(pathToComskip, nameOfComskip) + '.ini', 
+                                  MpgFile)
     outputName = '/dev/null'
     if options.log:
         cmd += ' > %s 2>&1' % comskipLogPathName
@@ -400,8 +432,7 @@ def main():
     # Get our configuration file & data
     configInput = SafeConfigParser()
     try:
-        cfgFilesRead = configInput.read([os.path.join(ETVComskipDir, 'MarkCommercials.cfg'), 
-                                         os.path.join('..', 'Resources'),
+        cfgFilesRead = configInput.read([os.path.join(os.path.dirname(sys.argv[0]), 'MarkCommercials.cfg'),
                                          os.path.expanduser('~/.MarkCommercials.cfg')])
     except Exception, e:
         msg = 'Error: reading configuration file\n%s\n' % e
@@ -431,6 +462,9 @@ def main():
          
     # Test communications with application
     CheckForApplicationCommunications()
+
+    # Get the location of the commercial skipper
+    findComskip()
 
     # Show the IDs and program names when there are no arguments
     #    replace any non ascii characters with ?
