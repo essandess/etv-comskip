@@ -147,11 +147,12 @@ def findComskip(name=nameOfComskip):
     comskipLocations.append(os.path.dirname(sys.argv[0]))
     WriteToLog('Searching %s for %s\n' % (comskipLocations, name))
     for location in comskipLocations:
-        currentPath = os.path.abspath(os.path.join(location, name))
+        absLocation = os.path.abspath(location)
+        currentPath = os.path.join(absLocation, name)
         WriteToLog('Checking for %s\n' % currentPath)
         if os.path.isfile(currentPath):
             WriteToLog('  found\n')
-            pathToComskip = location
+            pathToComskip = absLocation
             break
         else:
             WriteToLog('  not found\n')
