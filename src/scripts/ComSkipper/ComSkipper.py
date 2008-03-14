@@ -29,7 +29,6 @@ from ScriptingBridge import *
 
 last_rec=""
 last_ct=-1
-markers=[]
 
 
 def IsETVRunning():
@@ -50,15 +49,15 @@ def GetMarkers(rec,current_time=0):
     return mrks
 
 def MainLoop():
+  global last_rec, last_ct, markers
   while 1:
-      print "loopink"
       if not IsETVRunning():
-          print "ETV Not runnink"
+          #print "ETV Not runnink"
           time.sleep(15)
           continue
 
       if not app("EyeTV").playing.get():
-          print "ETV Not playink"
+          #print "ETV Not playink"
           time.sleep(1)
           continue
 
@@ -70,30 +69,34 @@ def MainLoop():
           last_rec = rec
           last_ct = -1
           markers=GetMarkers(rec)
-          print "got markers"
+          #print "got markers"
 
       ct=app("EyeTV").current_time.get()
 
       # reset markers if we've gone backwards
       if ct < last_ct:
           markers=GetMarkers(rec,ct)
-          last_ct=ct
-          print "gone backwards"
+          #print "gone backwards!!!!!!!!!!!!!!!!!"
+      last_ct=ct
+
 
       for m in markers:
-          if ct > m[0]:
-              if ct < m[1]:
-                  app("EyeTV").jump(to=m[1])
-
-                  # re-get the (pruned) markers list so that the first
-                  # entry will be the next commercial break.  we use the
-                  # pruned list to avoid having to iterate through the
-                  # entire list of markers every second
-
-                  ct=app("EyeTV").current_time.get()
-                  markers=GetMarkers(rec,ct)
-                  print "ETV Not skipped"
+          #print "CT %f comparing to (%f %f)\n" % (ct,m[0],m[1])
+          if ct < m[0]:
+              #print "Ct < m[0], breaking"
               break
+
+          if ct < m[1]:
+              app("EyeTV").jump(to=m[1])
+
+              # re-get the (pruned) markers list so that the first
+              # entry will be the next commercial break.  we use the
+              # pruned list to avoid having to iterate through the
+              # entire list of markers every second
+
+              ct=app("EyeTV").current_time.get()
+              markers=GetMarkers(rec,ct)
+              #print "ETV skipped"
 
       time.sleep(1)
         
@@ -102,5 +105,7 @@ def MainLoop():
 while 1:
     try:
         MainLoop()
+        last_rec=""
+        last_ct=-1
     except:
         pass
