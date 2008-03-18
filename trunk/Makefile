@@ -1,12 +1,12 @@
-all: distdir comskip ComSkipper MarkCommercials RecordingDone Install docs
+all: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs
 
 distdir::
 	-mkdir ETVComskip
 
 comskip:: distdir
 	pushd src/comskip; make; popd
-	mv comskip ETVComskip/
-	cp comskip.ini ETVComskip/
+	mv comskip ETVComskip/MarkCommercials.app/Contents/Resources
+	cp comskip.ini ETVComskip/MarkCommercials.app/Contents/Resources
 
 ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/dist
