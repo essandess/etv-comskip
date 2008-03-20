@@ -28,7 +28,7 @@ RecordingDone:: distdir
 	pushd src/scripts; osacompile -do ../../ETVComskip/RecordingDone.scpt RecordingDone.applescript; popd
 
 docs::
-	cp README-EyeTV3 LICENSE LICENSE.rtf CHANGELOG ETVComskip
+	cp README-EyeTV3 LICENSE LICENSE.rtf CHANGELOG AUTHORS ETVComskip
 
 package:: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs
 	rm -rf ETVComskip/ETVComskip-1.0.0rc8.mpkg

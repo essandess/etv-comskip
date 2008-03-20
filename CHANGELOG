@@ -19,3 +19,17 @@
         in a PPC/Classic application!)
 
         Migrated to Google Code
+
+1.0RC8: Initial EyeTV3 version.
+
+        Added installers, installed in to /Library/Application Support/ETVComskip
+        Converted from raw python to mac app bundles
+        added logging to ~/Library/Logs/ETVComskip
+
+        No longer uses FileWatcher, but uses RecordingDone triggered script
+        replaced ComSkipper.app applescript with new python-based mac bundle
+        MarkCommercials.sh replaced by python script / app bundle
+        MarkCommercials.app now optionally reads config file to skip processing of certain channels, titles, etc.
+
+        Experimental Growl support.
+
