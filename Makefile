@@ -1,9 +1,9 @@
-all: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs
+all: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs package
 
 distdir::
 	-mkdir ETVComskip
 
-comskip:: distdir
+comskip:: distdir MarkCommercials
 	pushd src/comskip; make; popd
 	mv comskip ETVComskip/MarkCommercials.app/Contents/Resources
 	cp comskip.ini ETVComskip/MarkCommercials.app/Contents/Resources
@@ -28,7 +28,11 @@ RecordingDone:: distdir
 	pushd src/scripts; osacompile -do ../../ETVComskip/RecordingDone.scpt RecordingDone.applescript; popd
 
 docs::
-	cp README-EyeTV3 LICENSE CHANGELOG ETVComskip
+	cp README-EyeTV3 LICENSE LICENSE.rtf CHANGELOG ETVComskip
+
+package:: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs
+	rm -rf ETVComskip/ETVComskip-1.0.0rc8.mpkg
+	/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc ETVComskip-1.0.0rc8.pmdoc --out ETVComskip/ETVComskip-1.0.0rc8.mpkg -v -b
 
 clean::
 	pushd src/comskip; make clean; popd
