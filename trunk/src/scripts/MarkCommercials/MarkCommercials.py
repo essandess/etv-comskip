@@ -338,7 +338,7 @@ def ProcessRecording(recording, run_comskip):
     stationName = recording.station_name()
 
     recordingCount += 1
-    msg = '%2d. Processing "%s" on [%s] channel [%d]...' % (recordingCount, title, stationName, channel)
+    msg = '%2d. Processing "%s" on [%s] channel [%s]...' % (recordingCount, title, stationName, channel)
     WriteToLog('%s\n' % msg)
     print msg
 
