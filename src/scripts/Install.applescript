@@ -4,7 +4,7 @@
 try
 	set etv to do shell script "ps -xc -o command | egrep -c '^EyeTV$'"
 	if etv ³ 1 then
-		display dialog "You must quit EyeTV before installing ETVComskip.  Try again after quitting EyeTV."
+		display dialog "You must quit EyeTV before installing ETVComskip.  Try again after quitting EyeTV." buttons {"Ok"}
 		return
 	end if
 end try
@@ -42,4 +42,4 @@ tell application "System Events"
 	make new login item at end of login items with properties {path:appPath, hidden:true}
 end tell
 
-display dialog "ETVComskip installed"
+display dialog "ETVComskip installed" buttons {"Ok"}
