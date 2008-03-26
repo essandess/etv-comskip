@@ -28,7 +28,7 @@ MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/dist
 	-rm -rf src/scripts/MarkCommercials/build
 	-rm -rf ETVComskip/MarkCommercials.app
-	pushd src/scripts/MarkCommercials; python setup.py py2app --site-packages; mv dist/MarkCommercials.app ../../../ETVComskip; popd
+	pushd src/scripts/MarkCommercials; python setup.py py2app; mv dist/MarkCommercials.app ../../../ETVComskip; popd
 
 Install:: distdir
 	pushd src/scripts; osacompile -o ../../ETVComskip/Install\ ETVComskip.app Install.applescript; popd
