@@ -23,16 +23,14 @@ except ImportError, e:
     sys.exit(importExitCode)
     
 import time
-import objc
-from AppKit import *
-from ScriptingBridge import *
+from Foundation import *
 
 last_rec=""
 last_ct=-1
 
 
 def IsETVRunning():
-    for app in NSWorkspace.sharedWorkspace().launchedApplications():
+    for app in Foundation.NSWorkspace.sharedWorkspace().launchedApplications():
         if app['NSApplicationName'] == "EyeTV":
             return True
     return False
