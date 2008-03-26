@@ -38,12 +38,14 @@ RUNNING:
 MarkCommercials:
 
    1.  is version 0.3.0.
+
    2.  allows user supplied options
+
    3.  Run it in command line mode to get help
-      bash$ ./MarkCommercials.py --help
+       bash$ /Library/Application\ Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials --help
+
    4.  Output of 0.3.0 help:
 
-Macintosh:My Comskip rick$ ./MarkCommercials.py --help
 Usage: MarkCommercials.py [options] [RECORDING-ID | 'all' | 'forceall']
 
 Options:
@@ -62,27 +64,37 @@ Options:
       Instructions are at the beginning of the cfg file.
       There are some problems with this in that not every recording contains
       the correct information.  See cfg file for our experience.
-  6.  You can avoid any cfg file induced excluding with the --noeclude option 
+
+      Currently, the config file can be found at:
+      /Library/Application\ Support/ETVComskip/MarkCommercials.app/Contents/Resources/MarkCommercials.cfg   
+
+  6.  You can avoid any cfg file induced excluding with the --noexclude option 
+
   7.  will not create new markers when markers already exist on the recording.
+
   8.  You can override the behavior of item #7 with the --force option.
+
   9.  Logging (information about the behavior of MarkCommercials and commskip written
       a file(s)) is enabled via the --log option.  Use the console utility to view
       / delete these files.  The files are located under your home directory.
       ~/Library/Logs/ETVComskip/
+
   10. The --app=APP option allows you to specify the name of the EyeTV application.
       An example of usage is when you get a beta version which has the version number
       as part of it's name.  (EyeTV-3.0.1b5)  The -app option would be --appEyeTV-3.0.b5)
+
   11. The --verbose option tells MarkCommercials and comskip to be more verbose in
       the data put to the log.  
 
 BATCH MODE:
 
    If you have a library of recordings you'd like to mark you can run
-   MarkCommercials.py in batch mode.
+   MarkCommercials in batch mode.
 
    From the terminal run:
 
-     bash$ MarkCommercials.py all
+     bash$  /Library/Application\ Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials all
+
 
 
 --------------------------------------------------------------------------------
@@ -90,5 +102,4 @@ BATCH MODE:
 There are many options for tuning comskip, but they are beyond the scope
 of this document.  For details, see http://www.kaashoek.com/comskip/, and
 links therein.
-
 
