@@ -10,7 +10,7 @@ distdir::
 	-mkdir ETVComskip
 
 dmg: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs 
-	cd ETVComskip; rm *.dmg*; hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}; mv ${IMGNAME}.dmg ${IMGNAME}.dmg.bz2
+	cd ETVComskip; rm *.dmg*; hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}
 
 
 comskip:: distdir MarkCommercials
