@@ -14,23 +14,18 @@
 # jumps to the end of the break.
 
 
-
-try:
-    import aem # provided with appscript package
-    from appscript import *
-except ImportError, e:
-    sys.stderr.write('Error: importing appscript\n%s\n' % e)
-    sys.exit(importExitCode)
-    
+import sys
 import time
-from Foundation import *
+import AppKit
+
+import aem # provided with appscript package
+from appscript import *
 
 last_rec=""
 last_ct=-1
 
-
 def IsETVRunning():
-    for app in Foundation.NSWorkspace.sharedWorkspace().launchedApplications():
+    for app in AppKit.NSWorkspace.sharedWorkspace().launchedApplications():
         if app['NSApplicationName'] == "EyeTV":
             return True
     return False
@@ -105,5 +100,6 @@ while 1:
         MainLoop()
         last_rec=""
         last_ct=-1
+        time.sleep(1)
     except:
         pass
