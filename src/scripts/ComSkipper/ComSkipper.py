@@ -100,6 +100,6 @@ while 1:
         MainLoop()
         last_rec=""
         last_ct=-1
-        time.sleep(1)
     except:
         pass
+    time.sleep(2)
