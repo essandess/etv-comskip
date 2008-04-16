@@ -66,7 +66,13 @@ Options:
       the correct information.  See cfg file for our experience.
 
       Currently, the config file can be found at:
-      /Library/Application\ Support/ETVComskip/MarkCommercials.app/Contents/Resources/MarkCommercials.cfg   
+        /Library/Application\ Support/ETVComskip/MarkCommercials.app/Contents/Resources/MarkCommercials.cfg   
+
+      You can install a per-user copy of this file at in your home directory:
+        ~/Library/Application\ Support/ETVComskip/MarkCommercials.cfg   
+
+      A per-user file has the advantage that new ETVComskip installations don't overwrite your configuration options.
+
 
   6.  You can avoid any cfg file induced excluding with the --noexclude option 
 
