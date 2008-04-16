@@ -340,28 +340,31 @@ def ProcessRecording(recording, run_comskip):
     recordingCount += 1
     msg = '%2d. Processing "%s" on [%s] channel [%s]...' % (recordingCount, title, stationName, channel)
     WriteToLog('%s\n' % msg)
-    print msg
+    print msg.encode("ascii","replace")
 
     # Should excludes be allowed?
     if not options.noexclude:
         # Yes, Is this one allowed?
         #  User can exclude titles, channels and station names
         # Channel
-        print '  Channel: %s' % channel,
+        msg='  Channel: %s' % channel
+        print msg.encode("ascii","replace"),
         if str(channel) in excludedChannels:
             WriteToLog('Skipped due to channel match\n')
             print ' skipped'
             return
         print ', not skipped'
         # Title
-        print '  Title: %s' % title,
+        msg='  Title: %s' % title
+        print msg.encode("ascii","replace"),
         if title in excludedTitles:
             WriteToLog('Skipped due to title match\n')
             print ' skipped'
             return
         print ', not skipped'
         # Station name
-        print '  Station name: %s' % stationName,
+        msg='  Station name: %s' % stationName
+        print msg.encode("ascii","replace"),
         if stationName in excludedStationNames:
             WriteToLog('Skipped due to station name match\n')
             print ' skipped'
@@ -481,7 +484,7 @@ def main():
                     outputName += '?'
             msg = '  %d = [%s], [%s], [%s]' % (rec.unique_ID.get(), outputName, rec.channel_number(), rec.station_name())
             WriteToLog('%s\n' % msg)
-            print msg
+            print msg.encode("ascii","replace")
         return successExitCode
 
     if args[0] == "all" or args[0] == "forceall":
@@ -520,7 +523,8 @@ def main():
             # Recording already maked and user doesn't want it done again
             msg = 'Recording previously marked'
             WriteToLog('%s\n' % msg)
-            print '  %s' % msg
+            print '  ',
+            print msg.encode("ascii","replace")
     return successExitCode
 
 if __name__ == '__main__':
