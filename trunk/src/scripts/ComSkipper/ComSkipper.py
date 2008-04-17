@@ -55,18 +55,9 @@ def MainLoop():
           continue
 
       # get currently-playing recording
-      try:
-          # try with super-secret beta dictionary keyword
-          rec=app("EyeTV").current_recording.get()
-          if rec==0:
-              time.sleep(5)
-              continue
-          rec=app("EyeTV").recordings.ID(rec).get()
-      except:
           # unfortunately, there's not a direct way to do this(!), so we have to use the window name and hope
           window_name=app("EyeTV").player_windows()[0].name()
           rec=app("EyeTV").recordings[window_name].get()
-          
       if rec != last_rec:
           last_rec = rec
           last_ct = -1
