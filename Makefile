@@ -9,7 +9,7 @@ SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"
 all: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs dmg
 
 upload:
-	echo python ./googlecode_upload.py -s '${SUMMARY}' -p etv-comskip -u jon.christopher -l "Type-Installer,Featured,OpSys-OSX" ETVComskip/${IMGNAME} 
+	python ./googlecode_upload.py --config-dir=none -s '${SUMMARY}' -p etv-comskip -u jon.christopher -l "Type-Installer,Featured,OpSys-OSX" ETVComskip/${IMGNAME}.dmg
 
 
 distdir::
