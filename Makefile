@@ -3,8 +3,14 @@ VERSION=1.0.2
 #  Leopard (10.5), Tiger (10.4)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
+SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"
+
 
 all: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs dmg
+
+upload:
+	echo python ./googlecode_upload.py -s '${SUMMARY}' -p etv-comskip -u jon.christopher -l "Type-Installer,Featured,OpSys-OSX" ETVComskip/${IMGNAME} 
+
 
 distdir::
 	-mkdir ETVComskip
