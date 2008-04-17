@@ -38,7 +38,9 @@ do shell script "/bin/mv " & etv_path & "/RecordingDone.scpt " & ts_path with ad
 -- make login item for ComSkipper
 set appPath to "/Library/Application Support/ETVComskip/ComSkipper.app"
 tell application "System Events"
-	delete (every login item whose name contains "ComSkipper")
+  try
+  	delete (every login item whose name contains "ComSkipper")
+  end try
 	make new login item at end of login items with properties {path:appPath, hidden:true}
 end tell
 
