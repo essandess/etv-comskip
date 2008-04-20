@@ -2240,7 +2240,7 @@ int main (int argc, char ** argv)
 		decode_init(); // Audio decoder
 		InitialAC3();
 		
-			sample_file = fopen("samples.csv", "w");
+    // sample_file = fopen("samples.csv", "w");
 		DUMP_OPEN
 
 		csRestart = 0;
