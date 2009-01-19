@@ -437,7 +437,7 @@ def main():
     configInput = SafeConfigParser()
     try:
         cfgFilesRead = configInput.read([os.path.join(os.path.dirname(sys.argv[0]), 'MarkCommercials.cfg'),
-                                         os.path.expanduser('~/Library/Application\ Support/ETVComskip/MarkCommercials.cfg')])
+                                         os.path.expanduser('~/Library/Application Support/ETVComskip/MarkCommercials.cfg')])
     except Exception, e:
         msg = 'Error: reading configuration file\n%s\n' % e
         WriteToLog(msg)
