@@ -6,7 +6,7 @@ IMGNAME=${NAME}-${VERSION}-${OsVersion}
 SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"
 
 
-all: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs dmg
+all: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs dmg
 
 upload:
 	python ./googlecode_upload.py --config-dir=none -s '${SUMMARY}' -p etv-comskip -u jon.christopher -l "Type-Installer,Featured,OpSys-OSX" ETVComskip/${IMGNAME}.dmg
@@ -15,7 +15,7 @@ upload:
 distdir::
 	-mkdir ETVComskip
 
-dmg: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs 
+dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs 
 	cd ETVComskip; rm *.dmg*; hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}
 
 
@@ -40,13 +40,14 @@ Install:: distdir
 	pushd src/scripts; osacompile -o ../../ETVComskip/Install\ ETVComskip.app Install.applescript; popd
 	pushd src/scripts; osacompile -o ../../ETVComskip/UnInstall\ ETVComskip.app UnInstall.applescript; popd
 
-RecordingDone:: distdir
+EyeTVTriggers:: distdir
 	pushd src/scripts; osacompile -do ../../ETVComskip/RecordingDone.scpt RecordingDone.applescript; popd
+	pushd src/scripts; osacompile -do ../../ETVComskip/RecordingStarted.scpt RecordingStarted.applescript; popd
 
 docs::
 	cp README-EyeTV3 LICENSE LICENSE.rtf CHANGELOG AUTHORS ETVComskip
 
-package:: distdir MarkCommercials comskip ComSkipper RecordingDone Install docs
+package:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	rm -rf ETVComskip/ETVComskip-1.0.0rc8.mpkg
 	/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc ETVComskip-$(VERSION).pmdoc --out ETVComskip/ETVComskip-$(VERSION).mpkg -v -b
 
