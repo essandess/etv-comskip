@@ -32,7 +32,7 @@
 #  Catch ^c when in python program - coded
 #  EXCLUDED_TITLES and EXCLUDED_CHANNELS are NOT empty lists
 #  Handle multiple video pids.
-
+# Added argument for PID - Ben Blake September 2009
 
 import sys, os, string, os.path
 import time
@@ -69,13 +69,13 @@ except ImportError, e:
     sys.stderr.write('Error: importing appscript\n%s\n' % e)
     sys.exit(importExitCode)
     
-version = '0.3.0'
+version = '0.4.0'
 # Cfg file definitions and variables
 userSectionName = 'User Section'
 listDelimiterName = 'LIST_DELIMITER'
 excludedTitlesName = 'EXCLUDED_TITLES'
 excludedChannelsName = 'EXCLUDED_CHANNELS'
-excludedStationNamesName = 'EXCLUDED_STATION_NAME'
+excludedStationNamesName = 'EXCLUDED_STATION_NAMES'
 excludedTitles = []
 excludedChannels = []
 excludedStationNames = []
@@ -89,7 +89,7 @@ growl = None
 eyeTV = None
 pathToComskip = None
 nameOfComskip = 'comskip'
-comskipLocations = ['.', r'/Library/Application Support/ETVcomskip']
+comskipLocations = ['.', r'/Library/Application Support/ETVComskip']
 
 # for debugging. when False, will not actually run comskip, but will do everything else
 RUN_COMSKIP = True
@@ -188,6 +188,8 @@ def GetLog(name=None):
 def WriteToLog(message):
     """docstring for WriteToLog"""
     if options.log:
+        if type(message) == type(u""):
+            message=message.encode("utf-8")
         log.write('%s - %s' % (time.asctime(), message))
         log.flush()
 
@@ -211,7 +213,7 @@ def CheckForApplicationCommunications(retries=3):
             time.sleep(0.5)
             continue
     else:
-        msg = 'Error: unable to communicate with %s\n' % application
+        msg = 'Error: unable to communicate with %s\n' % "EyeTV"
         WriteToLog(msg)
         sys.stderr.write(msg)
         sys.exit(communicationsErrorExitCode)
@@ -244,6 +246,9 @@ def GetPlistFile(etvr_file, run_comskip=True):
     cmd = '"%s" --ini="%s" %s' % (os.path.join(pathToComskip, nameOfComskip), 
                                   os.path.join(pathToComskip, nameOfComskip) + '.ini', 
                                   MpgFile)
+    if options.pid <> "":
+    	cmd += " --pid=" + options.pid
+    
     outputName = '/dev/null'
     if options.log:
         cmd += ' > %s 2>&1' % comskipLogPathName
@@ -340,7 +345,7 @@ def ProcessRecording(recording, run_comskip):
     recordingCount += 1
     msg = '%2d. Processing "%s" on [%s] channel [%s]...' % (recordingCount, title, stationName, channel)
     WriteToLog('%s\n' % msg)
-    print msg.encode("ascii","replace")
+    print msg.encode("utf-8")
 
     # Should excludes be allowed?
     if not options.noexclude:
@@ -348,7 +353,7 @@ def ProcessRecording(recording, run_comskip):
         #  User can exclude titles, channels and station names
         # Channel
         msg='  Channel: %s' % channel
-        print msg.encode("ascii","replace"),
+        print msg.encode("utf-8"),
         if str(channel) in excludedChannels:
             WriteToLog('Skipped due to channel match\n')
             print ' skipped'
@@ -356,7 +361,7 @@ def ProcessRecording(recording, run_comskip):
         print ', not skipped'
         # Title
         msg='  Title: %s' % title
-        print msg.encode("ascii","replace"),
+        print msg.encode("utf-8"),
         if title in excludedTitles:
             WriteToLog('Skipped due to title match\n')
             print ' skipped'
@@ -364,7 +369,7 @@ def ProcessRecording(recording, run_comskip):
         print ', not skipped'
         # Station name
         msg='  Station name: %s' % stationName
-        print msg.encode("ascii","replace"),
+        print msg.encode("utf-8"),
         if stationName in excludedStationNames:
             WriteToLog('Skipped due to station name match\n')
             print ' skipped'
@@ -416,6 +421,9 @@ def main():
                     type='int',
                     dest="verbose", default=0,
                     help="Verbosity level, 0-10, default=%default")
+    parser.add_option("--pid",
+                    dest="pid", default='',
+                    help="Specify the Video PID, default=%default")
     (options, args) = parser.parse_args()
 
     if len(args):
@@ -484,7 +492,7 @@ def main():
                     outputName += '?'
             msg = '  %d = [%s], [%s], [%s]' % (rec.unique_ID.get(), outputName, rec.channel_number(), rec.station_name())
             WriteToLog('%s\n' % msg)
-            print msg.encode("ascii","replace")
+            print msg.encode("utf-8")
         return successExitCode
 
     if args[0] == "all" or args[0] == "forceall":
@@ -524,7 +532,7 @@ def main():
             msg = 'Recording previously marked'
             WriteToLog('%s\n' % msg)
             print '  ',
-            print msg.encode("ascii","replace")
+            print msg.encode("utf-8")
     return successExitCode
 
 if __name__ == '__main__':
