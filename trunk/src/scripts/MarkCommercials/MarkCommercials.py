@@ -36,6 +36,7 @@
 
 import sys, os, string, os.path
 import time
+import math
 from optparse import OptionParser
 from ConfigParser import SafeConfigParser 
 
@@ -58,8 +59,6 @@ accessConfigFileErrorExitCode = 6
 keyboardInterruptExitCode = 7
 #  Unable to communicate with the application
 communicationsErrorExitCode = 8
-#  Unable to find comskip
-locateComskipErrorExitCode = 9
 
 # provided with appscript package
 try:
@@ -139,29 +138,6 @@ def sendGrowlNotification(title, description):
         except Exception, e:
             WriteToLog('Error: growl notify\n  %s\n' % e)
 
-# Find comskip
-def findComskip(name=nameOfComskip):
-    global pathToComskip
-    
-    # Add our location 
-    comskipLocations.append(os.path.dirname(sys.argv[0]))
-    WriteToLog('Searching %s for %s\n' % (comskipLocations, name))
-    for location in comskipLocations:
-        absLocation = os.path.abspath(location)
-        currentPath = os.path.join(absLocation, name)
-        WriteToLog('Checking for %s\n' % currentPath)
-        if os.path.isfile(currentPath):
-            WriteToLog('  found\n')
-            pathToComskip = absLocation
-            break
-        else:
-            WriteToLog('  not found\n')
-
-    else:
-        msg = 'Error: unable to locate commercial skip application:%s\n' % name
-        WriteToLog(msg)
-        sys.stderr.write(msg)
-        sys.exit(locateComskipErrorExitCode)
     
     
 # Create the log file
@@ -241,11 +217,10 @@ def GetPlistFile(etvr_file, run_comskip=True):
     FileRoot, ext = os.path.splitext(fil)
 
     MpgFile = FileRoot + ".mpg"
-    PlistFile = FileRoot + ".plist"
+    PlistFile = FileRoot + ".edl"
 
-    cmd = '"%s" --ini="%s" %s' % (os.path.join(pathToComskip, nameOfComskip), 
-                                  os.path.join(pathToComskip, nameOfComskip) + '.ini', 
-                                  MpgFile)
+    cmd = '"/Library/Application Support/ETVComskip/Wine.app/Contents/Resources/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
+
     if options.pid <> "":
     	cmd += " --pid=" + options.pid
     
@@ -476,7 +451,7 @@ def main():
     CheckForApplicationCommunications()
 
     # Get the location of the commercial skipper
-    findComskip()
+    #findComskip()
 
     # Show the IDs and program names when there are no arguments
     #    replace any non ascii characters with ?

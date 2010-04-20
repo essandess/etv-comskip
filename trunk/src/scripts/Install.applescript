@@ -32,15 +32,18 @@ end if
 if not haveetv then
 	do shell script "/bin/mkdir -p " & etv_path with administrator privileges
 end if
+display dialog "The next step may take a few moments...."
 do shell script "/bin/cp -Rfp " & path_ & " " & etv_path with administrator privileges
 do shell script "/bin/mv " & etv_path & "/RecordingDone.scpt " & ts_path with administrator privileges
+do shell script "/bin/mv " & etv_path & "/RecordingStarted.scpt " & ts_path with administrator privileges
+
 
 -- make login item for ComSkipper
 set appPath to "/Library/Application Support/ETVComskip/ComSkipper.app"
 tell application "System Events"
-  try
-  	delete (every login item whose name contains "ComSkipper")
-  end try
+	try
+		delete (every login item whose name contains "ComSkipper")
+	end try
 	make new login item at end of login items with properties {path:appPath, hidden:true}
 end tell
 

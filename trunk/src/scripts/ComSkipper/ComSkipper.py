@@ -43,56 +43,62 @@ def GetMarkers(rec,current_time=0):
 
 def MainLoop():
   global last_rec, last_ct, markers
+  pool=None
   while 1:
-      if not IsETVRunning():
-          #print "ETV Not runnink"
-          time.sleep(15)
-          continue
+      try:
+          if pool is not None:
+              pool.release()
+          pool = NSAutoreleasePool.alloc().init()
+          if not IsETVRunning():
+              #print "ETV Not runnink"
+              time.sleep(15)
+              continue
 
-      if not app("EyeTV").playing.get():
-          #print "ETV Not playink"
-          time.sleep(1)
-          continue
+          if not app("EyeTV").playing.get():
+              #print "ETV Not playink"
+              time.sleep(1)
+              continue
 
-      # get currently-playing recording
-      # unfortunately, there's not a direct way to do this(!), so we have to use the window name and hope
-      window_name=app("EyeTV").player_windows()[0].name()
-      rec=app("EyeTV").recordings[window_name].get()
-      if rec != last_rec:
-          last_rec = rec
-          last_ct = -1
-          markers=GetMarkers(rec)
-          #print "got markers"
+          # get currently-playing recording
+          # unfortunately, there's not a direct way to do this(!), so we have to use the window name and hope
+          rec=app("EyeTV").recordings.ID(app("EyeTV").current_recording())
+          if rec != last_rec:
+              last_rec = rec
+              last_ct = -1
+              markers=GetMarkers(rec)
+              #print "got markers"
 
-      ct=app("EyeTV").current_time.get()
+          ct=app("EyeTV").current_time.get()
 
-      # reset markers if we've gone backwards
-      if ct < last_ct:
-          markers=GetMarkers(rec,ct)
-          #print "gone backwards!!!!!!!!!!!!!!!!!"
-      last_ct=ct
-
-
-      for m in markers:
-          #print "CT %f comparing to (%f %f)\n" % (ct,m[0],m[1])
-          if ct < m[0]:
-              #print "Ct < m[0], breaking"
-              break
-
-          if ct < m[1]:
-              app("EyeTV").jump(to=m[1])
-
-              # re-get the (pruned) markers list so that the first
-              # entry will be the next commercial break.  we use the
-              # pruned list to avoid having to iterate through the
-              # entire list of markers every second
-
-              ct=app("EyeTV").current_time.get()
+          # reset markers if we've gone backwards
+          if ct < last_ct:
               markers=GetMarkers(rec,ct)
-              #print "ETV skipped"
+              #print "gone backwards!!!!!!!!!!!!!!!!!"
+          last_ct=ct
 
-      time.sleep(1)
-        
+
+          for m in markers:
+              #print "CT %f comparing to (%f %f)\n" % (ct,m[0],m[1])
+              if ct < m[0]:
+                  #print "Ct < m[0], breaking"
+                  break
+
+              if ct < m[1]:
+                  app("EyeTV").jump(to=m[1])
+
+                  # re-get the (pruned) markers list so that the first
+                  # entry will be the next commercial break.  we use the
+                  # pruned list to avoid having to iterate through the
+                  # entire list of markers every second
+
+                  ct=app("EyeTV").current_time.get()
+                  markers=GetMarkers(rec,ct)
+                  #print "ETV skipped"
+
+          time.sleep(1)
+      except:
+          if pool is not None:
+              pool.release()
 
 # keep trying again in case of error (connection lost, etc)
 while 1:

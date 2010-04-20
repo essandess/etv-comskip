@@ -6,7 +6,7 @@ IMGNAME=${NAME}-${VERSION}-${OsVersion}
 SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"
 
 
-all: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs dmg
+all: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs #dmg
 
 upload:
 	python ./googlecode_upload.py --config-dir=none -s '${SUMMARY}' -p etv-comskip -u jon.christopher -l "Type-Installer,Featured,OpSys-OSX" ETVComskip/${IMGNAME}.dmg
@@ -20,9 +20,11 @@ dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 
 
 comskip:: distdir MarkCommercials
-	pushd src/comskip; make; popd
-	mv comskip ETVComskip/MarkCommercials.app/Contents/Resources
-	cp comskip.ini ETVComskip/MarkCommercials.app/Contents/Resources
+	#pushd src/comskip; make; popd
+	#mv comskip ETVComskip/MarkCommercials.app/Contents/Resources
+	#cp comskip.ini ETVComskip/MarkCommercials.app/Contents/Resources
+	cp -rpv external/Wine.app ETVComskip
+	cp -rpv external/comskip*/ ETVComskip/comskip/
 
 ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/dist
