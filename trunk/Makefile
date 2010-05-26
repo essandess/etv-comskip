@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=1.1
+VERSION=2.0
 #  Leopard (10.5), Tiger (10.4)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
@@ -23,8 +23,9 @@ comskip:: distdir MarkCommercials
 	#pushd src/comskip; make; popd
 	#mv comskip ETVComskip/MarkCommercials.app/Contents/Resources
 	#cp comskip.ini ETVComskip/MarkCommercials.app/Contents/Resources
-	cp -rpv external/Wine.app ETVComskip
-	cp -rpv external/comskip*/ ETVComskip/comskip/
+	rm -rf ETVComskip/Wine.app ETVComskip/comskip
+	cp -R external/Wine.app ETVComskip > /dev/null
+	cp -R external/comskip*/ ETVComskip/comskip/
 
 ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/dist

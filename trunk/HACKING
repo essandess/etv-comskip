@@ -10,12 +10,15 @@ Development environment:
   To build a the python applications, you'll need py2app.  I got my copy from 
   http://undefined.org/python/py2app.html.
 
-  And, of course, you'll need Xcode installed to build comskip itself
+  Also, install Wine.app and the windows comskip tree into the external/
+  directory (see external/README.txt for details).  Note that ETVComskip
+  no longer uses the native Mac OS X port of comskip.
 
 Building a distribution:
 
-  From the main directory, type "make".  This will create an ETVComskip subdirectory,
-  and fill it with the executables created via py2app and gcc.
+  From the main directory, type "make".  This will create an ETVComskip
+  subdirectory, and fill it with the executables created via py2app and
+  gcc.
 
 
 NOTE: bundling the applications with py2app was chosen over shipping
