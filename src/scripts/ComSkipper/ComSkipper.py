@@ -20,6 +20,7 @@ import AppKit
 
 import aem # provided with appscript package
 from appscript import *
+from Foundation import *
 
 last_rec=""
 last_ct=-1
@@ -44,31 +45,37 @@ def GetMarkers(rec,current_time=0):
 def MainLoop():
   global last_rec, last_ct, markers
   pool=None
+
+  App=app("EyeTV")
   while 1:
       try:
           if pool is not None:
               pool.release()
           pool = NSAutoreleasePool.alloc().init()
+
           if not IsETVRunning():
               #print "ETV Not runnink"
               time.sleep(15)
               continue
-
-          if not app("EyeTV").playing.get():
+          if not App.playing():
               #print "ETV Not playink"
               time.sleep(1)
               continue
 
           # get currently-playing recording
-          # unfortunately, there's not a direct way to do this(!), so we have to use the window name and hope
-          rec=app("EyeTV").recordings.ID(app("EyeTV").current_recording())
+          rec=App.current_recording.get()
+          if rec==0:
+              time.sleep(5)
+              continue
+          rec=App.recordings.ID(rec).get()
+
           if rec != last_rec:
               last_rec = rec
               last_ct = -1
               markers=GetMarkers(rec)
               #print "got markers"
 
-          ct=app("EyeTV").current_time.get()
+          ct=App.current_time.get()
 
           # reset markers if we've gone backwards
           if ct < last_ct:
@@ -84,14 +91,14 @@ def MainLoop():
                   break
 
               if ct < m[1]:
-                  app("EyeTV").jump(to=m[1])
+                  App.jump(to=m[1])
 
                   # re-get the (pruned) markers list so that the first
                   # entry will be the next commercial break.  we use the
                   # pruned list to avoid having to iterate through the
                   # entire list of markers every second
 
-                  ct=app("EyeTV").current_time.get()
+                  ct=App.current_time.get()
                   markers=GetMarkers(rec,ct)
                   #print "ETV skipped"
 
@@ -99,6 +106,7 @@ def MainLoop():
       except:
           if pool is not None:
               pool.release()
+          raise
 
 # keep trying again in case of error (connection lost, etc)
 while 1:

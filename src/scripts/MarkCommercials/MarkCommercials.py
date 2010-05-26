@@ -37,6 +37,7 @@
 import sys, os, string, os.path
 import time
 import math
+import traceback
 from optparse import OptionParser
 from ConfigParser import SafeConfigParser 
 
@@ -266,22 +267,15 @@ def GetPlistFile(etvr_file, run_comskip=True):
             WriteToLog('No commercials found by comskip\n')
             return None
         else:
-            msg = 'Error: unknown error code from comskip: %d\n' % errorCode
+            msg = 'Error: unknown error code from comskip: %d, assuming it worked.\n' % errorCode
             WriteToLog(msg)
-            sys.stderr.write(msg)
-            sys.exit(unknownComskipErrorExitCode)
-
-# extract a time in seconds from a "<integer>?????</integer>" field
-def GetTime(field):
-    words = field.split(">")
-    num = words[1].split("<")
-    return int(num[0])/90000.0
+            return PlistFile
 
 # return start and ending times for the given line
 def TimeChop(line):
-    fields = line.split(" ")
-    start = GetTime(fields[0])
-    end = GetTime(fields[1])
+    fields = line.split("\t")
+    start = (float(fields[0]))
+    end = (float(fields[1]))
     return (start,end)
 
 # given a plist file, return a markers array suitable for adding to a recording
@@ -299,13 +293,13 @@ def GetMarkersArray(PlistFile):
     WriteToLog('Plist file contents: %s\n' % lines)
     markers=[]
     for line in lines:
-        if line[0:4] == "<int":
-            start,end = TimeChop(line)
-            WriteToLog('Adding marker, start: %d, end: %d\n' % (start, end))
-            marker = {}
-            marker['position'] = start
-            marker[aem.AEType('leng')] = end - start
-            markers.append(marker)
+        WriteToLog("Processing plist file line: '%s'\n" % line)
+        start,end = TimeChop(line)
+        WriteToLog('Adding marker, start: %d, end: %d\n' % (start, end))
+        marker = {}
+        marker['position'] = start
+        marker[aem.AEType('leng')] = end - start
+        markers.append(marker)
 
     return markers
 
@@ -363,6 +357,8 @@ def ProcessRecording(recording, run_comskip):
         markers = GetMarkersArray(Plist)    
         # and finally, set them
         WriteToLog('Setting markers on recording\n')
+        markers_string = str(markers)
+        WriteToLog('Adding marker: %s\n' % (markers_string))
         recording.markers.set(markers)
 
 def main():
@@ -496,7 +492,12 @@ def main():
         # Recording already have markers?
         if markerCount == 0:
             # No
-            ProcessRecording(rec, RUN_COMSKIP)
+            try:
+                ProcessRecording(rec, RUN_COMSKIP)
+            except Exception,e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                WriteToLog(repr(traceback.format_exception(exc_type, exc_value,exc_traceback)))
+
         # Is the recording already marked but the user wants it done again?
         elif markerCount != 0 and options.force:
             # Yes

@@ -24,8 +24,8 @@ UNINSTALLATION:
 
 RUNNING:
 
-   Once installed, after a new recording is made, EyeTV will call
-   RecordingDone.scpt, which simply calls MarkCommercials.app.  This runs
+   Once installed, after a new recording is started, EyeTV will call
+   RecordingStarted.scpt, which simply calls MarkCommercials.app.  This runs
    comskip, and parses its output, and tells EyeTV where the commercial
    markers should be.
 
@@ -37,7 +37,7 @@ RUNNING:
 
 MarkCommercials:
 
-   1.  is version 0.3.0.
+   1.  is version 0.4.0.
 
    2.  allows user supplied options
 
