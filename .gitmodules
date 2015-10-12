@@ -1,0 +1,3 @@
+[submodule "Comskip"]
+	path = Comskip
+	url = git://github.com/erikkaashoek/Comskip
