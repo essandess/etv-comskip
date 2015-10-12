@@ -2,7 +2,7 @@ ETVComskip (Original migrated from googlecode).
 
 See the maintained repository [etv-comskip](https://github.com/essandess/etv-comskip) that has the capabilities to mark commercials on HD recordings and iTunes exports.
 
-This version will not be maintained.
+This original version will not be maintained.
 
 Commercial detection and skipping for EyeTV, using a Mac OS X port of 
 comskip (http://www.kaashoek.com/comskip/).
