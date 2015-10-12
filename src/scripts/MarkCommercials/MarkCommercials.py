@@ -13,7 +13,7 @@
 # if no arguments show id, recording name...
 #
 # If argument is 'all', process all recordings which don't
-# have markers and do not match any exclude information from the cfg file.  
+# have markers and do not match any exclude information from the cfg file.
 #
 # If argument is'forceall', process all recordings except those that match
 # any exclude information in the cfg file.
@@ -34,12 +34,29 @@
 #  Handle multiple video pids.
 # Added argument for PID - Ben Blake September 2009
 
+# Steven T. Smith <steve dot t dot smith at gmail dot com>
+# Added macports wine, nice-ness, mp4chaps chapters headings at commercials,
+# export comskip chapters to iTunes exports via .exported_inodes.txt file
+# added gtimeout
+
+# used for the command: find <iTunes_TV_Shows> -type f -i <inum>
+iTunes_TV_Shows = '/Volumes/Macintosh HD/Users/Shared/Public/iTunes Media/TV Shows'
+# complete path to the mp4chaps and gtimeout commands ;
+# e.g. sudo port install mp4v2 coreutils
+mp4chaps = '/opt/local/bin/mp4chaps'
+gtimeout = '/opt/local/bin/gtimeout'
+gtimeout_duration = '5h'
+
+
 import sys, os, string, os.path
 import time
 import math
 import traceback
 from optparse import OptionParser
-from ConfigParser import SafeConfigParser 
+from ConfigParser import SafeConfigParser
+
+from os import listdir
+from os.path import isfile, join
 
 # Exit Codes
 #  Everything worked ok
@@ -68,7 +85,7 @@ try:
 except ImportError, e:
     sys.stderr.write('Error: importing appscript\n%s\n' % e)
     sys.exit(importExitCode)
-    
+
 version = '0.4.0'
 # Cfg file definitions and variables
 userSectionName = 'User Section'
@@ -109,44 +126,44 @@ def InitGrowl():
     """docstring for InitGrowl"""
     global growl
     global allNotificationsList
-    
+
     # Should we use growl?
     if not options.growl:
         # No
         return
-    growl = app('GrowlHelperApp')  
+    growl = app('Growl')
     enabledNotificationsList = allNotificationsList
     WriteToLog('Registering with growl\n')
     try:
         growl.register(as_application=programName,
-                        all_notifications=allNotificationsList,
-                        default_notifications=enabledNotificationsList)
+                       all_notifications=allNotificationsList,
+                       default_notifications=enabledNotificationsList)
     except Exception, e:
         WriteToLog('Error: registering with growl\n  %s\n' % e)
         growl = None
-        
-    
-def sendGrowlNotification(title, description):
+
+
+def sendGrowlNotification(name, title, description):
     """docstring for sendGrowlNotification"""
     # Send a Notification...
     if growl is not None:
-        WriteToLog('Sending notification via growl\n')
+        WriteToLog('Sending notification via growl (%s, %s, %s)\n' % (programName, title,description))
         try:
-            growl.notify(with_name=programName,
-                        title=title,
-                        description=description,
-                        application_name=programName)
+            growl.notify(with_name=name,
+                         title=programName,
+                         description=description,
+                         application_name=programName)
         except Exception, e:
             WriteToLog('Error: growl notify\n  %s\n' % e)
 
-    
-    
+
+
 # Create the log file
 def GetLog(name=None):
     """docstring for GetLog"""
     global log
     global comskipLogPathName
-    
+
     # Should we log?
     if not options.log:
         return
@@ -161,7 +178,7 @@ def GetLog(name=None):
         name = time.strftime('%m-%d-%Y %H-%M-%S')
     comskipLogPathName = os.path.join(fullPath, name + '_comskip.log')
     log = open(os.path.join(fullPath, name + '.log'), 'w')
-    
+
 def WriteToLog(message):
     """docstring for WriteToLog"""
     if options.log:
@@ -173,9 +190,9 @@ def WriteToLog(message):
 def CheckForApplicationCommunications(retries=3):
     """docstring for CheckForApplicationCommunications"""
     global EyeTV
-    
+
     # launch the application
-    EyeTV.launch
+    EyeTV.launch()
     WriteToLog('Checking communications to %s with %d retries\n' % (options.app, retries))
     for attempt in range(retries):
         try:
@@ -190,15 +207,15 @@ def CheckForApplicationCommunications(retries=3):
             time.sleep(0.5)
             continue
     else:
-        msg = 'Error: unable to communicate with %s\n' % "EyeTV"
+        msg = 'Error: unable to communicate with %s\n' % options.app
         WriteToLog(msg)
         sys.stderr.write(msg)
         sys.exit(communicationsErrorExitCode)
-    
+
 def GetRecordings(retries=0):
     """docstring for GetRecordings"""
     global EyeTV
-    
+
     WriteToLog('Getting recordings\n')
     try:
         recordings = EyeTV.recordings.get()
@@ -212,7 +229,7 @@ def GetRecordings(retries=0):
 
 # Possibly run comskip and return the name of a plist file with commercial markers in it
 def GetPlistFile(etvr_file, run_comskip=True):
-    
+
     FileDir = os.path.dirname(etvr_file)
     dir, fil = os.path.split(etvr_file)
     FileRoot, ext = os.path.splitext(fil)
@@ -220,11 +237,14 @@ def GetPlistFile(etvr_file, run_comskip=True):
     MpgFile = FileRoot + ".mpg"
     PlistFile = FileRoot + ".edl"
 
-    cmd = '"/Library/Application Support/ETVComskip/Wine.app/Contents/Resources/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
+    #cmd = '"/Library/Application Support/ETVComskip/Wine.app/Contents/Resources/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
+    # MacPorts 64-bit wine
+    #cmd = '"/Applications/Wine.app/Contents/Resources/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
+    cmd = '"/opt/local/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
 
     if options.pid <> "":
-    	cmd += " --pid=" + options.pid
-    
+         cmd += " --pid=" + options.pid
+
     outputName = '/dev/null'
     if options.log:
         cmd += ' > %s 2>&1' % comskipLogPathName
@@ -232,16 +252,26 @@ def GetPlistFile(etvr_file, run_comskip=True):
         cmd += ' > %s 2>&1' % '/dev/null'
     if options.verbose:
         cmd += ' --verbose=%d' % options.verbose
+    # nice the wine command
+    cmd = "/usr/bin/nice -n 14 " + gtimeout + " " + gtimeout_duration + " " + cmd
     WriteToLog('Changing directory to %s\n' % FileDir)
     os.chdir(FileDir)
     if run_comskip:
+        #get the show name from the Directory Path
+        showName=os.path.splitext(os.path.basename(FileDir))[0]
         # Notify the user
-        sendGrowlNotification(commercialStart, commercialStartDescription)
+        sendGrowlNotification(commercialStart, commercialStart + " " + showName, commercialStartDescription + " on " + showName)
         # TBD stop comskip when ^c happens
-        WriteToLog('Running: %s\n' % cmd)
-        rc = os.system(cmd)
+        if not options.m4vonly:
+            WriteToLog('Running: %s\n' % cmd)
+            rc = os.system(cmd)
+        else:
+            WriteToLog('Skipped Comm Search, attempting to just add m4v Markers.')
+            rc=0
+        # Add the Comskip information as chapters to all m4v files
+        mp4chaps_all_m4v(FileDir)
         # Notify the user
-        sendGrowlNotification(commercialStop, commercialStopDescription)
+        sendGrowlNotification(commercialStop, commercialStop + " " + showName, commercialStopDescription + " on " + showName)
         WriteToLog('Return code is: %d, 0x%x\n' % (rc, rc))
         errorCode = (rc >> 8) & 0xff
         WriteToLog('Error code is: %d, 0x%x\n' % (errorCode, errorCode))
@@ -304,9 +334,9 @@ def GetMarkersArray(PlistFile):
     return markers
 
 def ProcessRecording(recording, run_comskip):
-    
-    global recordingCount 
-    
+
+    global recordingCount
+
     channel = recording.channel_number()
     title = recording.title()
     stationName = recording.station_name()
@@ -354,12 +384,103 @@ def ProcessRecording(recording, run_comskip):
     # Did we get a plist file?
     if Plist is not None:
         # Yes, convert it.
-        markers = GetMarkersArray(Plist)    
+        markers = GetMarkersArray(Plist)
         # and finally, set them
         WriteToLog('Setting markers on recording\n')
         markers_string = str(markers)
         WriteToLog('Adding marker: %s\n' % (markers_string))
         recording.markers.set(markers)
+
+def sec2hhmmss(secs):
+    """Convert seconds to string HH:MM:SS.SSS format."""
+    rem = secs/3600
+    hh = int(rem)
+    rem = (rem-hh)*60
+    mm = int(rem)
+    rem = (rem-mm)*60
+    ss = int(rem)
+    rem = (rem-ss)
+    rem = '%.3f' % rem  # millisecond precision
+    rem = rem.replace('0.','.')
+    return '%02d:%02d:%02d%s' % (hh,mm,ss,rem)
+
+def split_whitespace_nolibs(str):
+    """Split a string by whitespace without using re or shlex libraries.."""
+    strs = filter(None,str.split('\t'))
+    strs = map(lambda s: s.split(' '),strs)
+    strs = filter(None,[item for sublist in strs for item in sublist])
+    return strs
+
+def edl2mp4chaps(edl_file,txt_file):
+    """Convert an edl file into an mp4chaps file."""
+    ftxt = open(txt_file,'w')
+
+    comskipno = 0
+    comskipchapno = 0
+    lines = [line.strip() for line in open(edl_file)]
+    ftxt.write('00:00:00.000 Beginning\n')
+    for line in lines:
+        times = map(float,split_whitespace_nolibs(line))
+        if (comskipno == 0 and times[0] != 0.0):
+            comskipno += 1
+        if (len(times) < 2 or times[2] == 0.0):
+            if (times[0] != 0.0):
+                ftxt.write('%s Chapter %d End\n' % (sec2hhmmss(times[0]),comskipno))
+            comskipno += 1
+            ftxt.write('%s Chapter %d Start\n' % (sec2hhmmss(times[1]),comskipno))
+        else:
+            # never seen this case, but here for logical consistency
+            comskipchapno += 1
+            if (times[0] != 0.0):
+                ftxt.write('%s Chapter %d Start\n' % (sec2hhmmss(times[0]),comskipchapno))
+            ftxt.write('%s Chapter %d End\n' % (sec2hhmmss(times[1]),comskipchapno))
+    ftxt.close()
+    return
+
+def mp4chaps_all_m4v(dir):
+    """Apply an edl file's entries to all m4v files in a directory."""
+    os.chdir(dir)
+    edl_file = ""
+    files = [ file for file in listdir(dir) if isfile(join(dir,file)) ]
+    for file in files:
+        if file.find('.edl') != -1:
+            edl_file = file
+            break
+    if edl_file != "" and os.path.isfile(mp4chaps):
+        for file in files:
+            if file.find('.m4v') != -1:
+                # remove all chapters
+                cmd = mp4chaps + " -r '" + file + "' > /dev/null 2>&1"
+                rc = os.system(cmd)
+                # create chapter file
+                txt_file = file.replace('.m4v','.chapters.txt')
+                edl2mp4chaps(edl_file,txt_file)
+                # import chapters
+                cmd = mp4chaps + " -i '" + file + "' > /dev/null 2>&1"
+                rc = os.system(cmd)
+    # import chapters into iTunes exports, then delete .chapters.txt file
+    exported_inodes_file = edl_file.replace('.edl','.exported_inodes.txt')
+    if edl_file != "" and os.path.isfile(mp4chaps) and os.path.isfile(exported_inodes_file):
+        exported_inodes = [line.strip() for line in open(exported_inodes_file)]
+        for inode in exported_inodes:
+            # get the output of find with os.popen
+            cmd = "find '" + iTunes_TV_Shows + "' -type f -inum " + inode
+            findcmd = os.popen(cmd,"r")
+            exported_file = findcmd.readline()
+            exported_file = exported_file.rstrip('\n')
+            exported_file_safequotes = exported_file.replace("'","'\"'\"'")
+            if exported_file != "":
+                # remove all chapters
+                cmd = mp4chaps + r" -r '" + exported_file_safequotes + r"' > /dev/null 2>&1"
+                rc = os.system(cmd)
+                # create chapter file
+                txt_file = exported_file.replace('.m4v','.chapters.txt')
+                edl2mp4chaps(edl_file,txt_file)
+                # import chapters
+                cmd = mp4chaps + " -i '" + exported_file_safequotes + "' > /dev/null 2>&1"
+                rc = os.system(cmd)
+                os.remove(txt_file)
+    return
 
 def main():
     global options
@@ -369,32 +490,35 @@ def main():
     global excludedStationNames
     global log
     global EyeTV
-    
+
     # Do the options
     usage = "usage: %prog [options] [RECORDING-ID | 'all' | 'forceall']"
     parser = OptionParser(usage=usage, version=version)
     parser.add_option("--noexclude",
-                    action="store_true", dest="noexclude", default=False,
-                    help="Do NOT exclude recordings specified in cfg file, default=%default")
+                      action="store_true", dest="noexclude", default=False,
+                      help="Do NOT exclude recordings specified in cfg file, default=%default")
     parser.add_option("--force",
-                    action="store_true", dest="force", default=False,
-                    help="Force commercial marking on specified RECORDING-ID. Allows marking when markers already exist, default=%default")
+                      action="store_true", dest="force", default=False,
+                      help="Force commercial marking on specified RECORDING-ID. Allows marking when markers already exist, default=%default")
     parser.add_option("--growl",
-                    action="store_true", dest="growl", default=False,
-                    help="Enable growl notification, default=%default")
+                      action="store_true", dest="growl", default=False,
+                      help="Enable growl notification, default=%default")
     parser.add_option("--log",
-                    action="store_true", dest="log", default=False,
-                    help="Enable logging, default=%default")
+                      action="store_true", dest="log", default=False,
+                      help="Enable logging, default=%default")
     parser.add_option("--app",
-                    dest="app", default='EyeTV',
-                    help="Specify EyeTV application name, default=%default")
+                      dest="app", default='EyeTV',
+                      help="Specify EyeTV application name, default=%default")
     parser.add_option("--verbose",
-                    type='int',
-                    dest="verbose", default=0,
-                    help="Verbosity level, 0-10, default=%default")
+                      type='int',
+                      dest="verbose", default=0,
+                      help="Verbosity level, 0-10, default=%default")
     parser.add_option("--pid",
-                    dest="pid", default='',
-                    help="Specify the Video PID, default=%default")
+                      dest="pid", default='',
+                      help="Specify the Video PID, default=%default")
+    parser.add_option("--m4vonly",
+                      dest="m4vonly", default=False,
+                      help="Only chapter m4v files that have already had commercials marked, don't try to mark commercials. default=%default")
     (options, args) = parser.parse_args()
 
     if len(args):
@@ -406,7 +530,7 @@ def main():
     WriteToLog('Command line: %s\n' % sys.argv)
     WriteToLog('Application name: %s\n' % options.app)
     print '\t\t%s\t%s\n' % (os.path.splitext(os.path.basename(sys.argv[0]))[0], version)
-    
+
     # Get the app
     EyeTV = app(options.app)
 
@@ -442,7 +566,7 @@ def main():
         WriteToLog('Excluded Channels: %s\n' % excludedChannels)
         WriteToLog('Excluded Titles: %s\n' % excludedTitles)
         WriteToLog('Excluded Station names: %s\n' % excludedStationNames)
-         
+
     # Test communications with application
     CheckForApplicationCommunications()
 
@@ -490,7 +614,7 @@ def main():
         markerCount = len(rec.markers.get())
         WriteToLog('Marker count: %d\n' % markerCount)
         # Recording already have markers?
-        if markerCount == 0:
+        if markerCount == 0 or options.m4vonly:
             # No
             try:
                 ProcessRecording(rec, RUN_COMSKIP)
@@ -504,6 +628,10 @@ def main():
             WriteToLog('Recording already marked - use forcing with --force option\n')
             ProcessRecording(rec, RUN_COMSKIP)
         else:
+            # Add the Comskip information as chapters to all m4v files
+            if options.m4vonly:
+                mp4chaps_all_m4v(os.path.dirname(recording.location.get().path))
+
             # Recording already maked and user doesn't want it done again
             msg = 'Recording previously marked'
             WriteToLog('%s\n' % msg)
@@ -513,8 +641,8 @@ def main():
 
 if __name__ == '__main__':
     '''
-    Call main
-    '''
+        Call main
+        '''
     try:
         exitStatus = main()
     except KeyboardInterrupt, e:
@@ -525,6 +653,3 @@ if __name__ == '__main__':
         pass
     WriteToLog('Exiting\n')
     sys.exit(exitStatus)
-
-
-
