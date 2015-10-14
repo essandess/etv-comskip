@@ -13,7 +13,7 @@ upload:
 	pushd ${DLDIR} && git clone https://github.com/essandess/etv-comskip.git && popd
 
 distdir::
-	pushd ${DLDIR} && mkdir ETVComskip && popd
+	pushd ${DLDIR} && ( test -d ETVComskip || mkdir ETVComskip ) && popd
 
 dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	pushd ${DLDIR}/ETVComskip
