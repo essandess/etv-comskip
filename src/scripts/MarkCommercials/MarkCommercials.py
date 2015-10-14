@@ -240,8 +240,8 @@ def GetPlistFile(etvr_file, run_comskip=True):
     PlistFile = FileRoot + ".edl"
 
     # MacPorts 64-bit wine
-    #cmd = '"/opt/local/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
-    cmd = comskip + ' --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
+    #cmd = '"/opt/local/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip.ini" "%s"' % MpgFile
+    cmd = comskip + ' --ini="/Library/Application Support/ETVComskip/comskip.ini" "%s"' % MpgFile
 
     if options.pid <> "":
          cmd += " --pid=" + options.pid
