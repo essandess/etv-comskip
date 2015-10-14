@@ -42,15 +42,15 @@ MarkCommercials:: distdir
 
 Install:: distdir
 	pushd ${DLDIR}/etv-comskip
-	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.scpt && popd
-	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/UnInstall\ ETVComskip.app ./UnInstall.scpt && popd
+	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && popd
+	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/UnInstall\ ETVComskip.app ./UnInstall.applescript && popd
 	popd
 
 EyeTVTriggers:: distdir
 	pushd ${DLDIR}/etv-comskip
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/RecordingStarted.scpt ./RecordingStarted.scpt && popd
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/RecordingDone.scpt ./RecordingDone.scpt && popd
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/ExportDone.scpt ./ExportDone.scpt && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/RecordingStarted.scpt ./RecordingStarted.applescript && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/RecordingDone.scpt ./RecordingDone.applescript && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/ExportDone.scpt ./ExportDone.applescript && popd
 	popd
 
 docs::

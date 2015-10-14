@@ -38,11 +38,13 @@
 # Added macports wine, nice-ness, mp4chaps chapters headings at commercials,
 # export comskip chapters to iTunes exports via .exported_inodes.txt file
 # added gtimeout
+# added comskip natively compiled binary for github distribution
 
 # used for the command: find <iTunes_TV_Shows> -type f -i <inum>
 iTunes_TV_Shows = '/Volumes/Macintosh HD/Users/Shared/Public/iTunes Media/TV Shows'
-# complete path to the mp4chaps and gtimeout commands ;
-# e.g. sudo port install mp4v2 coreutils
+# complete path to the comskip, mp4chaps, and gtimeout commands ;
+# e.g. sudo port install py-appscript argtable mp4v2 coreutils
+comskip = '/opt/local/bin/comskip'
 mp4chaps = '/opt/local/bin/mp4chaps'
 gtimeout = '/opt/local/bin/gtimeout'
 gtimeout_duration = '5h'
@@ -237,10 +239,9 @@ def GetPlistFile(etvr_file, run_comskip=True):
     MpgFile = FileRoot + ".mpg"
     PlistFile = FileRoot + ".edl"
 
-    #cmd = '"/Library/Application Support/ETVComskip/Wine.app/Contents/Resources/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
     # MacPorts 64-bit wine
-    #cmd = '"/Applications/Wine.app/Contents/Resources/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
-    cmd = '"/opt/local/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
+    #cmd = '"/opt/local/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
+    cmd = comskip + ' --ini="/Library/Application Support/ETVComskip/comskip/comskip.ini" "%s"' % MpgFile
 
     if options.pid <> "":
          cmd += " --pid=" + options.pid
@@ -252,7 +253,7 @@ def GetPlistFile(etvr_file, run_comskip=True):
         cmd += ' > %s 2>&1' % '/dev/null'
     if options.verbose:
         cmd += ' --verbose=%d' % options.verbose
-    # nice the wine command
+    # nice the comskip command
     cmd = "/usr/bin/nice -n 14 " + gtimeout + " " + gtimeout_duration + " " + cmd
     WriteToLog('Changing directory to %s\n' % FileDir)
     os.chdir(FileDir)
