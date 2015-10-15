@@ -9,9 +9,9 @@ DLDIR=~/Downloads
 PORT=/opt/local/bin/port
 LOCALBIN=/opt/local/bin
 
-all: xcode macports distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs dmg
+all: xcode macports distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs # dmg
 
-upload:
+upload::
 	pushd ${DLDIR} && git clone https://github.com/essandess/etv-comskip.git && popd
 
 xcode::
