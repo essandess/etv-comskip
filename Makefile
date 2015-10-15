@@ -57,8 +57,8 @@ dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 comskip:: distdir MarkCommercials
 	# comskip
 	pushd ./src/Comskip; \
-	./autogen.sh; \
-	./configure; \
+	./autogen.sh && \
+	./configure && \
 	make; \
 	popd
 	# comskip.ini
