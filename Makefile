@@ -21,20 +21,20 @@ xcode::
 	if ! [ $RV -eq '0' ]
 	then
 		echo 'Please install Xcode Command Line Tools as a sudoer...'
-    		sudo /usr/bin/xcode-select --install
-    		sudo /usr/bin/xcodebuild -license
+		sudo /usr/bin/xcode-select --install
+		sudo /usr/bin/xcodebuild -license
 	fi
 
 macports:: xcode
 	# Install MacPorts
 	if ! [ -x $PORT ]
 	then
-    		open -a Safari https://www.macports.org/install.php
-    	cat <<MACPORTS
+		open -a Safari https://www.macports.org/install.php
+	cat <<MACPORTS
 Please download and install Macports from https://www.macports.org/install.php
 then run make again.
 MACPORTS
-    		exit 1
+		exit 1
 	fi
 	echo 'Please update and install the necessary Macports as a sudoer...'
 	sudo $PORT selfupdate
