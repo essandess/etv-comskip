@@ -49,17 +49,18 @@ distdir:: macports
 	pushd ${DLDIR} && ( test -d ETVComskip || mkdir ETVComskip ) && popd
 
 dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
-	pushd ${DLDIR}/ETVComskip
-	-rm *.dmg*
-	hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}
+	pushd ${DLDIR}/ETVComskip; \
+	rm *.dmg*; \
+	hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}; \
 	popd
 
 comskip:: distdir MarkCommercials
 	# comskip
-	pushd ./src/Comskip
-	./autogen.sh
-	./configure
-	make
+	pushd ./src/Comskip; \
+	./autogen.sh; \
+	./configure; \
+	make; \
+	popd
 	# comskip.ini
 	install -m 644 ./src/comskip_ini/comskip.ini ${DLDIR}/ETVComskip
 	install -m 644 ./src/comskip_ini/comskip.ini.us_cabletv ${DLDIR}/ETVComskip
@@ -95,10 +96,10 @@ package:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 
 install:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	sudo install -m 755 ${DLDIR}/ETVComskip "/Library/Application Support"
-	pushd ./src/Comskip
-	echo 'Please install the comskip binaries as a sudoer...'
-	sudo install -m 755 ./comskip $LOCALBIN
-	sudo install -m 755 ./comskip-gui $LOCALBIN
+	pushd ./src/Comskip; \
+	echo 'Please install the comskip binaries as a sudoer...'; \
+	sudo install -m 755 ./comskip ${LOCALBIN}; \
+	sudo install -m 755 ./comskip-gui ${LOCALBIN}; \
 	popd
 
 clean::
