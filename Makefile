@@ -16,35 +16,34 @@ upload::
 
 xcode::
 	# Install OS X Command Line Tools
-	CLT_DIR=`xcode-select -p`
-	RV=$?
-	if ! [ $RV -eq '0' ]
-	then
-		echo 'Please install Xcode Command Line Tools as a sudoer...'
-		sudo /usr/bin/xcode-select --install
-		sudo /usr/bin/xcodebuild -license
+	@if ! [ $(shell xcode-select -p 1>&2 2> /dev/null; echo $$?) -eq '0' ]; \
+	then \
+		echo 'Please install Xcode Command Line Tools as a sudoer...'; \
+		sudo /usr/bin/xcode-select --install; \
+		sudo /usr/bin/xcodebuild -license; \
+	else \
+		echo "Xcode Command Line Tools found in $(shell xcode-select -p)."; \
 	fi
 
 macports:: xcode
 	# Install MacPorts
-	if ! [ -x $PORT ]
-	then
-		open -a Safari https://www.macports.org/install.php
-	cat <<MACPORTS
-Please download and install Macports from https://www.macports.org/install.php
-then run make again.
-MACPORTS
-		exit 1
+	@if ! [ -x ${PORT} ]; \
+	then \
+		open -a Safari https://www.macports.org/install.php; \
+		echo "Please download and install Macports from https://www.macports.org/install.php\n then run make again."; \
+		exit 1; \
+	else \
+		echo "Macports executable found in ${PORT}."; \
 	fi
 	echo 'Please update and install the necessary Macports as a sudoer...'
-	sudo $PORT selfupdate
-	sudo $PORT install python27
-	sudo $PORT --set python python27
-	sudo $PORT install py-appscript py-py2app
-	-sudo $PORT uninstall ffmpeg-devel
-	sudo $PORT install ffmpeg +x11
-	sudo $PORT install argtable
-	sudo $PORT install mp4v2 coreutils
+	sudo ${PORT} selfupdate
+	sudo ${PORT} install python27
+	sudo ${PORT} select --set python python27
+	sudo ${PORT} install py-appscript py-py2app
+	-sudo ${PORT} uninstall ffmpeg-devel
+	sudo ${PORT} install ffmpeg +x11
+	sudo ${PORT} install argtable
+	sudo ${PORT} install mp4v2 coreutils
 
 distdir:: macports
 	pushd ${DLDIR} && ( test -d ETVComskip || mkdir ETVComskip ) && popd
@@ -69,13 +68,13 @@ ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/dist
 	-rm -rf src/scripts/ComSkipper/build
 	-rm -rf ETVComskip/ComSkipper.app
-	pushd ./src/scripts/ComSkipper && python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
+	pushd ./src/scripts/ComSkipper && /opt/local/bin/python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
 
 MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/dist
 	-rm -rf src/scripts/MarkCommercials/build
 	-rm -rf ETVComskip/MarkCommercials.app
-	pushd ./src/scripts/MarkCommercials && python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
+	pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
 
 Install:: distdir
 	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && popd
