@@ -67,8 +67,8 @@ output_demux=0				; set to 1 if you want comskip to demux the mpeg file while sc
 sage_framenumber_bug=0
 sage_minute_bug=0
 live_tv=0					; set to 1 if you use parallelprocessing and need the output while recording
-live_tv_retries=4			; change to 16 when using live_tv in BTV, used for mpeg PS and TS
-dvrms_live_tv_retries=300			; only used for dvr_ms
+live_tv_retries=0			; change to 16 when using live_tv in BTV, used for mpeg PS and TS
+dvrms_live_tv_retries=0			; only used for dvr_ms
 standoff=0					; change to 8000000 when using live_tv in BTV
 cuttermaran_options="cut=\"true\" unattended=\"true\" muxResult=\"false\" snapToCutPoints=\"true\" closeApp=\"true\""
 mpeg2schnitt_options="mpeg2schnitt.exe /S /E /R25  /Z %2 %1"
