@@ -37,13 +37,11 @@ macports:: xcode
 	fi
 	echo 'Please update and install the necessary Macports as a sudoer:'
 	# sudo ${PORT} selfupdate
-	# sudo ${PORT} install python27
+	# sudo ${PORT} upgrade outdated
+	# sudo ${PORT} install python27 py-appscript py-py2app ffmpeg argtable mp4v2 coreutils
 	# sudo ${PORT} select --set python python27
-	# sudo ${PORT} install py-appscript py-py2app
 	# sudo ${PORT} uninstall ffmpeg-devel
-	# sudo ${PORT} install ffmpeg +x11
-	# sudo ${PORT} install argtable
-	# sudo ${PORT} install mp4v2 coreutils
+	# sudo ${PORT} uninstall inactive
 	[[ $(shell port -qv installed | egrep '^ +python27 .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || ( sudo ${PORT} install python27 ; sudo ${PORT} select --set python python27 )
 	[[ $(shell port -qv installed | egrep '^ +py-appscript .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-appscript
 	[[ $(shell port -qv installed | egrep '^ +py-py2app .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-py2app
@@ -64,7 +62,7 @@ dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 
 comskip:: distdir MarkCommercials
 	# comskip
-	make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"
+	pushd ./src/Comskip; make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"; popd
 	@# fflewddur/Comskip's pull request for autotools
 	@#pushd ./src/Comskip; ./autogen.sh && ./configure && make; popd
 	# comskip.ini
