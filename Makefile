@@ -35,15 +35,23 @@ macports:: xcode
 	else \
 		echo "Macports executable found in ${PORT}."; \
 	fi
-	echo 'Please update and install the necessary Macports as a sudoer...'
-	sudo ${PORT} selfupdate
-	sudo ${PORT} install python27
-	sudo ${PORT} select --set python python27
-	sudo ${PORT} install py-appscript py-py2app
-	-sudo ${PORT} uninstall ffmpeg-devel
-	sudo ${PORT} install ffmpeg +x11
-	sudo ${PORT} install argtable
-	sudo ${PORT} install mp4v2 coreutils
+	echo 'Please update and install the necessary Macports as a sudoer:'
+	# sudo ${PORT} selfupdate
+	# sudo ${PORT} install python27
+	# sudo ${PORT} select --set python python27
+	# sudo ${PORT} install py-appscript py-py2app
+	# sudo ${PORT} uninstall ffmpeg-devel
+	# sudo ${PORT} install ffmpeg +x11
+	# sudo ${PORT} install argtable
+	# sudo ${PORT} install mp4v2 coreutils
+	[[ $(shell port -qv installed | egrep '^ +python27 .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || ( sudo ${PORT} install python27 ; sudo ${PORT} select --set python python27 )
+	[[ $(shell port -qv installed | egrep '^ +py-appscript .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-appscript
+	[[ $(shell port -qv installed | egrep '^ +py-py2app .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-py2app
+	-[[ $(shell port -qv installed | egrep '^ +ffmpeg-devel .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] && sudo ${PORT} uninstall ffmpeg-devel
+	[[ $(shell port -qv installed | egrep '^ +ffmpeg .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install ffmpeg +x11
+	[[ $(shell port -qv installed | egrep '^ +argtable .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install argtable
+	[[ $(shell port -qv installed | egrep '^ +mp4v2 .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install mp4v2
+	[[ $(shell port -qv installed | egrep '^ +coreutils .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install coreutils
 
 distdir:: macports
 	pushd ${DLDIR} && ( test -d ETVComskip || mkdir ETVComskip ) && popd
@@ -56,11 +64,9 @@ dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 
 comskip:: distdir MarkCommercials
 	# comskip
-	pushd ./src/Comskip; \
-	./autogen.sh && \
-	./configure && \
-	make; \
-	popd
+	make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"
+	@# fflewddur/Comskip's pull request for autotools
+	@#pushd ./src/Comskip; ./autogen.sh && ./configure && make; popd
 	# comskip.ini
 	install -m 644 ./src/comskip_ini/comskip.ini ${DLDIR}/ETVComskip
 	install -m 644 ./src/comskip_ini/comskip.ini.us_cabletv ${DLDIR}/ETVComskip
