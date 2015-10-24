@@ -53,6 +53,7 @@ macports:: xcode
 
 distdir:: macports
 	pushd ${DLDIR} && ( test -d ETVComskip || mkdir ETVComskip ) && popd
+	pushd ${DLDIR}/ETVComskip && ( test -d bin || mkdir bin ) && popd
 
 dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	pushd ${DLDIR}/ETVComskip; \
@@ -62,9 +63,11 @@ dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 
 comskip:: distdir MarkCommercials
 	# comskip
-	pushd ./src/Comskip; make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"; popd
-	@# fflewddur/Comskip's pull request for autotools
-	@#pushd ./src/Comskip; ./autogen.sh && ./configure && make; popd
+	@# original Makefile make command
+	@# pushd ./src/Comskip; make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"; popd
+	pushd ./src/Comskip; ./autogen.sh && ./configure && make; popd
+	install -m 755 ./src/comskip/comskip ${DLDIR}/ETVComskip/bin
+	install -m 755 ./src/comskip/comskip-gui ${DLDIR}/ETVComskip/bin
 	# comskip.ini
 	install -m 644 ./src/comskip_ini/comskip.ini ${DLDIR}/ETVComskip
 	install -m 644 ./src/comskip_ini/comskip.ini.us_cabletv ${DLDIR}/ETVComskip
@@ -99,12 +102,9 @@ package:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	pkgbuild --doc ETVComskip-$(VERSION).pmdoc --out ${DLDIR}/ETVComskip/ETVComskip-$(VERSION).mpkg -v -b
 
 install:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
+	pushd "/Library/Application Support" && ( test -d ETVComskip.previous && sudo rm -fr ETVComskip.previous ) && popd
+	pushd "/Library/Application Support" && ( test -d ETVComskip && sudo mv ETVComskip ETVComskip.previous ) && popd
 	sudo install -m 755 ${DLDIR}/ETVComskip "/Library/Application Support"
-	pushd ./src/Comskip; \
-	echo 'Please install the comskip binaries as a sudoer...'; \
-	sudo install -m 755 ./comskip ${LOCALBIN}; \
-	sudo install -m 755 ./comskip-gui ${LOCALBIN}; \
-	popd
 
 clean::
 	rm -fr ${DLDIR}/ETVComskip
