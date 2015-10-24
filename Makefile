@@ -83,6 +83,7 @@ MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/build
 	-rm -rf ETVComskip/MarkCommercials.app
 	pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/bin/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir
 	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && popd
