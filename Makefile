@@ -103,12 +103,12 @@ package:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	#/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc ETVComskip-$(VERSION).pmdoc --out ${DLDIR}/ETVComskip/ETVComskip-$(VERSION).mpkg -v -b
 	pkgbuild --doc ETVComskip-$(VERSION).pmdoc --out ${DLDIR}/ETVComskip/ETVComskip-$(VERSION).mpkg -v -b
 
-install:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
+install::
 	sudo cp -p ${DLDIR}/ETVComskip/scripts/RecordingStarted.scpt "/Library/Application Support/EyeTV/Scripts/TriggeredScripts"
 	sudo cp -p ${DLDIR}/ETVComskip/scripts/RecordingDone.scpt "/Library/Application Support/EyeTV/Scripts/TriggeredScripts"
 	sudo cp -p ${DLDIR}/ETVComskip/scripts/ExportDone.scpt "/Library/Application Support/EyeTV/Scripts/TriggeredScripts"
-	pushd "/Library/Application Support" && ( test -d ETVComskip.previous && sudo rm -fr ETVComskip.previous ) && popd
-	pushd "/Library/Application Support" && ( test -d ETVComskip && sudo mv ETVComskip ETVComskip.previous ) && popd
+	-pushd "/Library/Application Support" && ( test -d ETVComskip.previous && sudo rm -fr ETVComskip.previous ) && popd
+	-pushd "/Library/Application Support" && ( test -d ETVComskip && sudo mv ETVComskip ETVComskip.previous ) && popd
 	sudo cp -Rfp ${DLDIR}/ETVComskip "/Library/Application Support"
 
 uninstall::
