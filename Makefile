@@ -104,9 +104,18 @@ package:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	pkgbuild --doc ETVComskip-$(VERSION).pmdoc --out ${DLDIR}/ETVComskip/ETVComskip-$(VERSION).mpkg -v -b
 
 install:: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
+	sudo cp -p ${DLDIR}/ETVComskip/scripts/RecordingStarted.scpt "/Library/Application Support/EyeTV/Scripts/TriggeredScripts"
+	sudo cp -p ${DLDIR}/ETVComskip/scripts/RecordingDone.scpt "/Library/Application Support/EyeTV/Scripts/TriggeredScripts"
+	sudo cp -p ${DLDIR}/ETVComskip/scripts/ExportDone.scpt "/Library/Application Support/EyeTV/Scripts/TriggeredScripts"
 	pushd "/Library/Application Support" && ( test -d ETVComskip.previous && sudo rm -fr ETVComskip.previous ) && popd
 	pushd "/Library/Application Support" && ( test -d ETVComskip && sudo mv ETVComskip ETVComskip.previous ) && popd
-	sudo install -m 755 ${DLDIR}/ETVComskip "/Library/Application Support"
+	sudo cp -Rfp ${DLDIR}/ETVComskip "/Library/Application Support"
+
+uninstall::
+	sudo rm -fr "/Library/Application Support/ETVComskip"
+	sudo rm -fr "/Library/Application Support/EyeTV/Scripts/TriggeredScripts/RecordingStarted.scpt"
+	sudo rm -fr "/Library/Application Support/EyeTV/Scripts/TriggeredScripts/RecordingDone.scpt"
+	sudo rm -fr "/Library/Application Support/EyeTV/Scripts/TriggeredScripts/ExportDone.scpt"
 
 clean::
 	rm -fr ${DLDIR}/ETVComskip
