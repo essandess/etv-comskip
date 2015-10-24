@@ -51,7 +51,7 @@ from os import listdir
 from os.path import isfile, join
 
 # used for the command: find <iTunes_TV_Shows> -type f -i <inum>
-iTunes_TV_Shows = subprocess.call(['osascript', '/Library/Application Support/ETVComskip/bin/iTunesTVFolder.scpt'])
+iTunes_TV_Shows = subprocess.call(['osascript', '/Library/Application Support/ETVComskip/scripts/iTunesTVFolder.scpt'])
 # complete path to the comskip, mp4chaps, and gtimeout commands ;
 # e.g. sudo port install py-appscript argtable mp4v2 coreutils
 comskip = '/Library/Application Support/ETVComskip/bin/comskip'

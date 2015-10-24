@@ -54,6 +54,7 @@ macports:: xcode
 distdir:: macports
 	pushd ${DLDIR} && ( test -d ETVComskip || mkdir ETVComskip ) && popd
 	pushd ${DLDIR}/ETVComskip && ( test -d bin || mkdir bin ) && popd
+	pushd ${DLDIR}/ETVComskip && ( test -d scripts || mkdir scripts ) && popd
 
 dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
 	pushd ${DLDIR}/ETVComskip; \
@@ -83,16 +84,16 @@ MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/build
 	-rm -rf ETVComskip/MarkCommercials.app
 	pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/bin/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir
 	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && popd
 	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/UnInstall\ ETVComskip.app ./UnInstall.applescript && popd
 
 EyeTVTriggers:: distdir
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/RecordingStarted.scpt ./RecordingStarted.applescript && popd
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/RecordingDone.scpt ./RecordingDone.applescript && popd
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/ExportDone.scpt ./ExportDone.applescript && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/RecordingStarted.scpt ./RecordingStarted.applescript && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/RecordingDone.scpt ./RecordingDone.applescript && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/ExportDone.scpt ./ExportDone.applescript && popd
 
 docs::
 	cp LICENSE LICENSE.rtf AUTHORS ${DLDIR}/ETVComskip

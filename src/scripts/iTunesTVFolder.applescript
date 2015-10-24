@@ -1,3 +1,5 @@
+-- ETVComskip MarkCommercials script that returns the POSIX directory of the iTunes playlist "TV Shows" folder
+
 set TV_Shows to "TV Shows"
 
 tell application "iTunes"
