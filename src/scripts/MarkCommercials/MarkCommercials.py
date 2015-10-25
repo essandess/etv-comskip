@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 #
-# MarkCommercials.py, EyeTV3 version
+# MarkCommercials.py, EyeTV3 Github version
 #
 # Copyright (c) 2008, Jon A. Christopher
 # Copyright (c) 2008, TeamSTARS Dick Gordon and Rick Kier
+# Copyright (c) 2015, Steven T. Smith
 # Licensed under the GNU General Public License, version 2
 #
 #
@@ -51,7 +52,7 @@ from os import listdir
 from os.path import isfile, join
 
 # used for the command: find <iTunes_TV_Shows> -type f -i <inum>
-iTunes_TV_Shows = subprocess.call(['osascript', '/Library/Application Support/ETVComskip/scripts/iTunesTVFolder.scpt'])
+iTunes_TV_Shows = subprocess.check_output(['osascript', '/Library/Application Support/ETVComskip/scripts/iTunesTVFolder.scpt'])
 # complete path to the comskip, mp4chaps, and gtimeout commands ;
 # e.g. sudo port install py-appscript argtable mp4v2 coreutils
 comskip = '/Library/Application Support/ETVComskip/bin/comskip'
@@ -87,7 +88,7 @@ except ImportError, e:
     sys.stderr.write('Error: importing appscript\n%s\n' % e)
     sys.exit(importExitCode)
 
-version = '0.4.0'
+version = '1.0'
 # Cfg file definitions and variables
 userSectionName = 'User Section'
 listDelimiterName = 'LIST_DELIMITER'
@@ -105,9 +106,6 @@ comskipLogPathName = None
 log = None
 growl = None
 eyeTV = None
-pathToComskip = None
-nameOfComskip = 'comskip'
-comskipLocations = ['.', r'/Library/Application Support/ETVComskip']
 
 # for debugging. when False, will not actually run comskip, but will do everything else
 RUN_COMSKIP = True
@@ -240,20 +238,19 @@ def GetPlistFile(etvr_file, run_comskip=True):
 
     # MacPorts 64-bit wine
     #cmd = '"/opt/local/bin/wine" "/Library/Application Support/ETVComskip/comskip/comskip.exe" --ini="/Library/Application Support/ETVComskip/comskip.ini" "%s"' % MpgFile
-    cmd = comskip + ' --ini="/Library/Application Support/ETVComskip/comskip.ini" "%s"' % MpgFile
+    cmd = [ comskip, '--ini=/Library/Application Support/ETVComskip/comskip.ini', MpgFile ]
 
     if options.pid <> "":
-         cmd += " --pid=" + options.pid
+         cmd += ['--pid=' + str(options.pid)]
 
-    outputName = '/dev/null'
     if options.log:
-        cmd += ' > %s 2>&1' % comskipLogPathName
+        stdout = comskipLogPathName
     else:
-        cmd += ' > %s 2>&1' % '/dev/null'
+        stdout = '/dev/null'
     if options.verbose:
-        cmd += ' --verbose=%d' % options.verbose
-    # nice the comskip command
-    cmd = "/usr/bin/nice -n 14 " + gtimeout + " " + gtimeout_duration + " " + cmd
+        cmd += ['--verbose=' + str(options.verbose)]
+    # nice and gtimeout the comskip command
+    cmd = [ '/usr/bin/nice', '-n', '14', gtimeout, gtimeout_duration ] + cmd
     WriteToLog('Changing directory to %s\n' % FileDir)
     os.chdir(FileDir)
     if run_comskip:
@@ -263,8 +260,10 @@ def GetPlistFile(etvr_file, run_comskip=True):
         sendGrowlNotification(commercialStart, commercialStart + " " + showName, commercialStartDescription + " on " + showName)
         # TBD stop comskip when ^c happens
         if not options.m4vonly:
-            WriteToLog('Running: %s\n' % cmd)
-            rc = os.system(cmd)
+            WriteToLog('Running: %s\n' % ' '.join(cmd))
+            fc = open(stdout,'w')
+            rc = subprocess.call(cmd,stdout=fc,stderr=fc)
+            fc.close()
         else:
             WriteToLog('Skipped Comm Search, attempting to just add m4v Markers.')
             rc=0
@@ -278,8 +277,8 @@ def GetPlistFile(etvr_file, run_comskip=True):
         # Error code:
         #   3 = no Video pid found
         #   2 = Can't open the mpeg2 file TBD
-        #   1 = Commercials found
-        #   0 = Commercials not found
+        #   1 = Commercials not found
+        #   0 = Commercials found
         if errorCode  == 2:
             msg = 'Unable to open mpeg2 file return from "comskip": %d\n' % errorCode
             WriteToLog(msg)
@@ -291,11 +290,11 @@ def GetPlistFile(etvr_file, run_comskip=True):
             sys.stderr.write(msg)
             return None
         elif errorCode == 1:
-            WriteToLog('Commercials found by comskip\n')
-            return PlistFile
-        elif errorCode == 0:
             WriteToLog('No commercials found by comskip\n')
             return None
+        elif errorCode == 0:
+            WriteToLog('Commercials found by comskip\n')
+            return PlistFile
         else:
             msg = 'Error: unknown error code from comskip: %d, assuming it worked.\n' % errorCode
             WriteToLog(msg)
@@ -450,35 +449,44 @@ def mp4chaps_all_m4v(dir):
         for file in files:
             if file.find('.m4v') != -1:
                 # remove all chapters
-                cmd = mp4chaps + " -r '" + file + "' > /dev/null 2>&1"
-                rc = os.system(cmd)
+                cmd = [mp4chaps, '-r', file]
+                devnull = open('/dev/null','w')
+                rc = subprocess.call(cmd,stdout=devnull,stderr=devnull)
+                devnull.close()
                 # create chapter file
                 txt_file = file.replace('.m4v','.chapters.txt')
                 edl2mp4chaps(edl_file,txt_file)
                 # import chapters
-                cmd = mp4chaps + " -i '" + file + "' > /dev/null 2>&1"
-                rc = os.system(cmd)
+                cmd = [mp4chaps, '-i', file]
+                devnull = open('/dev/null','w')
+                rc = subprocess.call(cmd,stdout=devnull,stderr=devnull)
+                devnull.close()
     # import chapters into iTunes exports, then delete .chapters.txt file
     exported_inodes_file = edl_file.replace('.edl','.exported_inodes.txt')
     if edl_file != "" and os.path.isfile(mp4chaps) and os.path.isfile(exported_inodes_file):
         exported_inodes = [line.strip() for line in open(exported_inodes_file)]
         for inode in exported_inodes:
             # get the output of find with os.popen
-            cmd = "find '" + iTunes_TV_Shows + "' -type f -inum " + inode
+            iTunes_TV_Shows_safequotes = iTunes_TV_Shows.replace("'","'\"'\"'")
+            cmd = "find '" + iTunes_TV_Shows_safequotes + "' -type f -inum " + inode
             findcmd = os.popen(cmd,"r")
             exported_file = findcmd.readline()
             exported_file = exported_file.rstrip('\n')
             exported_file_safequotes = exported_file.replace("'","'\"'\"'")
             if exported_file != "":
                 # remove all chapters
-                cmd = mp4chaps + r" -r '" + exported_file_safequotes + r"' > /dev/null 2>&1"
-                rc = os.system(cmd)
+                cmd = [mp4chaps, '-r', exported_file]
+                devnull = open('/dev/null','w')
+                rc = subprocess.call(cmd,stdout=devnull,stderr=devnull)
+                devnull.close()
                 # create chapter file
                 txt_file = exported_file.replace('.m4v','.chapters.txt')
                 edl2mp4chaps(edl_file,txt_file)
                 # import chapters
-                cmd = mp4chaps + " -i '" + exported_file_safequotes + "' > /dev/null 2>&1"
-                rc = os.system(cmd)
+                cmd = [mp4chaps, '-i', exported_file]
+                devnull = open('/dev/null','w')
+                rc = subprocess.call(cmd,stdout=devnull,stderr=devnull)
+                devnull.close()
                 os.remove(txt_file)
     return
 
@@ -517,7 +525,7 @@ def main():
                       dest="pid", default='',
                       help="Specify the Video PID, default=%default")
     parser.add_option("--m4vonly",
-                      dest="m4vonly", default=False,
+                      action="store_true", dest="m4vonly", default=False,
                       help="Only chapter m4v files that have already had commercials marked, don't try to mark commercials. default=%default")
     (options, args) = parser.parse_args()
 
