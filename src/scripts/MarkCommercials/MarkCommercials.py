@@ -52,7 +52,7 @@ from os import listdir
 from os.path import isfile, join
 
 # used for the command: find <iTunes_TV_Shows> -type f -i <inum>
-iTunes_TV_Shows = subprocess.check_output(['osascript', '/Library/Application Support/ETVComskip/scripts/iTunesTVFolder.scpt'])
+iTunes_TV_Shows = subprocess.check_output(['osascript', '/Library/Application Support/ETVComskip/scripts/iTunesTVFolder.scpt']).split('\n', 1)[0]
 # complete path to the comskip, mp4chaps, and gtimeout commands ;
 # e.g. sudo port install py-appscript argtable mp4v2 coreutils
 comskip = '/Library/Application Support/ETVComskip/bin/comskip'
@@ -154,8 +154,6 @@ def sendGrowlNotification(name, title, description):
                          application_name=programName)
         except Exception, e:
             WriteToLog('Error: growl notify\n  %s\n' % e)
-
-
 
 # Create the log file
 def GetLog(name=None):
@@ -466,14 +464,14 @@ def mp4chaps_all_m4v(dir):
     if edl_file != "" and os.path.isfile(mp4chaps) and os.path.isfile(exported_inodes_file):
         exported_inodes = [line.strip() for line in open(exported_inodes_file)]
         for inode in exported_inodes:
-            # get the output of find with os.popen
-            iTunes_TV_Shows_safequotes = iTunes_TV_Shows.replace("'","'\"'\"'")
-            cmd = "find '" + iTunes_TV_Shows_safequotes + "' -type f -inum " + inode
-            findcmd = os.popen(cmd,"r")
-            exported_file = findcmd.readline()
-            exported_file = exported_file.rstrip('\n')
-            exported_file_safequotes = exported_file.replace("'","'\"'\"'")
-            if exported_file != "":
+            # get the output of find with subprocess
+            cmd = ['find', iTunes_TV_Shows, '-type', 'f', '-inum', inode]
+            exported_file = subprocess.check_output(cmd).split('\n', 1)[0]
+            # look in the "Movies" playlist if it's not in "TV Shows"
+            if exported_file == '':
+                cmd = ['find', iTunes_TV_Shows + '../Movies/', '-type', 'f', '-inum', inode]
+                exported_file = subprocess.check_output(cmd).split('\n', 1)[0]
+            if exported_file != '':
                 # remove all chapters
                 cmd = [mp4chaps, '-r', exported_file]
                 devnull = open('/dev/null','w')

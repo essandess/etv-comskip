@@ -55,8 +55,14 @@ on ExportDone(recordingID)
 	-- Elgato adds a few seconds here, but minutes are necessary to ensure success under heavy CPU loads
 	delay 12 * 60 --if the script does not seem to work, try increasing this delay slightly.
 	
+	-- EyeTV exports to the "TV Shows" playlist
 	tell application "iTunes"
 		set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
+		-- I've also seen EyeTV exports appear in the "Movies" playlist (not sure why)
+		set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
+		-- merge the results from the "TV Shows" and "Movies" playlists
+		set mytv to mytv & mymovies
+		
 	end tell
 	
 	-- find all .m4v files in ~/Movies that match the name or artist fields
