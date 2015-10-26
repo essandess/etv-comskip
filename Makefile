@@ -52,7 +52,7 @@ macports:: xcode
 	[[ $(shell port -qv installed | egrep '^ +coreutils .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install coreutils
 
 distdir:: macports
-	pushd ${DLDIR} && ( test -d ETVComskip || mkdir ETVComskip ) && popd
+	pushd ${DLDIR} && ( test -d ETVComskip && rm -fr ETVComskip ; mkdir ETVComskip ) && popd
 	pushd ${DLDIR}/ETVComskip && ( test -d bin || mkdir bin ) && popd
 	pushd ${DLDIR}/ETVComskip && ( test -d scripts || mkdir scripts ) && popd
 
