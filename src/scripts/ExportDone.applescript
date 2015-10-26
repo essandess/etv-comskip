@@ -53,13 +53,22 @@ on ExportDone(recordingID)
 	set exported_inodes_file to eyetv_path & eyetv_root & export_suffix
 	
 	-- Elgato adds a few seconds here, but minutes are necessary to ensure success under heavy CPU loads
-	delay 12 * 60 --if the script does not seem to work, try increasing this delay slightly.
+	delay 60 --if the script does not seem to work, try increasing this delay slightly.
 	
 	-- EyeTV exports to the "TV Shows" playlist
 	tell application "iTunes"
-		set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
+		activate
+		try
+			set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
+		on error
+			set mytv to {}
+		end try
 		-- I've also seen EyeTV exports appear in the "Movies" playlist (not sure why)
-		set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
+		try
+			set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
+		on error
+			set mymovies to {}
+		end try
 		-- merge the results from the "TV Shows" and "Movies" playlists
 		set mytv to mytv & mymovies
 		
@@ -311,7 +320,7 @@ on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
 		-- for all your id's, run /Library/Application\ Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials
-		set rec to 380521861
+		set rec to 467532420
 		my ExportDone(rec)
 	end tell
 end run
