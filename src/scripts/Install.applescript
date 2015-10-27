@@ -30,19 +30,17 @@ end tell
 if not havets then
 	do shell script "/bin/mkdir -p " & ts_path with administrator privileges
 end if
-if not haveetv then
-	do shell script "/bin/mkdir -p " & etv_path with administrator privileges
-else
+if haveetv then
 	if haveetvprev then
 		do shell script "/bin/rm -f " & etv_path & ".previous" with administrator privileges
 	end if
 	do shell script "/bin/mv -f " & etv_path & " " & etv_path & ".previous" with administrator privileges
 end if
 display dialog "The next step may take a few moments...."
-do shell script "/bin/cp -Rfp " & path_ & " " & etv_path with administrator privileges
-do shell script "/bin/mv -f " & etv_path & "scripts/RecordingStarted.scpt " & ts_path with administrator privileges
-do shell script "/bin/mv -f " & etv_path & "scripts/RecordingDone.scpt " & ts_path with administrator privileges
-do shell script "/bin/mv -f " & etv_path & "scripts/ExportDone.scpt " & ts_path with administrator privileges
+do shell script "/bin/cp -Rfp " & "/Volumes/ETVComskip-3.0-10.11" & " " & etv_path with administrator privileges
+do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingStarted.scpt " & ts_path with administrator privileges
+do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingDone.scpt " & ts_path with administrator privileges
+do shell script "/bin/mv -f " & etv_path & "/scripts/ExportDone.scpt " & ts_path with administrator privileges
 
 
 -- make login item for ComSkipper
