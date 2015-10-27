@@ -6,7 +6,7 @@ Currently porting and refactoring from the googlecode version. Please watch for 
 
 ## Synopsis
 
-Commercial detection and skipping for [EyeTV](https://www.elgato.com/en/eyetv/eyetv-3), using [Comskip](https://github.com/erikkaashoek/Comskip) (http://www.kaashoek.com/comskip/).
+Commercial detection and skipping for [EyeTV](https://www.elgato.com/en/eyetv/eyetv-3), using [Comskip](https://github.com/erikkaashoek/Comskip).
 
 These programs allow users of EyeTV to enjoy commercial-free recorded high definition (HD) television.
 
