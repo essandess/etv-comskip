@@ -1,6 +1,5 @@
-# comskip
+# comskip.ini
 
-etv-comskip requires the donators version of [Eric Kaashoek](http://www.kaashoek.com/comskip/)'s [comskip](http://www.kaashoek.com/donators/) software.
-This version contains essential enhancements, including commercial detection on HD h.264 video streams.
+[Comskip](https://github.com/erikkaashoek/Comskip)'s configuration file. See [Eric Kaashoek](http://www.kaashoek.com/comskip/)'s [comskip support forum](http://www.kaashoek.com/comskip/index.php) for details of these parameters.
 
-Please donate to comskip and download the donator's version seperately.
+Please consider donating to comskip to support continued development of these features.
