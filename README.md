@@ -2,8 +2,6 @@
 
 Commercial Marking and Skipping for EyeTV and iTunes Exports
 
-Currently porting and refactoring from the googlecode version. Please watch for the version 1.0 release.
-
 ## Synopsis
 
 Commercial detection and skipping for [EyeTV](https://www.elgato.com/en/eyetv/eyetv-3), using [Comskip](https://github.com/erikkaashoek/Comskip).
