@@ -32,7 +32,7 @@ To uninstall these files and login item, double-click on "UnInstall ETVComskip",
 
 ## Variations
 
-Comskip also allows the capability for live commercial detection and skipping. This feature was once supported in the older [Google code version](https://github.com/essandess/etv-comskip/releases/tag/etv-comskip_v0) of etv-comskip for non-HD recordings. etv-comskip has been refactored for sequential operations on HD recordings, but it would be possible to create a live commercial skipping.
+Comskip also allows the capability for live commercial detection and skipping. This feature was once supported in the older [Google code version](https://github.com/essandess/etv-comskip/releases/tag/v0) of etv-comskip for non-HD recordings. etv-comskip has been refactored for sequential operations on HD recordings, but it would be possible to create a live commercial skipping.
 
 ## Contributors
 
