@@ -22,7 +22,7 @@ set etv_path to "/Library/Application\\ Support/ETVComskip"
 tell application "Finder"
 	set havets to (folder ts_path exists)
 	set haveetv to (folder etv_path exists)
-	set haveetvprev to (folder etv_path & ".previous" exists)
+	set haveetvprev to (folder (etv_path & ".previous") exists)
 	set path_ to (folder of file (path to me)) as string
 	set path_ to POSIX path of path_
 end tell
