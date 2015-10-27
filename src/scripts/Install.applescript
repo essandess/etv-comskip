@@ -22,6 +22,7 @@ set etv_path to "/Library/Application\\ Support/ETVComskip"
 tell application "Finder"
 	set havets to (folder ts_path exists)
 	set haveetv to (folder etv_path exists)
+	set haveetvprev to (folder etv_path & ".previous" exists)
 	set path_ to (folder of file (path to me)) as string
 	set path_ to POSIX path of path_
 end tell
@@ -32,13 +33,16 @@ end if
 if not haveetv then
 	do shell script "/bin/mkdir -p " & etv_path with administrator privileges
 else
-	do shell script "/bin/mv " & etv_path & " " & etv_path & ".previous" with administrator privileges
+	if haveetvprev then
+		do shell script "/bin/rm -f " & etv_path & ".previous" with administrator privileges
+	end if
+	do shell script "/bin/mv -f " & etv_path & " " & etv_path & ".previous" with administrator privileges
 end if
 display dialog "The next step may take a few moments...."
 do shell script "/bin/cp -Rfp " & path_ & " " & etv_path with administrator privileges
-do shell script "/bin/mv " & etv_path & "scripts/RecordingStarted.scpt " & ts_path with administrator privileges
-do shell script "/bin/mv " & etv_path & "scripts/RecordingDone.scpt " & ts_path with administrator privileges
-do shell script "/bin/mv " & etv_path & "scripts/ExportDone.scpt " & ts_path with administrator privileges
+do shell script "/bin/mv -f " & etv_path & "scripts/RecordingStarted.scpt " & ts_path with administrator privileges
+do shell script "/bin/mv -f " & etv_path & "scripts/RecordingDone.scpt " & ts_path with administrator privileges
+do shell script "/bin/mv -f " & etv_path & "scripts/ExportDone.scpt " & ts_path with administrator privileges
 
 
 -- make login item for ComSkipper
