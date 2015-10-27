@@ -28,6 +28,12 @@ This will also create a login item for ComSkipper.app to make EyeTV automaticall
 
 To uninstall these files and login item, double-click on "UnInstall ETVComskip", which is located in /Library/Application Support/ETVComskip.
 
+## Build
+
+* `git clone --recursive https://github.com/essandess/etv-comskip.git`
+* `cd etv-comskip`
+* `make`
+
 ## Variations
 
 Comskip also allows the capability for live commercial detection and skipping. This feature was once supported in the older [Google code version](https://github.com/essandess/etv-comskip/releases/tag/v0) of etv-comskip for non-HD recordings. etv-comskip has been refactored for sequential operations on HD recordings, but it would be possible to create a live commercial skipping.
