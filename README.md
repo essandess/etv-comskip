@@ -10,7 +10,7 @@ These programs allow users of EyeTV to enjoy commercial-free recorded high defin
 
 ## Description
 
-EyeTV records tv shows, transcodes them for personal broadcast over an EyeTV server, and exports recordings to iTunes where they can be synced to iOS and iTV devices. Comskip detects the commercials. ETVComskip marks and skips the commercials in both EyeTV recordings and iTunes exports. Helper software is used for commercials skipping. ComSkipper.app skips commercials in EyeTV recordings. The Videos app arrow keys are used in iOS devices, which may be triggered by a wide variety of headphone or bluetooth controls.
+EyeTV records tv shows, transcodes them for personal broadcast over an EyeTV server, and exports recordings to iTunes where they can be synced to iOS and tvOS devices. Comskip detects the commercials. ETVComskip marks and skips the commercials in both EyeTV recordings and iTunes exports. Helper software is used for commercials skipping. ComSkipper.app skips commercials in EyeTV recordings. The Videos app arrow keys are used in iOS devices, which may be triggered by a wide variety of headphone or bluetooth controls.
 
 ## Operation
 
