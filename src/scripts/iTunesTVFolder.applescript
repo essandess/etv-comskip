@@ -5,7 +5,7 @@ set TV_Shows to "TV Shows"
 tell application "iTunes"
 	try
 		set tvlist to playlist TV_Shows
-		set first_file to location of (get first track in tvlist) as alias
+		set first_file to location of (get first track in tvlist) --as alias
 	on error
 		return
 	end try

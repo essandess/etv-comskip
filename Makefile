@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=3.0
+VERSION=3.1
 # El Capitan (10.11)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
@@ -44,7 +44,14 @@ macports:: xcode
 	# sudo ${PORT} uninstall inactive
 	[[ $(shell port -qv installed | egrep '^ +python27 .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || ( sudo ${PORT} install python27 ; sudo ${PORT} select --set python python27 )
 	[[ $(shell port -qv installed | egrep '^ +py-appscript .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-appscript
-	[[ $(shell port -qv installed | egrep '^ +py-py2app .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-py2app
+	@#[[ $(shell port -qv installed | egrep '^ +py-py2app .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-py2app
+	[[ $(shell port -qv installed | egrep '^ +py-pip .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-pip
+	@# pyinstaller ; the python configure.py shouldn't be necessary
+	-[[ $(shell pip freeze 2>/dev/null | grep -i pyinstaller | wc -l) -eq '0' ]] && \
+		( sudo -H pip install pyinstaller ; \
+		pushd `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/PyInstaller ; \
+		sudo python -m PyInstaller configure.py ; \
+		popd )
 	-[[ $(shell port -qv installed | egrep '^ +ffmpeg-devel .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] && sudo ${PORT} uninstall ffmpeg-devel
 	[[ $(shell port -qv installed | egrep '^ +ffmpeg .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install ffmpeg +x11
 	[[ $(shell port -qv installed | egrep '^ +argtable .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install argtable
@@ -76,14 +83,26 @@ comskip:: distdir MarkCommercials
 ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/dist
 	-rm -rf src/scripts/ComSkipper/build
+	-rm -rf ETVComskip/bin/ComSkipper
 	-rm -rf ETVComskip/ComSkipper.app
-	pushd ./src/scripts/ComSkipper && /opt/local/bin/python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
-
+	@#pushd ./src/scripts/ComSkipper && /opt/local/bin/python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
+	pushd ./src/scripts/ComSkipper && \
+	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile --windowed --osx-bundle-identifier=com.github.essandess.etv-comskip ComSkipper.py && \
+	mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip && \
+	mv ./dist/ComSkipper ${DLDIR}/ETVComskip/bin && \
+	popd
+ 
 MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/dist
 	-rm -rf src/scripts/MarkCommercials/build
+	-rm -rf ETVComskip/MarkCommercials
 	-rm -rf ETVComskip/MarkCommercials.app
-	pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
+	@#pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
+	pushd ./src/scripts/MarkCommercials && \
+	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile --windowed --osx-bundle-identifier=com.github.essandess.etv-comskip MarkCommercials.py && \
+	mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip && \
+	mv ./dist/MarkCommercials ${DLDIR}/ETVComskip/bin && \
+	popd
 	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir

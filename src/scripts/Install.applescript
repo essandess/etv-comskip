@@ -32,12 +32,14 @@ if not havets then
 end if
 if haveetv then
 	if haveetvprev then
-		do shell script "/bin/rm -f " & etv_path & ".previous" with administrator privileges
+		do shell script "/bin/rm -fr " & etv_path & ".previous" with administrator privileges
 	end if
 	do shell script "/bin/mv -f " & etv_path & " " & etv_path & ".previous" with administrator privileges
 end if
 display dialog "The next step may take a few moments...."
-do shell script "/usr/bin/rsync -av " & path_ & " " & etv_path with administrator privileges
+-- do shell script "/usr/bin/rsync -av " & path_ & " " & etv_path with administrator privileges
+do shell script "/bin/rm -fr " & etv_path with administrator privileges
+do shell script "/bin/cp -Rfp " & path_ & " " & etv_path with administrator privileges
 do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingStarted.scpt " & ts_path with administrator privileges
 do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingDone.scpt " & ts_path with administrator privileges
 do shell script "/bin/mv -f " & etv_path & "/scripts/ExportDone.scpt " & ts_path with administrator privileges

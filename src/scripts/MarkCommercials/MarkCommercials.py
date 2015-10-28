@@ -94,7 +94,7 @@ except ImportError, e:
     sys.stderr.write('Error: importing appscript\n%s\n' % e)
     sys.exit(importExitCode)
 
-version = '1.0'
+version = '1.1'
 # Cfg file definitions and variables
 userSectionName = 'User Section'
 listDelimiterName = 'LIST_DELIMITER'
