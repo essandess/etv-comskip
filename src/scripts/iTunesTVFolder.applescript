@@ -3,8 +3,12 @@
 set TV_Shows to "TV Shows"
 
 tell application "iTunes"
-	set tvlist to playlist TV_Shows
-	set first_file to location of (get first track in tvlist) as alias
+	try
+		set tvlist to playlist TV_Shows
+		set first_file to location of (get first track in tvlist) as alias
+	on error
+		return
+	end try
 	tell application "Finder" to set itunes_tv_path to container of first_file as Unicode text
 	-- fix AppleScript's strange trailing colon issue for paths
 	if character -1 of itunes_tv_path is not ":" then set itunes_tv_path to itunes_tv_path & ":"

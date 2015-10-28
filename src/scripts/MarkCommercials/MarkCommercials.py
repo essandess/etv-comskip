@@ -52,7 +52,13 @@ from os import listdir
 from os.path import isfile, join
 
 # used for the command: find <iTunes_TV_Shows> -type f -i <inum>
-iTunes_TV_Shows = subprocess.check_output(['osascript', '/Library/Application Support/ETVComskip/scripts/iTunesTVFolder.scpt']).split('\n', 1)[0]
+try:
+    iTunes_TV_Shows = subprocess.check_output(['osascript', '/Library/Application Support/ETVComskip/scripts/iTunesTVFolder.scpt']).split('\n', 1)[0]
+except:
+    iTunes_TV_Shows = None
+if (iTunes_TV_Shows is not None) and not os.path.isdir(iTunes_TV_Shows):
+    iTunes_TV_Shows = None
+
 # complete path to the comskip, mp4chaps, and gtimeout commands ;
 # e.g. sudo port install py-appscript argtable mp4v2 coreutils
 comskip = '/Library/Application Support/ETVComskip/bin/comskip'
@@ -461,7 +467,7 @@ def mp4chaps_all_m4v(dir):
                 devnull.close()
     # import chapters into iTunes exports, then delete .chapters.txt file
     exported_inodes_file = edl_file.replace('.edl','.exported_inodes.txt')
-    if edl_file != "" and os.path.isfile(mp4chaps) and os.path.isfile(exported_inodes_file):
+    if edl_file != "" and os.path.isfile(mp4chaps) and os.path.isfile(exported_inodes_file) and (iTunes_TV_Shows is not None):
         exported_inodes = [line.strip() for line in open(exported_inodes_file)]
         for inode in exported_inodes:
             # get the output of find with subprocess
