@@ -44,7 +44,7 @@ macports:: xcode
 	# sudo ${PORT} uninstall inactive
 	[[ $(shell port -qv installed | egrep '^ +python27 .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || ( sudo ${PORT} install python27 ; sudo ${PORT} select --set python python27 )
 	[[ $(shell port -qv installed | egrep '^ +py-appscript .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-appscript
-	@#[[ $(shell port -qv installed | egrep '^ +py-py2app .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-py2app
+	@# [[ $(shell port -qv installed | egrep '^ +py-py2app .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-py2app
 	[[ $(shell port -qv installed | egrep '^ +py-pip .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-pip
 	@# pyinstaller ; the python configure.py shouldn't be necessary
 	-[[ $(shell pip freeze 2>/dev/null | grep -i pyinstaller | wc -l) -eq '0' ]] && \
@@ -85,24 +85,26 @@ ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/build
 	-rm -rf ETVComskip/bin/ComSkipper
 	-rm -rf ETVComskip/ComSkipper.app
-	@#pushd ./src/scripts/ComSkipper && /opt/local/bin/python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
+	@# pushd ./src/scripts/ComSkipper && /opt/local/bin/python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
 	pushd ./src/scripts/ComSkipper && \
 	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile --windowed --osx-bundle-identifier=com.github.essandess.etv-comskip ComSkipper.py && \
-	mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip && \
 	mv ./dist/ComSkipper ${DLDIR}/ETVComskip/bin && \
+	mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip && \
 	popd
+	/usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
  
 MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/dist
 	-rm -rf src/scripts/MarkCommercials/build
 	-rm -rf ETVComskip/MarkCommercials
 	-rm -rf ETVComskip/MarkCommercials.app
-	@#pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
+	@# pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
 	pushd ./src/scripts/MarkCommercials && \
 	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile --windowed --osx-bundle-identifier=com.github.essandess.etv-comskip MarkCommercials.py && \
-	mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip && \
 	mv ./dist/MarkCommercials ${DLDIR}/ETVComskip/bin && \
+	mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip && \
 	popd
+	/usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
 	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir

@@ -57,21 +57,34 @@ on ExportDone(recordingID)
 	
 	-- EyeTV exports to the "TV Shows" playlist
 	tell application "iTunes"
-		activate
-		try
-			set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
-		on error
-			set mytv to {}
-		end try
-		-- I've also seen EyeTV exports appear in the "Movies" playlist (not sure why)
-		try
-			set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
-		on error
-			set mymovies to {}
-		end try
+		set mytv to {}
+		set mymovies to {}
+		-- wait for iTunes to find the track, and try a few attempts
+		repeat 4 times
+			try
+				set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
+				if not mytv = {} then
+					exit repeat
+				else
+					delay 2 * 60 -- wait a couple minutes
+				end if
+			on error
+				delay 2 * 60 -- wait a couple minutes
+			end try
+			-- I've also seen EyeTV exports appear in the "Movies" playlist (not sure why)
+			try
+				set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
+				if not mymovies = {} then
+					exit repeat
+				else
+					delay 2 * 60 -- wait a couple minutes
+				end if
+			on error
+				delay 2 * 60 -- wait a couple minutes
+			end try
+		end repeat
 		-- merge the results from the "TV Shows" and "Movies" playlists
 		set mytv to mytv & mymovies
-		
 	end tell
 	
 	-- find all .m4v files in ~/Movies that match the name or artist fields
