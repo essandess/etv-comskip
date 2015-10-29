@@ -91,7 +91,10 @@ ComSkipper:: distdir
 	mv ./dist/ComSkipper ${DLDIR}/ETVComskip/bin && \
 	mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip && \
 	popd
+	/usr/libexec/PlistBuddy -c "Set :LSBackgroundOnly integer 1" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
 	/usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
+	/usr/libexec/PlistBuddy -c "Add :LSMultipleInstancesProhibited bool true" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
+	/usr/libexec/PlistBuddy -c "Add :LSUIPresentationMode integer 4" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
  
 MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/dist
@@ -104,7 +107,10 @@ MarkCommercials:: distdir
 	mv ./dist/MarkCommercials ${DLDIR}/ETVComskip/bin && \
 	mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip && \
 	popd
+	/usr/libexec/PlistBuddy -c "Set :LSBackgroundOnly integer 1" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
 	/usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
+	/usr/libexec/PlistBuddy -c "Add :LSMultipleInstancesProhibited bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
+	/usr/libexec/PlistBuddy -c "Add :LSUIPresentationMode integer 4" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
 	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir
