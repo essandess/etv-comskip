@@ -46,4 +46,4 @@ None of this would be possible without Erik Kaashoek's [Comskip](https://github.
 
 ## License
 
-Licensed under the GNU General Public License, version 2
+Licensed under the GNU General Public License, version 2.
