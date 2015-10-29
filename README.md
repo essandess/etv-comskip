@@ -42,7 +42,7 @@ Comskip also allows the capability for live commercial detection and skipping. T
 
 Jon Christopher wrote the original etv-comskip for non-HD recordings. Dick Gordon, Rick Kier, and Lycestra all contributed. I refactored the original code with work with the HD version of Comskip and handle MP4 transcodings and iTunes exports.
 
-None of this would be possible without Erik Kaashoek's [Comskip](https://github.com/erikkaashoek/Comskip). Erik has a contributor's link at his [website](http://www.kaashoek.com/comskip/), and asks for a $10 donations for the version of Comskip included in this distribution. 
+None of this would be possible without Erik Kaashoek's [Comskip](https://github.com/erikkaashoek/Comskip). Erik has a contributor's link at his [website](http://www.kaashoek.com/comskip/), and asks for $10 donations for the version of Comskip included in this distribution. 
 
 ## License
 
