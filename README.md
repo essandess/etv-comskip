@@ -10,13 +10,13 @@ These programs allow users of EyeTV to enjoy commercial-free recorded high defin
 
 ## Description
 
-EyeTV records tv shows, transcodes them for personal broadcast over an EyeTV server, and exports recordings to iTunes where they can be synced to iOS and tvOS devices. Comskip detects the commercials. ETVComskip marks and skips the commercials in both EyeTV recordings and iTunes exports. Helper software is used for commercials skipping. ComSkipper.app skips commercials in EyeTV recordings. The Videos app arrow keys are used in iOS devices, which may be triggered by a wide variety of headphone or bluetooth controls.
+EyeTV records tv shows, transcodes them for personal broadcast over an EyeTV server, and exports recordings to iTunes where they can be synced to iOS and tvOS devices. Comskip detects the commercials. ETVComskip marks and skips the commercials in both EyeTV recordings and iTunes exports. Helper software is used for commercials skipping. ComSkipper skips commercials in EyeTV recordings. The Videos app arrow keys are used in iOS devices, which may be triggered by a wide variety of headphone or bluetooth controls.
 
 ## Operation
 
-Recording, transcoding, and commercial detection are all performed sequentially because of their high computational cost. Comskip saves the detected commercials in an Edit Decision List (.edl) file located in the same EyeTV directory as the original h.264 .mpg recording. The MarkCommercials.app sets the markers on the EyeTV recording, and uses the mp4chaps command to set the commercials as chapters within the mp4 .m4v transcodings both in the EyeTV directory and in any iTunes recordings.
+Recording, transcoding, and commercial detection are all performed sequentially because of their high computational cost. Comskip saves the detected commercials in an Edit Decision List (.edl) file located in the same EyeTV directory as the original h.264 .mpg recording. MarkCommercials sets the markers on the EyeTV recording, and uses the mp4chaps command to set the commercials as chapters within the mp4 .m4v transcodings both in the EyeTV directory and in any iTunes exports.
 
-Commercials are kept within the recording; users are expected to use helper software to skip them. This avoids any infrequent yet frustrating problems with false detections and misalignment. Both Elgato's EyeTV.app and Turbo.264 HD apps respect .edl files for transcoding, allowing semi-automated commercial deletion from recordings.
+Commercials are kept in the recording; users are expected to use helper software to skip them. This avoids any infrequent yet frustrating problems with false detections and misalignment. Both Elgato's EyeTV.app and Turbo.264 HD apps respect .edl files for transcoding, allowing semi-automated commercial deletion from recordings.
 
 ## Installation
 
