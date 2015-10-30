@@ -1,7 +1,7 @@
 on RecordingStarted(recordingID)
 	delay 10
 	-- comskip81 uses ffmpeg and does not support live tv; put this in RecordingDone.scpt
-	--	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials' --log " & recordingID & " &> /dev/null &"
+	--	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
 	-- display dialog cmd
 	-- set cmd to "env > /tmp/etv_test.log &"
 	-- do shell script cmd

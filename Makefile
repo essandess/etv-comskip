@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=3.1
+VERSION=3.2
 # El Capitan (10.11)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
@@ -84,36 +84,35 @@ ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/dist
 	-rm -rf src/scripts/ComSkipper/build
 	-rm -rf ETVComskip/bin/ComSkipper
-	-rm -rf ETVComskip/ComSkipper.app
+	@# -rm -rf ETVComskip/ComSkipper.app
 	@# pushd ./src/scripts/ComSkipper && /opt/local/bin/python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
 	pushd ./src/scripts/ComSkipper && \
-	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile --windowed --osx-bundle-identifier=com.github.essandess.etv-comskip ComSkipper.py && \
+	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile ComSkipper.py && \
 	mv ./dist/ComSkipper ${DLDIR}/ETVComskip/bin && \
-	mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip && \
 	popd
-	/usr/libexec/PlistBuddy -c "Set :LSBackgroundOnly 1" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
-	/usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
-	/usr/libexec/PlistBuddy -c "Add :LSMultipleInstancesProhibited bool true" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
-	/usr/libexec/PlistBuddy -c "Add :LSUIPresentationMode integer 4" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
+	cp ./src/scripts/com.github.essandess.etv-comskip.comskipper.plist ${DLDIR}/ETVComskip/scripts
 	cp ./src/scripts/ComSkipper/ComSkipper.py ${DLDIR}/ETVComskip/scripts
+	@# /usr/libexec/PlistBuddy -c "Set :LSBackgroundOnly 1" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
+	@# /usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
+	@# /usr/libexec/PlistBuddy -c "Add :LSMultipleInstancesProhibited bool true" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
+	@# /usr/libexec/PlistBuddy -c "Add :LSUIPresentationMode integer 4" ${DLDIR}/ETVComskip/ComSkipper.app/Contents/Info.plist
  
 MarkCommercials:: distdir
 	-rm -rf src/scripts/MarkCommercials/dist
 	-rm -rf src/scripts/MarkCommercials/build
 	-rm -rf ETVComskip/MarkCommercials
-	-rm -rf ETVComskip/MarkCommercials.app
+	@# -rm -rf ETVComskip/MarkCommercials.app
 	@# pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
 	pushd ./src/scripts/MarkCommercials && \
-	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile --windowed --osx-bundle-identifier=com.github.essandess.etv-comskip MarkCommercials.py && \
+	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile MarkCommercials.py && \
 	mv ./dist/MarkCommercials ${DLDIR}/ETVComskip/bin && \
-	mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip && \
 	popd
-	/usr/libexec/PlistBuddy -c "Set :LSBackgroundOnly 1" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
-	/usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
-	/usr/libexec/PlistBuddy -c "Add :LSMultipleInstancesProhibited bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
-	/usr/libexec/PlistBuddy -c "Add :LSUIPresentationMode integer 4" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
-	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 	cp ./src/scripts/MarkCommercials/MarkCommercials.py ${DLDIR}/ETVComskip/scripts
+	@# /usr/libexec/PlistBuddy -c "Set :LSBackgroundOnly 1" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
+	@# /usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
+	@# /usr/libexec/PlistBuddy -c "Add :LSMultipleInstancesProhibited bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
+	@# /usr/libexec/PlistBuddy -c "Add :LSUIPresentationMode integer 4" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
+	@# pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir
 	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && popd

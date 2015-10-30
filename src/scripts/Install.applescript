@@ -44,14 +44,21 @@ do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingStarted.scpt " & t
 do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingDone.scpt " & ts_path with administrator privileges
 do shell script "/bin/mv -f " & etv_path & "/scripts/ExportDone.scpt " & ts_path with administrator privileges
 
+-- create a user launchd plist for ComSkipper
+try
+	-- unload any existing plist and fail gracefully if it's not there
+	do shell script "/bin/launchctl unload -w ~/Library/LaunchAgents/com.github.essandess.etv-comskip.comskipper.plist"
+end try
+do shell script "/bin/cp -f " & etv_path & "/scripts/com.github.essandess.etv-comskip.comskipper.plist ~/Library/LaunchAgents"
+do shell script "/bin/launchctl load -w ~/Library/LaunchAgents/com.github.essandess.etv-comskip.comskipper.plist"
 
--- make login item for ComSkipper
+-- delete any login item for ComSkipper.app [previous versions]
 set appPath to "/Library/Application Support/ETVComskip/ComSkipper.app"
 tell application "System Events"
 	try
 		delete (every login item whose name contains "ComSkipper")
 	end try
-	make new login item at end of login items with properties {path:appPath, hidden:true}
+	-- make new login item at end of login items with properties {path:appPath, hidden:true}
 end tell
 
 display dialog "ETVComskip installed" buttons {"Ok"}

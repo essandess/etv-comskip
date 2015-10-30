@@ -332,7 +332,7 @@ end write_to_file
 on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
-		-- for all your id's, run /Library/Application\ Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials
+		-- for all your id's, run /Library/Application\ Support/ETVComskip/bin/MarkCommercials
 		set rec to 467532420
 		my ExportDone(rec)
 	end tell

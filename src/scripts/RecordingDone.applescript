@@ -36,7 +36,7 @@ on RecordingDone(recordingID)
 	
 	delay 10
 	-- comskip81 uses ffmpeg and does not support live tv; take this from RecordingStarted.scpt
-	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials' " & recordingID & " &> /dev/null &"
+	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' " & recordingID & " &> /dev/null &"
 	-- display dialog cmd
 	-- set cmd to "env > /tmp/etv_test.log &"
 	do shell script cmd
@@ -135,9 +135,9 @@ end write_to_file
 
 on launchComSkip(recID, pid)
 	if pid = "" then
-		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials' --force --log " & recID & " &> /dev/null &"
+		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --force --log " & recID & " &> /dev/null &"
 	else
-		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/MarkCommercials.app/Contents/MacOS/MarkCommercials' --force --log " & recID & " --pid=" & pid & " &> /dev/null &"
+		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --force --log " & recID & " --pid=" & pid & " &> /dev/null &"
 	end if
 	
 	do shell script cmd
