@@ -1,3 +1,6 @@
 [submodule "Comskip"]
 	path = src/Comskip
 	url = https://github.com/erikkaashoek/Comskip
+[submodule "src/scripts/matryoshka-name-tool"]
+	path = src/scripts/matryoshka-name-tool
+	url = https://github.com/essandess/matryoshka-name-tool.git
