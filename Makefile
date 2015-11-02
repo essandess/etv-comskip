@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=3.2
+VERSION=3.3
 # El Capitan (10.11)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
@@ -73,9 +73,13 @@ comskip:: distdir MarkCommercials
 	# comskip
 	@# original Makefile make command
 	@# pushd ./src/Comskip; make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"; popd
-	pushd ./src/Comskip; ./autogen.sh && ./configure && make; popd
+	pushd ./src/Comskip ; \
+	 ./autogen.sh && ./configure && make && \
+	python ../scripts/matryoshka_name_tool/matryoshka_name_tool.py ./comskip ./comskip-gui ; \
+	 popd
 	install -m 755 ./src/comskip/comskip ${DLDIR}/ETVComskip/bin
 	install -m 755 ./src/comskip/comskip-gui ${DLDIR}/ETVComskip/bin
+	mv ./src/lib ${DLDIR}/ETVComskip
 	# comskip.ini
 	install -m 644 ./src/comskip_ini/comskip.ini ${DLDIR}/ETVComskip
 	install -m 644 ./src/comskip_ini/comskip.ini.us_cabletv ${DLDIR}/ETVComskip
