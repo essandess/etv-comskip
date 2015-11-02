@@ -75,7 +75,7 @@ comskip:: distdir MarkCommercials
 	@# pushd ./src/Comskip; make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"; popd
 	pushd ./src/Comskip ; \
 	 ./autogen.sh && ./configure && make && \
-	python ../scripts/matryoshka_name_tool/matryoshka_name_tool.py ./comskip ./comskip-gui ; \
+	python ../scripts/matryoshka-name-tool/matryoshka_name_tool.py ./comskip ./comskip-gui ; \
 	 popd
 	install -m 755 ./src/comskip/comskip ${DLDIR}/ETVComskip/bin
 	install -m 755 ./src/comskip/comskip-gui ${DLDIR}/ETVComskip/bin
