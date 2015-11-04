@@ -20,6 +20,9 @@
 
 on ExportDone(recordingID)
 	
+	set DEBUG to false
+	set unix_return to (ASCII character 10)
+	set ascii_tab to (ASCII character 9)
 	set myid to recordingID as integer
 	set mp4chaps to "/opt/local/bin/mp4chaps"
 	set mp4chaps_suffix to ".chapters.txt"
@@ -27,20 +30,28 @@ on ExportDone(recordingID)
 	set edl_suffix to ".edl"
 	set perl_suffix to ".pl"
 	
-	my write_to_file((short date string of (current date) & " " & time string of (current date)) & " " & "Export Done run for ID: " & recordingID & return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+	my write_to_file((short date string of (current date) & " " & time string of (current date)) & " " & "Export Done run for ID: " & recordingID & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 	
 	-- try block example for debugging:
 	-- try
 	-- 	set mymp4 to (item 1 of mytv)
 	-- on error errText number errNum
 	-- 	set exported_error_file to eyetv_path & eyetv_root & ".error.txt"
-	-- 	my write_to_file("ExportDone error 1: " & errText & "; error number " & errNum & "." & return, exported_error_file, false)
+	-- 	my write_to_file("ExportDone error 1: " & errText & "; error number " & errNum & "." & unix_return, exported_error_file, false)
 	-- end try
 	
 	tell application "EyeTV"
 		set myshortname to get the title of recording id myid
 		set eyetvr_file to get the location of recording id myid as alias
 	end tell
+	if DEBUG then
+		my write_to_file(ascii_tab & "Title: " & myshortname & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		my write_to_file(ascii_tab & "Location: " & POSIX path of eyetvr_file & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+	end if
+	
+	-- if DEBUG then
+	-- 	return
+	-- end if
 	
 	-- Get EyeTV's root file names and paths for the recording
 	tell application "Finder" to set eyetv_path to container of eyetvr_file as Unicode text
@@ -140,7 +151,7 @@ on ExportDone(recordingID)
 	
 	-- save the iTunes file inode to the exported files file "*.exported_inodes.txt"
 	-- find the exported file with the command: find . -type f -inum <inum>
-	my write_to_file((my FileInode(mymp4_posix) as string) & return, exported_inodes_file, true)
+	my write_to_file((my FileInode(mymp4_posix) as string) & unix_return, exported_inodes_file, true)
 	
 	-- return if no .edl file
 	tell application "Finder"
@@ -333,7 +344,7 @@ on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
 		-- for all your id's, run /Library/Application\ Support/ETVComskip/bin/MarkCommercials
-		set rec to 467532420
+		set rec to 468313500
 		my ExportDone(rec)
 	end tell
 end run
