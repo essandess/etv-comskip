@@ -116,7 +116,7 @@ MarkCommercials:: distdir
 	@# /usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
 	@# /usr/libexec/PlistBuddy -c "Add :LSMultipleInstancesProhibited bool true" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
 	@# /usr/libexec/PlistBuddy -c "Add :LSUIPresentationMode integer 4" ${DLDIR}/ETVComskip/MarkCommercials.app/Contents/Info.plist
-	@# pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
+	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir
 	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && popd

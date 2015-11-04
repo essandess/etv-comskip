@@ -40,9 +40,9 @@ display dialog "The next step may take a few moments...."
 -- do shell script "/usr/bin/rsync -av " & path_ & " " & etv_path with administrator privileges
 do shell script "/bin/rm -fr " & etv_path with administrator privileges
 do shell script "/bin/cp -Rfp " & path_ & " " & etv_path with administrator privileges
-do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingStarted.scpt " & ts_path with administrator privileges
-do shell script "/bin/mv -f " & etv_path & "/scripts/RecordingDone.scpt " & ts_path with administrator privileges
-do shell script "/bin/mv -f " & etv_path & "/scripts/ExportDone.scpt " & ts_path with administrator privileges
+do shell script "/bin/cp -f " & etv_path & "/scripts/RecordingStarted.scpt " & ts_path with administrator privileges
+do shell script "/bin/cp -f " & etv_path & "/scripts/RecordingDone.scpt " & ts_path with administrator privileges
+do shell script "/bin/cp -f " & etv_path & "/scripts/ExportDone.scpt " & ts_path with administrator privileges
 
 -- create a user launchd plist for ComSkipper
 try
