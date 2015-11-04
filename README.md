@@ -8,6 +8,9 @@ Commercial detection and skipping for [EyeTV](https://www.elgato.com/en/eyetv/ey
 
 These programs allow users of EyeTV to enjoy commercial-free recorded high definition (HD) television.
 
+![Example etv-comskip image](https://github.com/essandess/etv-comskip/blob/master/example.png)
+*Commercials are automatically marked and skipped during playback on OS X, iOS, and tvOS devices.*
+
 ## Description
 
 EyeTV records tv shows, transcodes them for personal broadcast over an EyeTV server, and exports recordings to iTunes where they can be synced to iOS and tvOS devices. Comskip detects the commercials. ETVComskip marks and skips the commercials in both EyeTV recordings and iTunes exports. Helper software is used for commercials skipping. ComSkipper skips commercials in EyeTV recordings. The Videos app arrow keys are used in iOS devices, which may be triggered by a wide variety of headphone or bluetooth controls.
