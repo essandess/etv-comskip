@@ -27,7 +27,7 @@ Double-click on "Install ETVComskip".
 
 This will install several files in /Library/Application Support/ETVComskip, and /Library/Application Support/EyeTV/Scripts/TriggeredScripts.
 
-This will also create a login item for ComSkipper.app to make EyeTV automatically skip marked commercials on playback.
+This will also create a user launchd item in ~/Library/LaunchAgents that automatically runs the ComSkipper program to make EyeTV automatically skip marked commercials on playback.
 
 To uninstall these files and login item, double-click on "UnInstall ETVComskip", which is located in /Library/Application Support/ETVComskip.
 
