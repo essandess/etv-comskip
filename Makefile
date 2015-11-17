@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=3.3.1
+VERSION=3.3.2
 # El Capitan (10.11)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
@@ -7,9 +7,9 @@ SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"
 
 DLDIR=~/Downloads
 PORT=/opt/local/bin/port
-LOCALBIN=/opt/local/bin
+PYTHON=/opt/local/bin/python
 
-all: xcode macports distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs # dmg
+all: xcode macports distdir MarkCommercials comskip etv-comskip-bin ComSkipper EyeTVTriggers Install docs # dmg
 
 upload::
 	pushd ${DLDIR} && git clone https://github.com/essandess/etv-comskip.git && popd
@@ -49,8 +49,8 @@ macports:: xcode
 	@# pyinstaller ; the python configure.py shouldn't be necessary
 	-[[ $(shell pip freeze 2>/dev/null | grep -i pyinstaller | wc -l) -eq '0' ]] && \
 		( sudo -H pip install pyinstaller ; \
-		pushd `python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/PyInstaller ; \
-		sudo python -m PyInstaller configure.py ; \
+		pushd `${PYTHON} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/PyInstaller ; \
+		sudo ${PYTHON} -m PyInstaller configure.py ; \
 		popd )
 	-[[ $(shell port -qv installed | egrep '^ +ffmpeg-devel .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] && sudo ${PORT} uninstall ffmpeg-devel
 	[[ $(shell port -qv installed | egrep '^ +ffmpeg .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install ffmpeg +x11
@@ -63,7 +63,7 @@ distdir:: macports
 	pushd ${DLDIR}/ETVComskip && ( test -d bin || mkdir bin ) && popd
 	pushd ${DLDIR}/ETVComskip && ( test -d scripts || mkdir scripts ) && popd
 
-dmg: distdir MarkCommercials comskip ComSkipper EyeTVTriggers Install docs
+dmg: distdir MarkCommercials comskip etv-comskip-bin ComSkipper EyeTVTriggers Install docs
 	pushd ${DLDIR}/ETVComskip; \
 	rm *.dmg*; \
 	hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}; \
@@ -75,14 +75,32 @@ comskip:: distdir MarkCommercials
 	@# pushd ./src/Comskip; make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"; popd
 	pushd ./src/Comskip ; \
 	 ./autogen.sh && ./configure && make && \
-	python ../scripts/matryoshka-name-tool/matryoshka_name_tool.py ./comskip ./comskip-gui ; \
 	 popd
-	install -m 755 ./src/comskip/comskip ${DLDIR}/ETVComskip/bin
-	install -m 755 ./src/comskip/comskip-gui ${DLDIR}/ETVComskip/bin
-	mv ./src/lib ${DLDIR}/ETVComskip
 	# comskip.ini
 	install -m 644 ./src/comskip_ini/comskip.ini ${DLDIR}/ETVComskip
 	install -m 644 ./src/comskip_ini/comskip.ini.us_cabletv ${DLDIR}/ETVComskip
+
+etv-comskip-bin:: macports comskip
+	mkdir ./bin
+	cp ./src/comskip/comskip ./src/comskip/comskip-gui ./bin
+	cp /opt/local/bin/mp4art /opt/local/bin/mp4chaps /opt/local/bin/mp4extract /opt/local/bin/mp4file /opt/local/bin/mp4info /opt/local/bin/mp4subtitle /opt/local/bin/mp4tags /opt/local/bin/mp4track /opt/local/bin/mp4trackdump ./bin
+	cp /opt/local/bin/gtimeout ./bin
+	pushd ./bin ; \
+	${PYTHON} ../src/scripts/matryoshka-name-tool/matryoshka_name_tool.py ./comskip ./comskip-gui ./mp4art ./mp4chaps ./mp4extract ./mp4file ./mp4info ./mp4subtitle ./mp4tags ./mp4track ./mp4trackdump ./gtimeout ; \
+	popd
+	install -m 755 ./bin/comskip ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/comskip-gui ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4art ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4chaps ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4extract ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4file ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4info ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4subtitle ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4tags ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4track ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/mp4trackdump ${DLDIR}/ETVComskip/bin
+	install -m 755 ./bin/gtimeout ${DLDIR}/ETVComskip/bin
+	mv ./lib ${DLDIR}/ETVComskip
 
 ComSkipper:: distdir
 	-rm -rf src/scripts/ComSkipper/dist
@@ -91,7 +109,7 @@ ComSkipper:: distdir
 	@# -rm -rf ETVComskip/ComSkipper.app
 	@# pushd ./src/scripts/ComSkipper && /opt/local/bin/python setup.py py2app ; mv ./dist/ComSkipper.app ${DLDIR}/ETVComskip ; popd
 	pushd ./src/scripts/ComSkipper && \
-	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile ComSkipper.py && \
+	`${PYTHON} -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --hidden-import=AppKit --onefile ComSkipper.py && \
 	mv ./dist/ComSkipper ${DLDIR}/ETVComskip/bin && \
 	popd
 	cp ./src/scripts/com.github.essandess.etv-comskip.comskipper.plist ${DLDIR}/ETVComskip/scripts
@@ -108,7 +126,7 @@ MarkCommercials:: distdir
 	@# -rm -rf ETVComskip/MarkCommercials.app
 	@# pushd ./src/scripts/MarkCommercials && /opt/local/bin/python setup.py py2app ; mv ./dist/MarkCommercials.app ${DLDIR}/ETVComskip ; popd
 	pushd ./src/scripts/MarkCommercials && \
-	`python -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --onefile MarkCommercials.py && \
+	`${PYTHON} -c "from distutils.sysconfig import get_python_lib; pibin = get_python_lib(); print pibin.split('/lib/python',1)[0] + '/bin/pyinstaller'"` --hidden-import=appscript --hidden-import=aem --onefile MarkCommercials.py && \
 	mv ./dist/MarkCommercials ${DLDIR}/ETVComskip/bin && \
 	popd
 	cp ./src/scripts/MarkCommercials/MarkCommercials.py ${DLDIR}/ETVComskip/scripts
@@ -155,5 +173,7 @@ clean::
 	-rm -fr ./src/scripts/MarkCommercials/build
 	-rm -fr ./src/scripts/ComSkipper/dist
 	-rm -fr ./src/scripts/ComSkipper/build
+	-rm -fr ./bin
+	-rm -fr ./lib
 	-pushd ./src/Comskip && make distclean && popd
 

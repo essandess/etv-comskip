@@ -24,7 +24,7 @@ on ExportDone(recordingID)
 	set unix_return to (ASCII character 10)
 	set ascii_tab to (ASCII character 9)
 	set myid to recordingID as integer
-	set mp4chaps to "/opt/local/bin/mp4chaps"
+	set mp4chaps to "'/Library/Application Support/ETVComskip/bin/mp4chaps'"
 	set mp4chaps_suffix to ".chapters.txt"
 	set export_suffix to ".exported_inodes.txt"
 	set edl_suffix to ".edl"
@@ -276,7 +276,7 @@ end ExtensionName
 
 -- return a field from an m4v file
 on m4v_field(posix_filename, field_name)
-	set mp4info to "/opt/local/bin/mp4info"
+	set mp4info to "'/Library/Application Support/ETVComskip/bin/mp4info'"
 	-- safely quote any single quote characters for system calls: ' --> '"'"'
 	set posix_filename_safequotes to my replace_chars(posix_filename, "'", "'\"'\"'")
 	set res to do shell script (mp4info & " '" & posix_filename_safequotes & "' | perl -ne 'chomp; $f=$_; $v=$_; $f=~s/ *(.+):.*/$1/; $f=~/" & field_name & "/ && do {$v=~s/.*: *(.+)$/$1/; print $v;}' || true")

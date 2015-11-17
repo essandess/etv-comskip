@@ -62,8 +62,8 @@ if (iTunes_TV_Shows is not None) and not os.path.isdir(iTunes_TV_Shows):
 # complete path to the comskip, mp4chaps, and gtimeout commands ;
 # e.g. sudo port install py-appscript argtable mp4v2 coreutils
 comskip = '/Library/Application Support/ETVComskip/bin/comskip'
-mp4chaps = '/opt/local/bin/mp4chaps'
-gtimeout = '/opt/local/bin/gtimeout'
+mp4chaps = '/Library/Application Support/ETVComskip/bin/mp4chaps'
+gtimeout = '/Library/Application Support/ETVComskip/bin/gtimeout'
 gtimeout_duration = '5h'
 
 # Exit Codes
