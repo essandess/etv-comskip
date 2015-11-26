@@ -1,4 +1,8 @@
 on RecordingStarted(recordingID)
+	
+	set unix_return to (ASCII character 10)
+	set ascii_tab to (ASCII character 9)
+	
 	delay 10
 	-- comskip81 uses ffmpeg and does not support live tv; put this in RecordingDone.scpt
 	--	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
@@ -7,7 +11,7 @@ on RecordingStarted(recordingID)
 	-- do shell script cmd
 	
 	--disable this if you do not want a logfile written
-	write_to_file((short date string of (current date) & " " & time string of (current date)) & "Recording Started run for ID: " & recordingID & (ASCII character 13), (path to "logs" as string) & "EyeTV scripts.log", true)
+	write_to_file((short date string of (current date) & " " & time string of (current date)) & "RecordingStarted run for ID: " & recordingID & unix_return, (path to "logs" as string) & "EyeTV scripts.log", true)
 end RecordingStarted
 
 on write_to_file(this_data, target_file, append_data)

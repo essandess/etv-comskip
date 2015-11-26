@@ -50,6 +50,13 @@ try
 	-- unload any existing plist and fail gracefully if it's not there
 	do shell script "/bin/launchctl unload -w ~/Library/LaunchAgents/com.github.essandess.etv-comskip.comskipper.plist"
 end try
+
+-- create ~/Library/LaunchAgents if directory doesn't exist
+tell application "Finder"
+	if not (folder "~/Library/LaunchAgents" exists) then
+		do shell script "/bin/mkdir -p ~/Library/LaunchAgents"
+	end if
+end tell
 do shell script "/bin/cp -f " & etv_path & "/scripts/com.github.essandess.etv-comskip.comskipper.plist ~/Library/LaunchAgents"
 do shell script "/bin/launchctl load -w ~/Library/LaunchAgents/com.github.essandess.etv-comskip.comskipper.plist"
 

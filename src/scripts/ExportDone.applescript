@@ -20,7 +20,7 @@
 
 on ExportDone(recordingID)
 	
-	set DEBUG to false
+	set DEBUG to true
 	set unix_return to (ASCII character 10)
 	set ascii_tab to (ASCII character 9)
 	set myid to recordingID as integer
@@ -30,228 +30,169 @@ on ExportDone(recordingID)
 	set edl_suffix to ".edl"
 	set perl_suffix to ".pl"
 	
-	my write_to_file((short date string of (current date) & " " & time string of (current date)) & " " & "Export Done run for ID: " & recordingID & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+	set TimeoutTime to 12 * 60 * 60
 	
-	-- try block example for debugging:
-	-- try
-	-- 	set mymp4 to (item 1 of mytv)
-	-- on error errText number errNum
-	-- 	set exported_error_file to eyetv_path & eyetv_root & ".error.txt"
-	-- 	my write_to_file("ExportDone error 1: " & errText & "; error number " & errNum & "." & unix_return, exported_error_file, false)
-	-- end try
-	
-	tell application "EyeTV"
-		set myshortname to get the title of recording id myid
-		set eyetvr_file to get the location of recording id myid as alias
-	end tell
-	if DEBUG then
-		my write_to_file(ascii_tab & "Title: " & myshortname & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
-		my write_to_file(ascii_tab & "Location: " & POSIX path of eyetvr_file & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
-	end if
-	
-	-- if DEBUG then
-	-- 	return
-	-- end if
-	
-	-- Get EyeTV's root file names and paths for the recording
-	tell application "Finder" to set eyetv_path to container of eyetvr_file as Unicode text
-	-- fix AppleScript's strange trailing colon issue for paths
-	if character -1 of eyetv_path is not ":" then set eyetv_path to eyetv_path & ":"
-	tell application "Finder" to set eyetv_file to name of eyetvr_file
-	set eyetv_root to (RootName(eyetv_file) of me)
-	set edl_file to eyetv_path & eyetv_root & edl_suffix
-	set edl_file_posix to POSIX path of edl_file
-	set exported_inodes_file to eyetv_path & eyetv_root & export_suffix
-	
-	-- Elgato adds a few seconds here, but minutes are necessary to ensure success under heavy CPU loads
-	delay 60 --if the script does not seem to work, try increasing this delay slightly.
-	
-	-- EyeTV exports to the "TV Shows" playlist
-	tell application "iTunes"
-		set mytv to {}
-		set mymovies to {}
-		-- wait for iTunes to find the track, and try a few attempts
-		repeat 4 times
-			try
-				set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
-				if not mytv = {} then
-					exit repeat
-				else
-					delay 2 * 60 -- wait a couple minutes
-				end if
-			on error
-				delay 2 * 60 -- wait a couple minutes
-			end try
-			-- I've also seen EyeTV exports appear in the "Movies" playlist (not sure why)
-			try
-				set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
-				if not mymovies = {} then
-					exit repeat
-				else
-					delay 2 * 60 -- wait a couple minutes
-				end if
-			on error
-				delay 2 * 60 -- wait a couple minutes
-			end try
-		end repeat
-		-- merge the results from the "TV Shows" and "Movies" playlists
-		set mytv to mytv & mymovies
-	end tell
-	
-	-- find all .m4v files in ~/Movies that match the name or artist fields
-	
-	-- find all files in ~/Movies
-	tell application "Finder" to set movie_dir_list to every item of ((folder "Movies" of home))
-	
-	-- find all .m4v files in ~/Movies
-	set movie_list to {}
-	repeat with movie in movie_dir_list
-		if my ExtensionName(movie as alias) = "m4v" then set end of movie_list to (movie as alias)
-	end repeat
-	
-	-- find all movies whose name or artist match
-	set movie_dir_list to movie_list
-	set movie_list to {}
-	repeat with movie in movie_dir_list
-		if my m4v_field(POSIX path of (movie as alias), "Name") = myshortname or my m4v_field(POSIX path of (movie as alias), "Artist") = myshortname then Â
-			set end of movie_list to (movie as alias)
-	end repeat
-	
-	-- merge the results from iTunes and ~/Movies
-	set mytv to mytv & movie_list
-	
-	-- return if no exports match; this shouldn't happen!
-	if the (count of mytv) is less than 1 then
-		return
-	end if
-	
-	-- find the most recent export that isn't an open file
-	set mymp4 to (item 1 of mytv)
-	set mymp4_posix to POSIX path of mymp4
-	tell application "Finder" to set mydate to (creation date of mymp4)
-	repeat with kk from 2 to (count of mytv)
-		set mymp4_kk to (item kk of mytv)
-		set mymp4_posix_kk to POSIX path of mymp4_kk
-		tell application "Finder" to set mydate_kk to (creation date of mymp4_kk)
-		if mydate is less than mydate_kk and not my IsFileOpen(mymp4_posix_kk) then
-			set mymp4 to mymp4_kk
-			set mymp4_posix to mymp4_posix_kk
-			set mydate to mydate_kk
+	with timeout of TimeoutTime seconds
+		
+		my write_to_file((short date string of (current date) & " " & time string of (current date)) & " " & "ExportDone run for ID: " & recordingID & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		
+		-- try block example for debugging:
+		-- try
+		-- 	set mymp4 to (item 1 of mytv)
+		-- on error errText number errNum
+		-- 	set exported_error_file to eyetv_path & eyetv_root & ".error.txt"
+		-- 	my write_to_file("ExportDone error 1: " & errText & "; error number " & errNum & "." & unix_return, exported_error_file, false)
+		-- end try
+		
+		tell application "EyeTV"
+			set myshortname to get the title of recording id myid
+			set eyetvr_file to get the location of recording id myid as alias
+		end tell
+		if DEBUG then
+			my write_to_file(ascii_tab & "ExportDone::Title: " & myshortname & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+			my write_to_file(ascii_tab & "Location: " & POSIX path of eyetvr_file & unix_return, (path to "logs" as Unicode text) & "ExportDone::EyeTV scripts.log", true)
 		end if
-	end repeat
+		
+		-- if DEBUG then
+		-- 	return
+		-- end if
+		
+		-- Get EyeTV's root file names and paths for the recording
+		tell application "Finder" to set eyetv_path to container of eyetvr_file as Unicode text
+		-- fix AppleScript's strange trailing colon issue for paths
+		if character -1 of eyetv_path is not ":" then set eyetv_path to eyetv_path & ":"
+		tell application "Finder" to set eyetv_file to name of eyetvr_file
+		set eyetv_root to (RootName(eyetv_file) of me)
+		set edl_file to eyetv_path & eyetv_root & edl_suffix
+		set edl_file_posix to POSIX path of edl_file
+		set exported_inodes_file to eyetv_path & eyetv_root & export_suffix
+		set done_waiting_for_itunes_file to eyetv_path & eyetv_root & ".done_waiting_for_iTunes.txt"
+		
+		-- Elgato adds a few seconds here, but perhaps minutes are necessary to ensure success under heavy CPU loads
+		delay 3 * 60 --if the script does not seem to work, try increasing this delay slightly.
+		-- file communication that ExportDone is done waiting for iTunes to update its db
+		my write_to_file("", done_waiting_for_itunes_file, true)
+		
+		-- EyeTV exports to the "TV Shows" playlist
+		tell application "iTunes"
+			set mytv to {}
+			set mymovies to {}
+			-- wait for iTunes to find the track, and try a few attempts
+			repeat 4 times
+				try
+					set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
+					if DEBUG then
+						if the (count of mytv) is greater than 0 then
+							repeat with kk from 1 to (count of mytv)
+								my write_to_file(ascii_tab & "ExportDone::repeatloop mytv: " & (item kk of mytv) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+							end repeat
+						else
+							my write_to_file(ascii_tab & "ExportDone::repeatloop mytv: empty" & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+						end if
+					end if
+					if not mytv = {} then
+						exit repeat
+					else
+						delay 2 -- wait a couple seconds
+					end if
+				on error errText number errNum
+					if DEBUG then
+						my write_to_file(ascii_tab & "ExportDone::repeatloop mytv error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+					end if
+					delay 2 -- wait a couple seconds
+				end try
+				-- I've also seen EyeTV exports appear in the "Movies" playlist (not sure why)
+				try
+					set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
+					if DEBUG then
+						if the (count of mymovies) is greater than 0 then
+							repeat with kk from 1 to (count of mymovies)
+								my write_to_file(ascii_tab & "ExportDone::repeatloop mymovies: " & (item kk of mymovies) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+							end repeat
+						else
+							my write_to_file(ascii_tab & "ExportDone::repeatloop mymovies: {}" & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+						end if
+					end if
+					if not mymovies = {} then
+						exit repeat
+					else
+						delay 2 -- wait a couple seconds
+					end if
+				on error errText number errNum
+					if DEBUG then
+						my write_to_file(ascii_tab & "ExportDone::repeatloop mymovies error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+					end if
+					delay 2 -- wait a couple seconds
+				end try
+			end repeat
+			-- merge the results from the "TV Shows" and "Movies" playlists
+			set mytv to mytv & mymovies
+		end tell
+		
+		-- find all .m4v files in ~/Movies that match the name or artist fields
+		
+		-- find all files in ~/Movies
+		tell application "Finder" to set movie_dir_list to every item of ((folder "Movies" of home))
+		
+		-- find all .m4v files in ~/Movies
+		set movie_list to {}
+		repeat with movie in movie_dir_list
+			if my ExtensionName(movie as alias) = "m4v" then set end of movie_list to (movie as alias)
+		end repeat
+		
+		-- find all movies whose name or artist match
+		set movie_dir_list to movie_list
+		set movie_list to {}
+		repeat with movie in movie_dir_list
+			if my m4v_field(POSIX path of (movie as alias), "Name") = myshortname or my m4v_field(POSIX path of (movie as alias), "Artist") = myshortname then Â
+				set end of movie_list to (movie as alias)
+		end repeat
+		
+		-- merge the results from iTunes and ~/Movies
+		set mytv to mytv & movie_list
+		
+		-- return if no exports match; this shouldn't happen!
+		if the (count of mytv) is less than 1 then
+			if DEBUG then
+				my write_to_file(ascii_tab & "ExportDone::empty mytv!!!" & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+			end if
+			return
+		end if
+		
+		-- find the most recent export that isn't an open file
+		set mymp4 to (item 1 of mytv)
+		set mymp4_posix to POSIX path of mymp4
+		tell application "Finder" to set mydate to (creation date of mymp4)
+		repeat with kk from 2 to (count of mytv)
+			set mymp4_kk to (item kk of mytv)
+			set mymp4_posix_kk to POSIX path of mymp4_kk
+			tell application "Finder" to set mydate_kk to (creation date of mymp4_kk)
+			if mydate is less than mydate_kk and not my IsFileOpen(mymp4_posix_kk) then
+				set mymp4 to mymp4_kk
+				set mymp4_posix to mymp4_posix_kk
+				set mydate to mydate_kk
+			end if
+		end repeat
+		
+		if DEBUG then
+			my write_to_file(ascii_tab & "ExportDone::mymp4: " & mymp4_posix & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+		
+		-- Setting itunes_root ...
+		-- safely quote any single quote characters for system calls: ' --> '"'"'
+		set mymp4_posix_safequotes to my replace_chars(mymp4_posix, "'", "'\"'\"'")
+		tell application "Finder" to set itunes_path to container of mymp4 as Unicode text
+		-- fix AppleScript's strange trailing colon issue for paths
+		if character -1 of itunes_path is not ":" then set itunes_path to itunes_path & ":"
+		tell application "Finder" to set itunes_file to name of mymp4
+		set itunes_root to (RootName(itunes_file) of me)
+		
+		-- save the iTunes file inode to the exported files file "*.exported_inodes.txt"
+		-- find the exported file with the command: find . -type f -inum <inum>
+		my write_to_file((my FileInode(mymp4_posix) as string) & unix_return, exported_inodes_file, true)
+		
+	end timeout
 	
-	-- Setting itunes_root ...
-	-- safely quote any single quote characters for system calls: ' --> '"'"'
-	set mymp4_posix_safequotes to my replace_chars(mymp4_posix, "'", "'\"'\"'")
-	tell application "Finder" to set itunes_path to container of mymp4 as Unicode text
-	-- fix AppleScript's strange trailing colon issue for paths
-	if character -1 of itunes_path is not ":" then set itunes_path to itunes_path & ":"
-	tell application "Finder" to set itunes_file to name of mymp4
-	set itunes_root to (RootName(itunes_file) of me)
-	
-	-- save the iTunes file inode to the exported files file "*.exported_inodes.txt"
-	-- find the exported file with the command: find . -type f -inum <inum>
-	my write_to_file((my FileInode(mymp4_posix) as string) & unix_return, exported_inodes_file, true)
-	
-	-- return if no .edl file
-	tell application "Finder"
-		if not (exists file edl_file) then return
-	end tell
-	
-	-- add the mp4 chapters if the .edl file exists
-	
-	-- define the mp4chaps chapter file
-	set itunes_chapter_file to (POSIX path of itunes_path) & itunes_root & mp4chaps_suffix
-	
-	-- translate the .edl file into a mp4chaps chapter file using perl
-	set perlCode to "
-#!/usr/bin/perl
-
-########################################
-# CONVERT EDL FILES TO MP4CHAPS FILES  #
-########################################
-
-# Copyright © 2012Ð2013 Steven T. Smith <steve dot t dot smith at gmail dot com>, GPL
-
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-use strict;
-
-my $edl_file = q{" & edl_file_posix & "};
-my $txt_file = q{" & itunes_chapter_file & "};
-
-sub sec2hhmmss {
-my $rem = $_[0]/3600;
-my $hh = int($rem);
-$rem = ($rem - $hh)*60;
-my $mm = int($rem);
-$rem = ($rem - $mm)*60;
-    my $ss = int($rem);
-    $rem = ($rem - $ss);
-    $rem = sprintf(\"%.3f\",$rem);  # millisecond precision
-    $rem =~ s/^0//;
-    return sprintf(\"%02d:%02d:%02d%s\",$hh,$mm,$ss,$rem);
-}
-
-open (EDL,$edl_file) || die(\"Cannot open edl file \" . $edl_file);
-open (TXT,\">\",$txt_file) || die(\"Cannot open txt file \" . $txt_file);
-my $line;
-my @times;
-my $comskipno = 0;
-my $comskipchapno = 0;
-print TXT \"00:00:00.000 Beginning\\n\";
-while ($line = <EDL>) {
-    chomp $line;
-    # parse the space-delimited edl ascii times into an array of numbers
-    @times = split ' ', $line;
-    @times = map {$_+0} @times; # (unnecessarily) convert strings to numbers
-    $comskipno += 1 if ($comskipno == 0 && $times[0] != 0.0);
-    if ($#times < 2 || $times[2] == 0.0) {
-        if ($times[0] != 0.0) {
-            print TXT sprintf(\"%s Chapter %d End\\n\",sec2hhmmss($times[0]),$comskipno);
-        }
-	 $comskipno++;
-        print TXT sprintf(\"%s Chapter %d Start\\n\",sec2hhmmss($times[1]),$comskipno);
-    } else {
-        # never seen this case, but here for logical consistency
-        $comskipchapno++;
-        if ($times[0] != 0.0) {
-            print TXT sprintf(\"%s Chapter %d Start\\n\",sec2hhmmss($times[0]),$comskipchapno);
-        }
-        print TXT sprintf(\"%s Chapter %d End\\n\",sec2hhmmss($times[1]),$comskipchapno);
-    }
-}
-close (EDL) ;
-close (TXT) ;
-"
-	
-	-- define the perl  script and run it and delete it
-	set perl_file to eyetv_path & eyetv_root & perl_suffix
-	-- safely quote any single quote characters for system calls: ' --> '"'"'
-	set perl_file_safequotes to my replace_chars(POSIX path of perl_file, "'", "'\"'\"'")
-	
-	my write_to_file(perlCode & return, perl_file as Unicode text, false)
-	set perlRes to do shell script "perl '" & perl_file_safequotes & "' || true"
-	tell application "Finder" to delete file perl_file
-	
-	-- execute mp4chaps and delete the chapter file
-	-- remove any existing chapters
-	set mp4chapsRes to do shell script mp4chaps & " -r '" & mymp4_posix_safequotes & "' > /dev/null 2>&1 || true"
-	-- import the comskip chapters
-	set mp4chapsRes to do shell script mp4chaps & " -i '" & mymp4_posix_safequotes & "' > /dev/null 2>&1 || true"
-	-- delete the chapter file
-	tell application "Finder" to delete file (itunes_path & itunes_root & mp4chaps_suffix)
 end ExportDone
 
 -- extract the root name of a file
@@ -337,14 +278,21 @@ on write_to_file(this_data, target_file, append_data)
 		end try
 		return false
 	end try
+	
 end write_to_file
+
+-- test if the comskip process is running
+on comskipIsRunning()
+	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}' "
+	return (processPaths contains "comskip")
+end comskipIsRunning
 
 -- testing code: this will not be called when triggered from EyeTV, but only when the script is run as a stand-alone script
 on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
 		-- for all your id's, run /Library/Application\ Support/ETVComskip/bin/MarkCommercials
-		set rec to 468313500
+		set rec to 470140080
 		my ExportDone(rec)
 	end tell
 end run

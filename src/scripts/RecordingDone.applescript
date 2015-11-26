@@ -11,54 +11,114 @@ global LogMsg
 
 on RecordingDone(recordingID)
 	
-	set EyeTVProcess to "EyeTV"
-	set DecoderProcess to "Elgato H.264 Decoder"
-	set DelayTime to 60
-	set MaxDelays to 12 * 60 -- twelve hours == MaxDelays*DelayTime
+	set DEBUG to false
+	set unix_return to (ASCII character 10)
+	set ascii_tab to (ASCII character 9)
+	set myid to recordingID as integer
+	set TimeoutTime to 12 * 60 * 60
 	
-	-- delay until transcodeing for iPad/iPhone or both  slows down or stops running
-	set decoderunflag to true
-	repeat MaxDelays times
-		delay DelayTime -- delay at least once to give it a chance to start
-		-- Elgato uses both Turbo.264 and EyeTV for transcoding, so check both in sequence
-		if decoderunflag then
-			set pcpudecode to CPUPercentage(DecoderProcess)
-			if pcpudecode is equal to "" or pcpudecode < 2.0 then -- 2% based on observation
-				set decoderunflag to false
+	with timeout of TimeoutTime seconds
+		
+		my write_to_file((short date string of (current date) & " " & time string of (current date)) & " " & "RecordingDone run for ID: " & recordingID & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		
+		tell application "EyeTV"
+			set myshortname to get the title of recording id myid
+			set eyetvr_file to get the location of recording id myid as alias
+		end tell
+		-- Get EyeTV's root file names and paths for the recording
+		tell application "Finder" to set eyetv_path to container of eyetvr_file as Unicode text
+		-- fix AppleScript's strange trailing colon issue for paths
+		if character -1 of eyetv_path is not ":" then set eyetv_path to eyetv_path & ":"
+		tell application "Finder" to set eyetv_file to name of eyetvr_file
+		set eyetv_root to (RootName(eyetv_file) of me)
+		set done_waiting_for_itunes_file to eyetv_path & eyetv_root & ".done_waiting_for_iTunes.txt"
+		
+		-- test for EyeTV exports
+		set not_exporting_count to 0
+		set max_not_exporting_count to 3
+		set EyeTV_export_flag to false
+		repeat
+			-- wait a little for EyeTV exports to kick in
+			delay 10
+			
+			-- test for EyeTV exports
+			tell application "EyeTV"
+				if is_exporting then
+					set EyeTV_export_flag to true
+				end if
+				set EyeTV_is_busy to false
+				if is_exporting or is_compacting or my mcIsRunning() then
+					set EyeTV_is_busy to true
+					set not_exporting_count to 0 -- reset counter
+				end if
+			end tell
+			if not EyeTV_is_busy then
+				set not_exporting_count to not_exporting_count + 1
 			end if
-		else
-			set pcpueyetv to CPUPercentage(EyeTVProcess)
-			if pcpueyetv is equal to "" or pcpueyetv < 30.0 then -- 30% based on observation
-				exit repeat -- break out of delay loop if EyeTVProcess is idle
+			if not_exporting_count ³ max_not_exporting_count then
+				if EyeTV_export_flag then
+					-- wait for ExportDone to wait for iTunes
+					with timeout of 30 * 60 seconds
+						repeat
+							delay 5
+							tell application "Finder" to if exists done_waiting_for_itunes_file then exit repeat
+						end repeat
+						tell application "Finder" to delete file done_waiting_for_itunes_file
+					end timeout
+				end if
+				exit repeat
 			end if
+			
+		end repeat
+		
+		-- MarkCommercials will run comskip and apply the .edl file to all recordings, including iTunes exports
+		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
+		-- display dialog cmd
+		-- set cmd to "env > /tmp/etv_test.log &"
+		do shell script cmd
+		
+		set LogMsg to ""
+		CheckMultiplePIDs(recordingID)
+		
+		--disable this if you do not want a logfile written
+		if (count of LogMsg) > 0 then
+			write_to_file((short date string of (current date) & " " & time string of (current date)) & LogMsg & (ASCII character 13), (path to "logs" as string) & "EyeTV scripts.log", true)
 		end if
-	end repeat
+		
+		
+	end timeout
 	
-	delay 10
-	-- comskip81 uses ffmpeg and does not support live tv; take this from RecordingStarted.scpt
-	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' " & recordingID & " &> /dev/null &"
-	-- display dialog cmd
-	-- set cmd to "env > /tmp/etv_test.log &"
-	do shell script cmd
-	
-	set LogMsg to ""
-	CheckMultiplePIDs(recordingID)
-	
-	--disable this if you do not want a logfile written
-	if (count of LogMsg) > 0 then
-		write_to_file((short date string of (current date) & " " & time string of (current date)) & LogMsg & (ASCII character 13), (path to "logs" as string) & "EyeTV scripts.log", true)
-	end if
 end RecordingDone
 
 -- testing code: this will not be called when triggered from EyeTV, but only when the script is run as a stand-alone script
 on run
 	tell application "EyeTV"
 		-- set rec to unique ID of item 1 of recordings
-		set rec to 418991280
+		set rec to 470140080
 		
 		my RecordingDone(rec)
 	end tell
 end run
+
+-- extract the root name of a file
+on RootName(fname)
+	-- http://stackoverflow.com/questions/12907517/extracting-file-extensions-from-applescript-paths
+	set root to fname as Unicode text
+	set delims to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to "."
+	if root contains "." then set root to (text items 1 thru -2 of root) as text
+	set AppleScript's text item delimiters to delims
+	return root
+end RootName
+-- extract the root name of a file
+on ExtensionName(fname)
+	set extn to fname as Unicode text
+	set delims to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to "."
+	if extn contains "." then set extn to (last text item of extn) as text
+	set AppleScript's text item delimiters to delims
+	return extn
+end ExtensionName
 
 -- compute the percentage CPU used by DecoderProcess
 on CPUPercentage(DecoderProcess)
