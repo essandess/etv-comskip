@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=3.4
+VERSION=3.4.1
 # El Capitan (10.11)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}

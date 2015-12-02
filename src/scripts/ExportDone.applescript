@@ -69,6 +69,12 @@ on ExportDone(recordingID)
 		set done_waiting_for_itunes_file to eyetv_path & eyetv_root & ".done_waiting_for_iTunes.txt"
 		
 		-- Elgato adds a few seconds here, but perhaps minutes are necessary to ensure success under heavy CPU loads
+		-- delete signaling file `done_waiting_for_itunes_file` if it exists for multiple exports
+		tell application "Finder"
+			try
+				delete file done_waiting_for_itunes_file
+			end try
+		end tell
 		delay 3 * 60 --if the script does not seem to work, try increasing this delay slightly.
 		-- file communication that ExportDone is done waiting for iTunes to update its db
 		my write_to_file("", done_waiting_for_itunes_file, true)
@@ -81,6 +87,8 @@ on ExportDone(recordingID)
 			repeat 4 times
 				try
 					set mytv to get the location of (the tracks of playlist "TV Shows" whose name is myshortname or artist is myshortname)
+					-- remove any "missing value" entries (not sure why iTunes throws these sometiimes)
+					set mytv to my remove_missing_values_from_list(mytv)
 					if DEBUG then
 						if the (count of mytv) is greater than 0 then
 							repeat with kk from 1 to (count of mytv)
@@ -104,6 +112,8 @@ on ExportDone(recordingID)
 				-- I've also seen EyeTV exports appear in the "Movies" playlist (not sure why)
 				try
 					set mymovies to get the location of (the tracks of playlist "Movies" whose name is myshortname or artist is myshortname)
+					-- remove any "missing value" entries (not sure why iTunes throws these sometiimes)
+					set mymovies to my remove_missing_values_from_list(mymovies)
 					if DEBUG then
 						if the (count of mymovies) is greater than 0 then
 							repeat with kk from 1 to (count of mymovies)
@@ -215,6 +225,16 @@ on ExtensionName(fname)
 	return extn
 end ExtensionName
 
+-- remove any "missing value" list entries
+on remove_missing_values_from_list(mylist)
+	mylist_nomissingvalue = {}
+	repeat with kk from 1 to (count of mylist)
+		set mylist_kk to (item kk of mylist)
+		if mylist_kk is not missing value then set end of mylist_nomissingvalue to mylist_kk
+	end repeat
+	return mylist_nomissingvalue
+end remove_missing_values_from_list
+
 -- return a field from an m4v file
 on m4v_field(posix_filename, field_name)
 	set mp4info to "'/Library/Application Support/ETVComskip/bin/mp4info'"
@@ -292,7 +312,7 @@ on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
 		-- for all your id's, run /Library/Application\ Support/ETVComskip/bin/MarkCommercials
-		set rec to 470140080
+		set rec to 470637181
 		my ExportDone(rec)
 	end tell
 end run
