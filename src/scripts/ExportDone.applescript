@@ -227,7 +227,7 @@ end ExtensionName
 
 -- remove any "missing value" list entries
 on remove_missing_values_from_list(mylist)
-	mylist_nomissingvalue = {}
+	set mylist_nomissingvalue to {}
 	repeat with kk from 1 to (count of mylist)
 		set mylist_kk to (item kk of mylist)
 		if mylist_kk is not missing value then set end of mylist_nomissingvalue to mylist_kk
