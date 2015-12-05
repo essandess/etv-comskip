@@ -1,5 +1,11 @@
 -- uninstall ETVComskip
 
+
+-- user launch daemon
+do shell script "/bin/launchctl unload -w ~/Library/LaunchAgents/com.github.essandess.etv-comskip.comskipper.plist"
+do shell script "/bin/rm -f ~/Library/LaunchAgents/com.github.essandess.etv-comskip.comskipper.plist"
+
+-- remove older login item installs
 tell application "System Events"
 	delete (every login item whose name contains "ComSkipper")
 end tell
