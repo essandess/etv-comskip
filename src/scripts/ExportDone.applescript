@@ -75,7 +75,7 @@ on ExportDone(recordingID)
 				delete file done_waiting_for_itunes_file
 			end try
 		end tell
-		delay 3 * 60 --if the script does not seem to work, try increasing this delay slightly.
+		delay 10 * 60 --if the script does not seem to work, try increasing this delay slightly.
 		-- file communication that ExportDone is done waiting for iTunes to update its db
 		my write_to_file("", done_waiting_for_itunes_file, true)
 		
@@ -177,15 +177,17 @@ on ExportDone(recordingID)
 			set mymp4_kk to (item kk of mytv)
 			set mymp4_posix_kk to POSIX path of mymp4_kk
 			tell application "Finder" to set mydate_kk to (creation date of mymp4_kk)
-			if mydate is less than mydate_kk and not my IsFileOpen(mymp4_posix_kk) then
+			if mydate is less than mydate_kk and not my IsFileOpen(mymp4_posix_kk, DEBUG) then
 				set mymp4 to mymp4_kk
 				set mymp4_posix to mymp4_posix_kk
 				set mydate to mydate_kk
 			end if
 		end repeat
 		
+		set deltatime to ((current date) - mydate)
 		if DEBUG then
 			my write_to_file(ascii_tab & "ExportDone::mymp4: " & mymp4_posix & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+			my write_to_file(ascii_tab & "ExportDone:: deltatime: " & (deltatime as string) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 		end if
 		
 		-- Setting itunes_root ...
@@ -258,7 +260,7 @@ on FileInode(posix_filename)
 end FileInode
 
 -- test if a file is open
-on IsFileOpen(posix_filename)
+on IsFileOpen(posix_filename, DEBUG)
 	-- safely quote any single quote characters for system calls: ' --> '"'"'
 	set posix_filename_safequotes to my replace_chars(posix_filename, "'", "'\"'\"'")
 	set res to do shell script ("lsof '" & posix_filename_safequotes & "' | tail -n +2 | perl -ane 'BEGIN {$rv=q/false/;}; $_=@F[0]; !/^mdworker$/ && do {$rv=q/true/;}; END {print $rv;}' || true")
@@ -266,6 +268,10 @@ on IsFileOpen(posix_filename)
 	-- set res to do shell script ("lsof '" & posix_filename_safequotes & "' > /dev/null 2>&1 && echo 'true' || echo 'false' || true")
 	if res is equal to "true" then
 		set res to true
+		if DEBUG then
+			set pname to do shell script ("lsof '" & posix_filename_safequotes & "' | tail -n +2 | perl -ane 'BEGIN {$rv=q/{/;}; $_=@F[0]; $rv=$rv . q/ / . $_; END {print $rv, q/ }/;}' || true")
+			my write_to_file(ascii_tab & "ExportDone::IsFileOpen: " & posix_filename & " is open with process(es) " & pname & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
 	else
 		set res to false
 	end if
@@ -312,7 +318,7 @@ on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
 		-- for all your id's, run /Library/Application\ Support/ETVComskip/bin/MarkCommercials
-		set rec to 470637181
+		set rec to 471846780
 		my ExportDone(rec)
 	end tell
 end run
