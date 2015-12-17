@@ -179,7 +179,7 @@ on ExportDone(recordingID)
 			set mymp4_kk to (item kk of mytv)
 			set mymp4_posix_kk to POSIX path of mymp4_kk
 			tell application "Finder" to set mydate_kk to (creation date of mymp4_kk)
-			if mydate is less than mydate_kk and not (mymp4_kk is greater than exportdonedate) then
+			if mydate is less than mydate_kk and not (mydate_kk is greater than exportdonedate) then
 				set mymp4 to mymp4_kk
 				set mymp4_posix to mymp4_posix_kk
 				set mydate to mydate_kk
