@@ -11,11 +11,11 @@ global LogMsg
 
 on RecordingDone(recordingID)
 	
-	set DEBUG to false
+	set DEBUG to true
 	set unix_return to (ASCII character 10)
 	set ascii_tab to (ASCII character 9)
 	set myid to recordingID as integer
-	set TimeoutTime to 12 * 60 * 60
+	set TimeoutTime to 12 * hours
 	
 	with timeout of TimeoutTime seconds
 		
@@ -58,7 +58,7 @@ on RecordingDone(recordingID)
 			if not_exporting_count ³ max_not_exporting_count then
 				if EyeTV_export_flag then
 					-- wait for ExportDone to wait for iTunes
-					with timeout of 30 * 60 seconds
+					with timeout of 30 * minutes seconds
 						repeat
 							delay 5
 							tell application "Finder" to if exists done_waiting_for_itunes_file then exit repeat
@@ -71,34 +71,27 @@ on RecordingDone(recordingID)
 			
 		end repeat
 		
-		-- MarkCommercials will run comskip and apply the .edl file to all recordings, including iTunes exports
-		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
-		-- display dialog cmd
-		-- set cmd to "env > /tmp/etv_test.log &"
-		do shell script cmd
-		
-		set LogMsg to ""
-		CheckMultiplePIDs(recordingID)
-		
-		--disable this if you do not want a logfile written
-		if (count of LogMsg) > 0 then
-			write_to_file((short date string of (current date) & " " & time string of (current date)) & LogMsg & (ASCII character 13), (path to "logs" as string) & "EyeTV scripts.log", true)
-		end if
-		
-		
 	end timeout
 	
+	if DEBUG then
+		my write_to_file(ascii_tab & "RecordingDone::MarkCommercials" & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+	end if
+	
+	-- MarkCommercials will run comskip and apply the .edl file to all recordings, including iTunes exports
+	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
+	-- display dialog cmd
+	-- set cmd to "env > /tmp/etv_test.log &"
+	do shell script cmd
+	
+	set LogMsg to ""
+	CheckMultiplePIDs(recordingID, DEBUG)
+	
+	--disable this if you do not want a logfile written
+	if (count of LogMsg) > 0 then
+		write_to_file((short date string of (current date) & " " & time string of (current date)) & LogMsg & unix_return, (path to "logs" as string) & "EyeTV scripts.log", true)
+	end if
+	
 end RecordingDone
-
--- testing code: this will not be called when triggered from EyeTV, but only when the script is run as a stand-alone script
-on run
-	tell application "EyeTV"
-		-- set rec to unique ID of item 1 of recordings
-		set rec to 470140080
-		
-		my RecordingDone(rec)
-	end tell
-end run
 
 -- extract the root name of a file
 on RootName(fname)
@@ -133,7 +126,7 @@ on CPUPercentage(DecoderProcess)
 	end if
 end CPUPercentage
 
-on CheckMultiplePIDs(recordingID)
+on CheckMultiplePIDs(recordingID, DEBUG)
 	--check if there are multiple Video PIDs in the file
 	
 	tell application "EyeTV"
@@ -157,6 +150,9 @@ on CheckMultiplePIDs(recordingID)
 				set AppleScript's text item delimiters to delims
 				
 				repeat with pid in PID_List
+					if DEBUG then
+						my write_to_file(ascii_tab & "RecordingDone::CheckMultiplePIDs:MarkCommercials with pid " & (pid as string) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+					end if
 					my launchComSkip(recordingID, pid)
 					repeat while (my mcIsRunning())
 						delay 5
@@ -207,3 +203,14 @@ on mcIsRunning()
 	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}' "
 	return (processPaths contains "MarkCommercials")
 end mcIsRunning
+
+-- testing code: this will not be called when triggered from EyeTV, but only when the script is run as a stand-alone script
+on run
+	tell application "EyeTV"
+		-- set rec to unique ID of item 1 of recordings
+		set rec to 471846780
+		
+		my RecordingDone(rec)
+	end tell
+end run
+

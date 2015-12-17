@@ -30,7 +30,7 @@ on ExportDone(recordingID)
 	set edl_suffix to ".edl"
 	set perl_suffix to ".pl"
 	
-	set TimeoutTime to 12 * 60 * 60
+	set TimeoutTime to 12 * hours
 	
 	with timeout of TimeoutTime seconds
 		
@@ -75,7 +75,9 @@ on ExportDone(recordingID)
 				delete file done_waiting_for_itunes_file
 			end try
 		end tell
-		delay 10 * 60 --if the script does not seem to work, try increasing this delay slightly.
+		delay 1 * minutes -- wait a minute for iTunes
+		set exportdonedate to (current date)
+		delay 2 * minutes --if the script does not seem to work, try increasing this delay slightly.
 		-- file communication that ExportDone is done waiting for iTunes to update its db
 		my write_to_file("", done_waiting_for_itunes_file, true)
 		
@@ -177,17 +179,34 @@ on ExportDone(recordingID)
 			set mymp4_kk to (item kk of mytv)
 			set mymp4_posix_kk to POSIX path of mymp4_kk
 			tell application "Finder" to set mydate_kk to (creation date of mymp4_kk)
-			if mydate is less than mydate_kk and not my IsFileOpen(mymp4_posix_kk, DEBUG) then
+			if mydate is less than mydate_kk and not (mymp4_kk is greater than exportdonedate) then
 				set mymp4 to mymp4_kk
 				set mymp4_posix to mymp4_posix_kk
 				set mydate to mydate_kk
 			end if
 		end repeat
 		
-		set deltatime to ((current date) - mydate)
+		set deltatime to (exportdonedate - mydate)
+		-- return if the iTunes recording is too old
+		if deltatime is greater than 12 * hours then
+			if DEBUG then
+				my write_to_file(ascii_tab & "ExportDone::older file, deltatime: " & (deltatime as string) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+			end if
+			return
+		end if
+		
+		-- wait for file to not be open, but proceed even if it is
+		with timeout of 20 * minutes seconds
+			repeat
+				if not my IsFileOpen(mymp4_posix, DEBUG) then exit repeat
+				delay 60
+			end repeat
+		end timeout
+		-- proceed whether file was open or not
+		
 		if DEBUG then
 			my write_to_file(ascii_tab & "ExportDone::mymp4: " & mymp4_posix & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
-			my write_to_file(ascii_tab & "ExportDone:: deltatime: " & (deltatime as string) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+			my write_to_file(ascii_tab & "ExportDone::deltatime: " & (deltatime as string) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 		end if
 		
 		-- Setting itunes_root ...
