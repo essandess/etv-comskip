@@ -47,7 +47,7 @@ on RecordingDone(recordingID)
 					set EyeTV_export_flag to true
 				end if
 				set EyeTV_is_busy to false
-				if is_exporting or is_compacting or my mcIsRunning() then
+				if is_exporting or is_compacting or my mcIsRunning(DEBUG) then
 					set EyeTV_is_busy to true
 					set not_exporting_count to 0 -- reset counter
 				end if
@@ -81,7 +81,14 @@ on RecordingDone(recordingID)
 	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
 	-- display dialog cmd
 	-- set cmd to "env > /tmp/etv_test.log &"
-	do shell script cmd
+	try
+		do shell script cmd
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "RecordingDone::MarkCommercials error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
+	
 	
 	set LogMsg to ""
 	CheckMultiplePIDs(recordingID, DEBUG)
@@ -114,11 +121,23 @@ on ExtensionName(fname)
 end ExtensionName
 
 -- compute the percentage CPU used by DecoderProcess
-on CPUPercentage(DecoderProcess)
-	set ProcessPS to do shell script ("ps -axwwc | grep '" & DecoderProcess & "' | grep -v grep || true")
+on CPUPercentage(DecoderProcess, DEBUG)
+	try
+		set ProcessPS to do shell script ("ps -axwwc | grep '" & DecoderProcess & "' | grep -v grep || true")
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "RecordingDone::CPUPercentage error 1: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
 	if ProcessPS is not equal to "" then
 		set ProcessID to word 1 of ProcessPS
-		set ProcessPS to do shell script ("ps -xwwco pid,ppid,%cpu -p " & ProcessID & " | tail -1  || true")
+		try
+			set ProcessPS to do shell script ("ps -xwwco pid,ppid,%cpu -p " & ProcessID & " | tail -1  || true")
+		on error errText number errNum
+			if DEBUG then
+				my write_to_file(ascii_tab & "RecordingDone::CPUPercentage error 2: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+			end if
+		end try
 		set ProcessCPU to word 3 of ProcessPS
 		return ProcessCPU as number
 	else
@@ -153,8 +172,8 @@ on CheckMultiplePIDs(recordingID, DEBUG)
 					if DEBUG then
 						my write_to_file(ascii_tab & "RecordingDone::CheckMultiplePIDs:MarkCommercials with pid " & (pid as string) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 					end if
-					my launchComSkip(recordingID, pid)
-					repeat while (my mcIsRunning())
+					my launchComSkip(recordingID, pid, DEBUG)
+					repeat while (my mcIsRunning(DEBUG))
 						delay 5
 					end repeat
 				end repeat
@@ -189,18 +208,30 @@ on write_to_file(this_data, target_file, append_data)
 	end try
 end write_to_file
 
-on launchComSkip(recID, pid)
+on launchComSkip(recID, pid, DEBUG)
 	if pid = "" then
 		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --force --log " & recID & " &> /dev/null &"
 	else
 		set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --force --log " & recID & " --pid=" & pid & " &> /dev/null &"
 	end if
 	
-	do shell script cmd
+	try
+		do shell script cmd
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "RecordingDone::launchComSkip error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
 end launchComSkip
 
-on mcIsRunning()
-	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}'   || true"
+on mcIsRunning(DEBUG)
+	try
+		set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}'   || true"
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "RecordingDone::mcIsRunning error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
 	return (processPaths contains "MarkCommercials")
 end mcIsRunning
 
@@ -208,7 +239,7 @@ end mcIsRunning
 on run
 	tell application "EyeTV"
 		-- set rec to unique ID of item 1 of recordings
-		set rec to 472085880
+		set rec to 472158001
 		
 		my RecordingDone(rec)
 	end tell
