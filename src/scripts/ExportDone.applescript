@@ -156,7 +156,7 @@ on ExportDone(recordingID)
 		set movie_dir_list to movie_list
 		set movie_list to {}
 		repeat with movie in movie_dir_list
-			if my m4v_field(POSIX path of (movie as alias), "Name") = myshortname or my m4v_field(POSIX path of (movie as alias), "Artist") = myshortname then Â
+			if my m4v_field(POSIX path of (movie as alias), "Name", DEBUG) = myshortname or my m4v_field(POSIX path of (movie as alias), "Artist", DEBUG) = myshortname then Â
 				set end of movie_list to (movie as alias)
 		end repeat
 		
@@ -220,7 +220,7 @@ on ExportDone(recordingID)
 		
 		-- save the iTunes file inode to the exported files file "*.exported_inodes.txt"
 		-- find the exported file with the command: find . -type f -inum <inum>
-		my write_to_file((my FileInode(mymp4_posix) as string) & unix_return, exported_inodes_file, true)
+		my write_to_file((my FileInode(mymp4_posix, DEBUG) as string) & unix_return, exported_inodes_file, true)
 		
 	end timeout
 	
@@ -257,19 +257,31 @@ on remove_missing_values_from_list(mylist)
 end remove_missing_values_from_list
 
 -- return a field from an m4v file
-on m4v_field(posix_filename, field_name)
+on m4v_field(posix_filename, field_name, DEBUG)
 	set mp4info to "'/Library/Application Support/ETVComskip/bin/mp4info'"
 	-- safely quote any single quote characters for system calls: ' --> '"'"'
 	set posix_filename_safequotes to my replace_chars(posix_filename, "'", "'\"'\"'")
-	set res to do shell script (mp4info & " '" & posix_filename_safequotes & "' | perl -ne 'chomp; $f=$_; $v=$_; $f=~s/ *(.+):.*/$1/; $f=~/" & field_name & "/ && do {$v=~s/.*: *(.+)$/$1/; print $v;}' || true")
+	try
+		set res to do shell script (mp4info & " '" & posix_filename_safequotes & "' | perl -ne 'chomp; $f=$_; $v=$_; $f=~s/ *(.+):.*/$1/; $f=~/" & field_name & "/ && do {$v=~s/.*: *(.+)$/$1/; print $v;}' || true")
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "ExportDone::m4v_field: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
 	return res
 end m4v_field
 
 -- get the inode of a file
-on FileInode(posix_filename)
+on FileInode(posix_filename, DEBUG)
 	-- safely quote any single quote characters for system calls: ' --> '"'"'
 	set posix_filename_safequotes to my replace_chars(posix_filename, "'", "'\"'\"'")
-	set fi to do shell script ("ls -i '" & posix_filename_safequotes & "' || true")
+	try
+		set fi to do shell script ("ls -i '" & posix_filename_safequotes & "' || true")
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "ExportDone::FileInode error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
 	if fi is not equal to "" then
 		set fi to word 1 of fi
 		return fi as number
@@ -282,13 +294,25 @@ end FileInode
 on IsFileOpen(posix_filename, DEBUG)
 	-- safely quote any single quote characters for system calls: ' --> '"'"'
 	set posix_filename_safequotes to my replace_chars(posix_filename, "'", "'\"'\"'")
-	set res to do shell script ("lsof '" & posix_filename_safequotes & "' | tail -n +2 | perl -ane 'BEGIN {$rv=q/false/;}; $_=@F[0]; !/^mdworker$/ && do {$rv=q/true/;}; END {print $rv;}' || true")
+	try
+		set res to do shell script ("lsof '" & posix_filename_safequotes & "' | tail -n +2 | perl -ane 'BEGIN {$rv=q/false/;}; $_=@F[0]; !/^mdworker$/ && do {$rv=q/true/;}; END {print $rv;}' || true")
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "ExportDone::IsFileOpen error 1: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
 	-- original test; ignores benign Spotlight (mdworker) indexing
 	-- set res to do shell script ("lsof '" & posix_filename_safequotes & "' > /dev/null 2>&1 && echo 'true' || echo 'false' || true")
 	if res is equal to "true" then
 		set res to true
 		if DEBUG then
-			set pname to do shell script ("lsof '" & posix_filename_safequotes & "' | tail -n +2 | perl -ane 'BEGIN {$rv=q/{/;}; $_=@F[0]; $rv=$rv . q/ / . $_; END {print $rv, q/ }/;}' || true")
+			try
+				set pname to do shell script ("lsof '" & posix_filename_safequotes & "' | tail -n +2 | perl -ane 'BEGIN {$rv=q/{/;}; $_=@F[0]; $rv=$rv . q/ / . $_; END {print $rv, q/ }/;}' || true")
+			on error errText number errNum
+				if DEBUG then
+					my write_to_file(ascii_tab & "ExportDone::IsFileOpen error 2: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+				end if
+			end try
 			my write_to_file(ascii_tab & "ExportDone::IsFileOpen: " & posix_filename & " is open with process(es) " & pname & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 		end if
 	else
@@ -327,8 +351,14 @@ on write_to_file(this_data, target_file, append_data)
 end write_to_file
 
 -- test if the comskip process is running
-on comskipIsRunning()
-	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}' || true "
+on comskipIsRunning(DEBUG)
+	try
+		set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}' || true "
+	on error errText number errNum
+		if DEBUG then
+			my write_to_file(ascii_tab & "ExportDone::comskipIsRunning error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
+	end try
 	return (processPaths contains "comskip")
 end comskipIsRunning
 
@@ -337,7 +367,7 @@ on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
 		-- for all your id's, run /Library/Application\ Support/ETVComskip/bin/MarkCommercials
-		set rec to 471846780
+		set rec to 472115100
 		my ExportDone(rec)
 	end tell
 end run
