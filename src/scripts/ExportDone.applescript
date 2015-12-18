@@ -328,7 +328,7 @@ end write_to_file
 
 -- test if the comskip process is running
 on comskipIsRunning()
-	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}' "
+	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}' || true "
 	return (processPaths contains "comskip")
 end comskipIsRunning
 

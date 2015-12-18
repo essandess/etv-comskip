@@ -118,7 +118,7 @@ on CPUPercentage(DecoderProcess)
 	set ProcessPS to do shell script ("ps -axwwc | grep '" & DecoderProcess & "' | grep -v grep || true")
 	if ProcessPS is not equal to "" then
 		set ProcessID to word 1 of ProcessPS
-		set ProcessPS to do shell script ("ps -xwwco pid,ppid,%cpu -p " & ProcessID & " | tail -1")
+		set ProcessPS to do shell script ("ps -xwwco pid,ppid,%cpu -p " & ProcessID & " | tail -1  || true")
 		set ProcessCPU to word 3 of ProcessPS
 		return ProcessCPU as number
 	else
@@ -200,7 +200,7 @@ on launchComSkip(recID, pid)
 end launchComSkip
 
 on mcIsRunning()
-	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}' "
+	set processPaths to do shell script "ps -xww | awk -F/ 'NF >2' | awk -F/ '{print $NF}' | awk -F '-' '{print $1}'   || true"
 	return (processPaths contains "MarkCommercials")
 end mcIsRunning
 
@@ -208,7 +208,7 @@ end mcIsRunning
 on run
 	tell application "EyeTV"
 		-- set rec to unique ID of item 1 of recordings
-		set rec to 471846780
+		set rec to 472085880
 		
 		my RecordingDone(rec)
 	end tell
