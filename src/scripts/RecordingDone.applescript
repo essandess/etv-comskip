@@ -37,40 +37,45 @@ on RecordingDone(recordingID)
 		set not_exporting_count to 0
 		set max_not_exporting_count to 3
 		set EyeTV_export_flag to false
-		repeat
-			-- wait a little for EyeTV exports to kick in
-			delay 10
-			
-			-- test for EyeTV exports
-			tell application "EyeTV"
-				if is_exporting then
-					set EyeTV_export_flag to true
+		try
+			repeat
+				-- wait a little for EyeTV exports to kick in
+				delay 10
+				
+				-- test for EyeTV exports
+				tell application "EyeTV"
+					if is_exporting then
+						set EyeTV_export_flag to true
+					end if
+					set EyeTV_is_busy to false
+					if is_exporting or is_compacting or my mcIsRunning(DEBUG) then
+						set EyeTV_is_busy to true
+						set not_exporting_count to 0 -- reset counter
+					end if
+				end tell
+				if not EyeTV_is_busy then
+					set not_exporting_count to not_exporting_count + 1
 				end if
-				set EyeTV_is_busy to false
-				if is_exporting or is_compacting or my mcIsRunning(DEBUG) then
-					set EyeTV_is_busy to true
-					set not_exporting_count to 0 -- reset counter
+				if not_exporting_count ³ max_not_exporting_count then
+					if EyeTV_export_flag then
+						-- wait for ExportDone to wait for iTunes
+						with timeout of 30 * minutes seconds
+							repeat
+								delay 5
+								tell application "Finder" to if exists done_waiting_for_itunes_file then exit repeat
+							end repeat
+							tell application "Finder" to delete file done_waiting_for_itunes_file
+						end timeout
+					end if
+					exit repeat
 				end if
-			end tell
-			if not EyeTV_is_busy then
-				set not_exporting_count to not_exporting_count + 1
+				
+			end repeat
+		on error errText number errNum
+			if DEBUG then
+				my write_to_file(ascii_tab & "RecordingDone::repeat loop test for EyeTV exports error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 			end if
-			if not_exporting_count ³ max_not_exporting_count then
-				if EyeTV_export_flag then
-					-- wait for ExportDone to wait for iTunes
-					with timeout of 30 * minutes seconds
-						repeat
-							delay 5
-							tell application "Finder" to if exists done_waiting_for_itunes_file then exit repeat
-						end repeat
-						tell application "Finder" to delete file done_waiting_for_itunes_file
-					end timeout
-				end if
-				exit repeat
-			end if
-			
-		end repeat
-		
+		end try	
 	end timeout
 	
 	if DEBUG then
