@@ -75,7 +75,7 @@ on RecordingDone(recordingID)
 			if DEBUG then
 				my write_to_file(ascii_tab & "RecordingDone::repeat loop test for EyeTV exports error: " & errText & "; error number " & errNum & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 			end if
-		end try	
+		end try
 	end timeout
 	
 	if DEBUG then
@@ -83,7 +83,7 @@ on RecordingDone(recordingID)
 	end if
 	
 	-- MarkCommercials will run comskip and apply the .edl file to all recordings, including iTunes exports
-	set cmd to "export DISPLAY=:0.0; /usr/bin/nice -n 5 '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
+	set cmd to "export DISPLAY=:0.0; '/Library/Application Support/ETVComskip/bin/MarkCommercials' --log " & recordingID & " &> /dev/null &"
 	-- display dialog cmd
 	-- set cmd to "env > /tmp/etv_test.log &"
 	try
