@@ -175,14 +175,23 @@ on ExportDone(recordingID)
 		set mymp4 to (item 1 of mytv)
 		set mymp4_posix to POSIX path of mymp4
 		tell application "Finder" to set mydate to (creation date of mymp4)
+		if DEBUG then
+			my write_to_file(ascii_tab & "ExportDone::mytv times: " & mymp4_posix & " has time " & (mydate as string) & " and inum " & (my FileInode(mymp4_posix, DEBUG) as string) & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+		end if
 		repeat with kk from 2 to (count of mytv)
 			set mymp4_kk to (item kk of mytv)
 			set mymp4_posix_kk to POSIX path of mymp4_kk
 			tell application "Finder" to set mydate_kk to (creation date of mymp4_kk)
+			if DEBUG then
+				my write_to_file(ascii_tab & "ExportDone::mytv times: " & mymp4_posix_kk & " has time " & (mydate_kk as string) & " and inum " & (my FileInode(mymp4_posix_kk, DEBUG) as string) & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+			end if
 			if mydate is less than mydate_kk and not (mydate_kk is greater than exportdonedate) then
 				set mymp4 to mymp4_kk
 				set mymp4_posix to mymp4_posix_kk
 				set mydate to mydate_kk
+				if DEBUG then
+					my write_to_file(ascii_tab & "ExportDone::mytv times: " & mymp4_posix & " has (so far) the most recent creation date before " & (exportdonedate as string) & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+				end if
 			end if
 		end repeat
 		
@@ -190,7 +199,7 @@ on ExportDone(recordingID)
 		-- return if the iTunes recording is too old
 		if deltatime is greater than 12 * hours then
 			if DEBUG then
-				my write_to_file(ascii_tab & "ExportDone::older file, deltatime: " & (deltatime as string) & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
+				my write_to_file(ascii_tab & "ExportDone::older file, deltatime: " & (deltatime as string) & " for file " & mymp4_posix & "." & unix_return, (path to "logs" as Unicode text) & "EyeTV scripts.log", true)
 			end if
 			return
 		end if
@@ -367,7 +376,7 @@ on run
 	tell application "EyeTV"
 		--set rec to unique ID of item 1 of recordings
 		-- for all your id's, run /Library/Application\ Support/ETVComskip/bin/MarkCommercials
-		set rec to 472115100
+		set rec to 473747582
 		my ExportDone(rec)
 	end tell
 end run
