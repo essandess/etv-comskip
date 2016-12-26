@@ -117,7 +117,8 @@ eyeTV = None
 RUN_COMSKIP = True
 
 # Get the executable directory
-ETVComskipDir = os.path.abspath(os.path.dirname(__file__))
+# Unused, and causes pyinstaller to throw an OSError[2]
+# ETVComskipDir = os.path.abspath(os.path.dirname(__file__))
 
 # Growl support
 commercialStart = 'Start'
