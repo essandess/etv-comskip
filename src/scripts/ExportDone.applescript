@@ -1,6 +1,6 @@
 -- EyeTV ExportDone script to use ComSkip to mark commercials in exports to iTunes and ~/Movies, and save exported file inode numbers as the text file filename.exported_inodes.txt for synchronization with MarkCommercials.py
 
--- Copyright © 2012Ð2015 Steven T. Smith <steve dot t dot smith at gmail dot com>, GPL
+-- Copyright © 2012Ð2017 Steven T. Smith <steve dot t dot smith at gmail dot com>, GPL
 
 --    This program is free software: you can redistribute it and/or modify
 --    it under the terms of the GNU General Public License as published by

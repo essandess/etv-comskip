@@ -1,6 +1,6 @@
 NAME=ETVComskip
 VERSION=3.5.3
-# El Capitan (10.11)
+# macOS Sierra (10.12)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
 SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"

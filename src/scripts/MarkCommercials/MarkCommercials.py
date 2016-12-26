@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2008, Jon A. Christopher
 # Copyright (c) 2008, TeamSTARS Dick Gordon and Rick Kier
-# Copyright (c) 2015, Steven T. Smith
+# Copyright (c) 2015-2017, Steven T. Smith
 # Licensed under the GNU General Public License, version 2
 #
 #
