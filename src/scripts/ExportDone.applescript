@@ -17,6 +17,7 @@
 
 -- 2012-10-19 1.0rc1: Initial release as part of 1.0rc1 at ETVComskip Google code page
 -- 2013-01-29 1.0rc2: Handle exports to ~/Movies; Fix issues with multiple exports: extend iTunes delay, modify IsFileOpen to ignore Spotlight indexing, and use creation date
+-- 2016-12-26: Fix syntax to get every file from the ~/Movies directory
 
 on ExportDone(recordingID)
 	
@@ -144,7 +145,7 @@ on ExportDone(recordingID)
 		-- find all .m4v files in ~/Movies that match the name or artist fields
 		
 		-- find all files in ~/Movies
-		tell application "Finder" to set movie_dir_list to every item of ((folder "Movies" of home))
+		tell application "Finder" to set movie_dir_list to get every file of (folder "Movies" of (path to home folder))
 		
 		-- find all .m4v files in ~/Movies
 		set movie_list to {}
