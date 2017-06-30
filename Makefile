@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=3.5.4
+VERSION=3.5.5
 # macOS Sierra (10.12)
 OsVersion=$(shell python -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
@@ -52,11 +52,12 @@ macports:: xcode
 		pushd `${PYTHON} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/PyInstaller ; \
 		sudo ${PYTHON} -m PyInstaller configure.py ; \
 		popd )
-	-[[ $(shell port -qv installed | egrep '^ +ffmpeg-devel .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] && sudo ${PORT} uninstall ffmpeg-devel
+	-[[ $(shell pip freeze 2>/dev/null | grep -i objc | wc -l) -eq '0' ]] && sudo -H pip install objc
 	[[ $(shell port -qv installed | egrep '^ +ffmpeg .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install ffmpeg +x11
 	[[ $(shell port -qv installed | egrep '^ +argtable .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install argtable
 	[[ $(shell port -qv installed | egrep '^ +mp4v2 .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install mp4v2
 	[[ $(shell port -qv installed | egrep '^ +coreutils .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install coreutils
+	[[ $(shell port -qv installed | egrep '^ +libsdl .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install libsdl
 
 distdir:: macports
 	pushd ${DLDIR} && ( test -d ETVComskip && rm -fr ETVComskip ; mkdir ETVComskip ) && popd
@@ -74,7 +75,7 @@ comskip:: distdir MarkCommercials
 	@# original Makefile make command
 	@# pushd ./src/Comskip; make INCLUDES="-I/opt/local/include" LIBS="-L/opt/local/lib"; popd
 	pushd ./src/Comskip ; \
-	 ./autogen.sh && ./configure && make && \
+	 ./autogen.sh && ./configure && make comskip comskip-gui && \
 	 popd
 	# comskip.ini
 	install -m 644 ./src/comskip_ini/comskip.ini ${DLDIR}/ETVComskip
@@ -137,8 +138,8 @@ MarkCommercials:: distdir
 	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/iTunesTVFolder.scpt ./iTunesTVFolder.applescript && popd
 
 Install:: distdir
-	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && popd
-	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/UnInstall\ ETVComskip.app ./UnInstall.applescript && popd
+	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/Install\ ETVComskip.app ./Install.applescript && cp ./Install.applescript ${DLDIR}/ETVComskip/scripts/Install\ ETVComskip.applescript && popd
+	pushd ./src/scripts && osacompile -o ${DLDIR}/ETVComskip/UnInstall\ ETVComskip.app ./UnInstall.applescript && cp ./UnInstall.applescript ${DLDIR}/ETVComskip/scripts/UnInstall\ ETVComskip.applescript && popd
 
 EyeTVTriggers:: distdir
 	pushd ./src/scripts && osacompile -do ${DLDIR}/ETVComskip/scripts/RecordingStarted.scpt ./RecordingStarted.applescript && popd
