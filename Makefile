@@ -1,6 +1,6 @@
 NAME=ETVComskip
-VERSION=3.5.5
-# macOS Sierra (10.12)
+VERSION=3.6.0
+# macOS High Sierra (10.13)
 OsVersion=$(shell python2 -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
 SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"
@@ -8,6 +8,15 @@ SUMMARY="Version ${VERSION} for EyeTV3 for ${OsVersion}"
 DLDIR=~/Downloads
 PORT=/opt/local/bin/port
 PYTHON=/opt/local/bin/python2
+PIP=/opt/local/bin/pip-2.7
+
+# default target
+dmg: distdir MarkCommercials comskip etv-comskip-bin ComSkipper EyeTVTriggers Install docs
+	echo "Making target 'dmg' in ${DLDIR}/ETVComskip ..."; \
+	pushd ${DLDIR}/ETVComskip; \
+	rm *.dmg*; \
+	hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}; \
+	popd
 
 all: xcode macports distdir MarkCommercials comskip etv-comskip-bin ComSkipper EyeTVTriggers Install docs # dmg
 
@@ -20,7 +29,7 @@ xcode::
 	then \
 		echo 'Please install Xcode Command Line Tools as a sudoer...'; \
 		sudo /usr/bin/xcode-select --install; \
-		sudo /usr/bin/xcodebuild -license; \
+		sudo /usr/bin/xcodebuild -runFirstLaunch -license; \
 	else \
 		echo "Xcode Command Line Tools found in $(shell xcode-select -p)."; \
 	fi
@@ -47,12 +56,12 @@ macports:: xcode
 	@# [[ $(shell port -qv installed | egrep '^ +py-py2app .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-py2app
 	[[ $(shell port -qv installed | egrep '^ +py-pip .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install py-pip
 	@# pyinstaller ; the python configure.py shouldn't be necessary
-	-[[ $(shell pip freeze 2>/dev/null | grep -i pyinstaller | wc -l) -eq '0' ]] && \
-		( sudo -H pip install pyinstaller ; \
+	-[[ $(shell ${PIP} freeze 2>/dev/null | grep -i pyinstaller | wc -l) -eq '0' ]] && \
+		( sudo -H ${PIP} install pyinstaller ; \
 		pushd `${PYTHON} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"`/PyInstaller ; \
 		sudo ${PYTHON} -m PyInstaller configure.py ; \
 		popd )
-	-[[ $(shell pip freeze 2>/dev/null | grep -i objc | wc -l) -eq '0' ]] && sudo -H pip install objc
+	-[[ $(shell ${PIP} freeze 2>/dev/null | grep -i objc | wc -l) -eq '0' ]] && sudo -H ${PIP} install objc
 	[[ $(shell port -qv installed | egrep '^ +ffmpeg .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install ffmpeg +x11
 	[[ $(shell port -qv installed | egrep '^ +argtable .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install argtable
 	[[ $(shell port -qv installed | egrep '^ +mp4v2 .+(active)' 1>&2 2> /dev/null; echo $$?) -eq '0' ]] || sudo ${PORT} install mp4v2
@@ -61,14 +70,8 @@ macports:: xcode
 
 distdir:: macports
 	pushd ${DLDIR} && ( test -d ETVComskip && rm -fr ETVComskip ; mkdir ETVComskip ) && popd
-	pushd ${DLDIR}/ETVComskip && ( test -d bin || mkdir bin ) && popd
-	pushd ${DLDIR}/ETVComskip && ( test -d scripts || mkdir scripts ) && popd
-
-dmg: distdir MarkCommercials comskip etv-comskip-bin ComSkipper EyeTVTriggers Install docs
-	pushd ${DLDIR}/ETVComskip; \
-	rm *.dmg*; \
-	hdiutil create -fs HFS+ -format UDBZ -volname ${IMGNAME} -srcfolder . ${IMGNAME}; \
-	popd
+	pushd ${DLDIR}/ETVComskip && ( test -d ./bin && rm ./bin/* || mkdir ./bin ) && popd
+	pushd ${DLDIR}/ETVComskip && ( test -d ./scripts && rm ./scripts/* || mkdir ./scripts ) && popd
 
 comskip:: distdir MarkCommercials
 	# comskip
@@ -82,7 +85,8 @@ comskip:: distdir MarkCommercials
 	install -m 644 ./src/comskip_ini/comskip.ini.us_cabletv ${DLDIR}/ETVComskip
 
 etv-comskip-bin:: macports comskip
-	mkdir ./bin
+	test -d ./bin && rm ./bin/* || mkdir ./bin
+	test -d ./lib && rm ./lib/* || mkdir ./lib
 	cp ./src/comskip/comskip ./src/comskip/comskip-gui ./bin
 	cp /opt/local/bin/mp4art /opt/local/bin/mp4chaps /opt/local/bin/mp4extract /opt/local/bin/mp4file /opt/local/bin/mp4info /opt/local/bin/mp4subtitle /opt/local/bin/mp4tags /opt/local/bin/mp4track /opt/local/bin/mp4trackdump ./bin
 	cp /opt/local/bin/gtimeout ./bin
