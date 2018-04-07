@@ -1,5 +1,5 @@
 NAME=ETVComskip
-VERSION=3.6.0
+VERSION=3.6.1
 # macOS High Sierra (10.13)
 OsVersion=$(shell python2 -c 'import platform,sys;x=platform.mac_ver()[0].split(".");sys.stdout.write("%s.%s" % (x[0],x[1]))')
 IMGNAME=${NAME}-${VERSION}-${OsVersion}
